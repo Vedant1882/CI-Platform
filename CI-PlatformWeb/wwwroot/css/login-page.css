@@ -8,11 +8,15 @@
     
 }
 
-.create-account-link-1{
+
+.create-account-link-1 {
     /* display: flex; */
 }
 .img1{
     height:100vh;
+}
+.row{
+    margin:0% !important;
 }
 .create-account-link-2{
     display: flex;
@@ -40,7 +44,8 @@
     width:100%;
     left:0;
     bottom:0;
-    height:40vh;
+    height:40vh;    
+    
 }
 span{
     font-size:14px;;
@@ -63,7 +68,7 @@ h5{
 }
 @media screen and (max-width:991px){
     .img1{
-        height:75vh;
+        height:20vh;
     }
 }
 @media screen and (min-width:768px) and (max-width:1309px) {

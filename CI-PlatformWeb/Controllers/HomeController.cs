@@ -17,7 +17,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-
+        public IActionResult NoMissionFound()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
@@ -36,6 +39,10 @@ namespace CI_PlatformWeb.Controllers
             return View();
         }
         public IActionResult Register()
+        {
+            return View();
+        }
+        public IActionResult landingpage()
         {
             return View();
         }
