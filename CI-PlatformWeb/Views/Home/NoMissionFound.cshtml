@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "Navbar-layout";
+    Layout = "_One-NavbarLayout";
     ViewData["Title"] = "Home Page";
 }
 <!DOCTYPE html>
@@ -24,15 +24,14 @@
 
 <body>
 
-        <div class="container text-center">
+        <div class="container text-center" style="margin-top:150px">
             <h1 class="mt-5">No Mission found</h1>
-             <a class="btn mt-2 landing-page-apply-mission-btn" href="#">
+             <a class="btn mt-2 landing-page-apply-mission-btn" asp-action="Volunteering">
                             Submit New Mission
                             <img src="~/images/right-arrow.png" alt="">
              </a>
         </div>
-    
+    <partial name="_Related_Partial" />
 </body>
-
 </html>
 

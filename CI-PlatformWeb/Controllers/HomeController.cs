@@ -17,6 +17,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
+        public IActionResult Volunteering()
+        {
+            return View();
+        }
         public IActionResult NoMissionFound()
         {
             return View();
