@@ -1,7 +1,16 @@
 ﻿* {
     box-sizing: border-box;
 }
-
+.btn-add_to_fav {
+    padding: 5px 80px 5px 80px;
+    background-color:white;
+    border-radius:50px;
+}
+.btn-rec_co-worker {
+    background-color: white;
+    border-radius: 50px;
+    padding: 5px 33px 5px 33px;
+}
 /* Position the image container (needed to position the left and right arrows) */
 .container {
     position: relative;
@@ -22,10 +31,10 @@
 .next {
     cursor: pointer;
     position: absolute;
-    top: 40%;
+    top: 84%;
     width: auto;
     padding: 16px;
-    margin-top: -50px;
+    /* margin-top: -50px; */
     color: white;
     font-weight: bold;
     font-size: 20px;
@@ -36,7 +45,7 @@
 
 /* Position the "next button" to the right */
 .next {
-    right: 0;
+    right:0;
     border-radius: 3px 0 0 3px;
 }
 
@@ -72,7 +81,7 @@
 /* Six columns side by side */
 .column {
     float: left;
-    width: 16.66%;
+    
 }
 
 /* Add a transparency effect for thumnbail images */
@@ -84,5 +93,33 @@
     .demo:hover {
         opacity: 1;
     }
+    /*----------------Tab---------------------------------------*/
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    border-bottom:3px solid red;
+}
+/*--------------------Side card------------------*/
+@media only screen and (max-width: 1400px) {
+    .btn-add_to_fav {
+        padding: 5px 74px 5px 56px;
+    }
+    .btn-rec_co-worker {
+        padding: 5px 10px 5px 11px;
+    }
+}
+@media only screen and (min-width:992px) and (max-width: 1200px) {
+    .btn-add_to_fav {
+        padding: 7px 42px 7px 42px;
+    }
 
-    
+    .btn-rec_co-worker {
+        padding: 9px 16px 8px 29px;
+        font-size: 10px;
+    }
+}
+@media only screen and (max-width: 1150px) {
+    .vol-page-right-recent-vol-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+    }
+    }
