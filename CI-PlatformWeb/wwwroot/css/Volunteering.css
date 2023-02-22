@@ -1,6 +1,15 @@
 ﻿* {
     box-sizing: border-box;
 }
+.Addfavourite {
+    border: 1px solid black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.apply-1{
+    display:none;
+
+}
 .btn-add_to_fav {
     padding: 5px 80px 5px 80px;
     background-color:white;
@@ -98,22 +107,28 @@
     border-bottom:3px solid red;
 }
 /*--------------------Side card------------------*/
-@media only screen and (max-width: 1400px) {
+/*@media only screen and (max-width: 1400px) {
     .btn-add_to_fav {
         padding: 5px 74px 5px 56px;
     }
     .btn-rec_co-worker {
         padding: 5px 10px 5px 11px;
     }
-}
+}*/
 @media only screen and (min-width:992px) and (max-width: 1200px) {
-    .btn-add_to_fav {
+    /*.btn-add_to_fav {
         padding: 7px 42px 7px 42px;
     }
 
     .btn-rec_co-worker {
         padding: 9px 16px 8px 29px;
         font-size: 10px;
+    }*/
+    .apply-1{
+        display:block;
+    }
+    .apply-2 {
+        display: none;
     }
 }
 @media only screen and (max-width: 1150px) {
