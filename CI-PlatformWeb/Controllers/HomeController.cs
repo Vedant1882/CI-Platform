@@ -21,6 +21,7 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
+
         public IActionResult NoMissionFound()
         {
             return View();
@@ -29,7 +30,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-
+        public IActionResult storyListing()
+        {
+            return View();
+        }
         public IActionResult Login()
         {
             return View();
