@@ -41,17 +41,7 @@ public class LoginController : Controller
 
             if (user != null)
             {
-//                var claims = new List<Claim>
-//{
-//new Claim(ClaimTypes.Name, user.Email)
-//};
-//                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-//                var principal = new ClaimsPrincipal(identity);
-//                var authProperties = new AuthenticationProperties
-//                {
-//                    //IsPersistent = model.RememberMe
-//                };
-                //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+
                 return RedirectToAction(nameof(HomeController.landingpage), "Home");
             }
             else

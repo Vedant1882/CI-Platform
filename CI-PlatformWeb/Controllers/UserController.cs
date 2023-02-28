@@ -1,4 +1,5 @@
 ﻿using CI_Entity.Models;
+using CI_PlatformWeb.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CI.Controllers
@@ -22,18 +23,32 @@ namespace CI.Controllers
 
 
 
-        public IActionResult Create()
+        public IActionResult Register()
         {
             User user = new User();
             return View(user);
         }
 
         [HttpPost]
-        public IActionResult Create(User user)
+        public IActionResult Register(User user)
         {
-            _CIDbContext.Users.Add(user);
-            _CIDbContext.SaveChanges();
-            return RedirectToAction("Login", "Home");
+            var obj = _CIDbContext.Users.FirstOrDefault(u => u.Email == user.Email);
+            
+            
+            
+            if (obj == null)
+            {
+                _CIDbContext.Users.Add(user);
+                _CIDbContext.SaveChanges();
+                return RedirectToAction("Login", "Home");
+                
+            }
+            else
+            {
+                ViewBag.RegEmail = "email exist";
+
+            }
+            return View();
         }
 
         //public IActionResult Edit(int? id)
