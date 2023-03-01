@@ -143,6 +143,62 @@ namespace CI_PlatformWeb.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        //public ActionResult ResetPassword(string email, string token)
+        //{
+        //    var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == email && pr.Token == token);
+        //    if (passwordReset == null)
+        //    {
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        //    // Pass the email and token to the view for resetting the password
+        //    var model = new PasswordReset
+        //    {
+        //        Email = email,
+        //        Token = token
+        //    };
+        //    return View(model);
+        //}
+
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult ResetPassword(User model, PasswordReset pmodel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Find the user by email
+        //        var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == model.Email);
+        //        if (user == null)
+        //        {
+        //            return RedirectToAction("ForgotPassword", "Home");
+        //        }
+
+        //        // Find the password reset record by email and token
+        //        var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == model.Email && pr.Token == pmodel.Token);
+        //        if (passwordReset == null)
+        //        {
+        //            return RedirectToAction("Index", "Home");
+        //        }
+
+        //        // Update the user's password
+        //        user.Password = model.Password;
+        //        _CIDbContext.SaveChanges();
+
+        //        // Remove the password reset record from the database
+        //        _CIDbContext.PasswordResets.Remove(passwordReset);
+        //        _CIDbContext.SaveChanges();
+
+
+        //    }
+
+        //    return View(model);
+        //}
+
+
+
+
+        [HttpGet]
+        
         public ActionResult ResetPassword(string email, string token)
         {
             var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == email && pr.Token == token);
@@ -151,7 +207,7 @@ namespace CI_PlatformWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
             // Pass the email and token to the view for resetting the password
-            var model = new PasswordReset
+            var model = new ResetPasswordModel
             {
                 Email = email,
                 Token = token
@@ -162,41 +218,35 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult ResetPassword(User model, PasswordReset pmodel)
+        public ActionResult ResetPassword(ResetPasswordModel resetPasswordView)
         {
             if (ModelState.IsValid)
             {
                 // Find the user by email
-                var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == model.Email);
+                var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == resetPasswordView.Email);
                 if (user == null)
                 {
-                    return RedirectToAction("ForgotPassword", "Home");
+                    return RedirectToAction("ForgetPassword", "Home");
                 }
 
                 // Find the password reset record by email and token
-                var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == model.Email && pr.Token == pmodel.Token);
+                var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == resetPasswordView.Email && pr.Token == resetPasswordView.Token);
                 if (passwordReset == null)
                 {
                     return RedirectToAction("Index", "Home");
                 }
 
                 // Update the user's password
-                user.Password = model.Password;
+                user.Password = resetPasswordView.Password;
                 _CIDbContext.SaveChanges();
 
-                // Remove the password reset record from the database
-                _CIDbContext.PasswordResets.Remove(passwordReset);
-                _CIDbContext.SaveChanges();
+
 
 
             }
 
-            return View(model);
+            return View(resetPasswordView);
         }
-
-
-
-
 
 
 
