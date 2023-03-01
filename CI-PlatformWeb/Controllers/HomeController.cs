@@ -1,7 +1,5 @@
 ﻿using CI.Models;
 using CI_Entity.Models;
-using CI_Platform.Models;
-using CI_PlatformWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +7,7 @@ using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
 using System.Net.Http;
+using CI_PlatformWeb.Models;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -92,7 +91,7 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult ForgetPass(ForgetPass model)
+        public async Task<IActionResult> ForgetPass(ForgetPass model)
         {
             if (ModelState.IsValid)
             {
@@ -102,10 +101,10 @@ namespace CI_PlatformWeb.Controllers
                     return RedirectToAction("ForgetPass", "Home");
                 }
 
-                // Generate a password reset token for the user
+                
                 var token = Guid.NewGuid().ToString();
 
-                // Store the token in the password resets table with the user's email
+                
                 var passwordReset = new PasswordReset
                 {
                     Email = model.Email,
@@ -114,11 +113,11 @@ namespace CI_PlatformWeb.Controllers
                 _CIDbContext.PasswordResets.Add(passwordReset);
                 _CIDbContext.SaveChanges();
 
-                // Send an email with the password reset link to the user's email address
-                var resetLink = Url.Action("ResetPass", "Home", new { email = model.Email, token }, Request.Scheme);
-                // Send email to user with reset password link
-                // ...
-                var fromAddress = new MailAddress("gajeravirajpareshbhai@gmail.com", "Sender Name");
+              
+                var resetLink = Url.Action("ResetPassword", "Home", new { email = model.Email, token }, Request.Scheme);
+                
+              
+                var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(model.Email);
                 var subject = "Password reset request";
                 var body = $"Hi,<br /><br />Please click on the following link to reset your password:<br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -131,7 +130,7 @@ namespace CI_PlatformWeb.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("gajeravirajpareshbhai@gmail.com", "drbwjzfrmubtveud"),
+                    Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                     EnableSsl = true
                 };
             smtpClient.Send(message);
@@ -142,58 +141,58 @@ namespace CI_PlatformWeb.Controllers
             return View();
     }
 
-    //[HttpGet]
-    //    [AllowAnonymous]
-    //    public ActionResult ResetPassword(string email, string token)
-    //    {
-    //        var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == email && pr.Token == token);
-    //        if (passwordReset == null)
-    //        {
-    //            return RedirectToAction("Index", "Home");
-    //        }
-    //        // Pass the email and token to the view for resetting the password
-    //        var model = new PasswordReset
-    //        {
-    //            Email = email,
-    //            Token = token
-    //        };
-    //        return View(model);
-    //    }
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string email, string token)
+        {
+            var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == email && pr.Token == token);
+            if (passwordReset == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            // Pass the email and token to the view for resetting the password
+            var model = new PasswordReset
+            {
+                Email = email,
+                Token = token
+            };
+            return View(model);
+        }
 
-    //    [HttpPost]
-    //    [AllowAnonymous]
-    //    [ValidateAntiForgeryToken]
-    //    public ActionResult ResetPassword(User model, PasswordReset pmodel)
-    //    {
-    //        if (ModelState.IsValid)
-    //        {
-    //            // Find the user by email
-    //            var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == model.Email);
-    //            if (user == null)
-    //            {
-    //                return RedirectToAction("ForgotPassword", "Home");
-    //            }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(User model, PasswordReset pmodel)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user by email
+                var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == model.Email);
+                if (user == null)
+                {
+                    return RedirectToAction("ForgotPassword", "Home");
+                }
 
-    //            // Find the password reset record by email and token
-    //            var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == model.Email && pr.Token == pmodel.Token);
-    //            if (passwordReset == null)
-    //            {
-    //                return RedirectToAction("Index", "Home");
-    //            }
+                // Find the password reset record by email and token
+                var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == model.Email && pr.Token == pmodel.Token);
+                if (passwordReset == null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
 
-    //            // Update the user's password
-    //            user.Password = model.Password;
-    //            _CIDbContext.SaveChanges();
+                // Update the user's password
+                user.Password = model.Password;
+                _CIDbContext.SaveChanges();
 
-    //            // Remove the password reset record from the database
-    //            _CIDbContext.PasswordResets.Remove(passwordReset);
-    //            _CIDbContext.SaveChanges();
+                // Remove the password reset record from the database
+                _CIDbContext.PasswordResets.Remove(passwordReset);
+                _CIDbContext.SaveChanges();
 
-                
-    //        }
 
-    //        return View(model);
-    //    }
+            }
+
+            return View(model);
+        }
 
 
 
@@ -207,7 +206,7 @@ namespace CI_PlatformWeb.Controllers
 
 
         // GET: ForgetController
-        
+
 
         // GET: ForgetController/Details/5
         public ActionResult Details(int id)

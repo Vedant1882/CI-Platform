@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CI_Platform.Models
+namespace CI_PlatformWeb.Models
 {
     public class ForgetPass
     {
