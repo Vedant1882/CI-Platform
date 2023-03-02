@@ -45,6 +45,7 @@ namespace CI_PlatformWeb.Controllers
         }
         public IActionResult Login()
         {
+            HttpContext.Session.Clear();
             return View();
         }
         public IActionResult ForgetPass()
@@ -74,10 +75,10 @@ namespace CI_PlatformWeb.Controllers
             {
                
                 var user = await _CIDbContext.Users.Where(u => u.Email == model.Email && u.Password == model.Password).FirstOrDefaultAsync();
-
+                var firstname = model.Email.Split("@")[0];
                 if (user != null)
                 {
-
+                    HttpContext.Session.SetString("UserID", firstname);
                     return RedirectToAction(nameof(HomeController.landingpage), "Home");
                 }
                 else
@@ -98,7 +99,9 @@ namespace CI_PlatformWeb.Controllers
                 var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == model.Email);
                 if (user == null)
                 {
+                    ViewBag.er="Incorrect Email Address";
                     return RedirectToAction("ForgetPass", "Home");
+                    
                 }
 
                 
@@ -115,9 +118,10 @@ namespace CI_PlatformWeb.Controllers
 
               
                 var resetLink = Url.Action("ResetPassword", "Home", new { email = model.Email, token }, Request.Scheme);
-                
-              
-                var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
+
+
+                //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("gajeravirajpareshbhai@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(model.Email);
                 var subject = "Password reset request";
                 var body = $"Hi,<br /><br />Please click on the following link to reset your password:<br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -130,12 +134,13 @@ namespace CI_PlatformWeb.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
+                    Credentials = new NetworkCredential("gajeravirajpareshbhai@gmail.com", "drbwjzfrmubtveud"),
+                    //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                     EnableSsl = true
                 };
             smtpClient.Send(message);
 
-            return RedirectToAction("ForgetPass", "Home");
+            return RedirectToAction("Login", "Home");
         }
 
             return View();

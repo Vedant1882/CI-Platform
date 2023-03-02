@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var firstname = Context.Session.GetString("UserID");
+}
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -36,7 +41,13 @@
                             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 <img src="~/images/user-img.png" alt="mdo" width="40" height="40" class="rounded-circle">
-                                <span class="txt text-dark">Vedant</span>
+                                @{
+                                    if(@firstname != null)
+                                    {
+                                        <span class="txt text-dark">@firstname</span>
+                                    }
+                                }
+                                
                             </a>
                             <ul class="dropdown-menu text-small">
                                 <li><a class="dropdown-item" href="#">New project...</a></li>
@@ -45,7 +56,7 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">Sign out</a></li>
                             </ul>
                         </div>
 
@@ -85,7 +96,12 @@
                     <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        aria-expanded="false">
                         <img src="~/images/user-img.png" alt="mdo" width="40" height="40" class="rounded-circle">
-                        <span class="txt text-dark">Vedant</span>
+                        @{
+                                    if(@firstname != null)
+                                    {
+                                        <span class="txt text-dark">@firstname</span>
+                                    }
+                                }
                     </a>
                     <ul class="dropdown-menu text-small">
                         <li><a class="dropdown-item" href="#">New project...</a></li>
@@ -94,7 +110,7 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Login">Sign out</a></li>
                     </ul>
                 </div>
 
