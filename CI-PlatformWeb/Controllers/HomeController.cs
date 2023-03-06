@@ -60,10 +60,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        public IActionResult landingpage()
-        {
-            return View();
-        }
+        //public IActionResult Landingpage()
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         [AllowAnonymous]
@@ -148,57 +148,7 @@ namespace CI_PlatformWeb.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        //public ActionResult ResetPassword(string email, string token)
-        //{
-        //    var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == email && pr.Token == token);
-        //    if (passwordReset == null)
-        //    {
-        //        return RedirectToAction("Index", "Home");
-        //    }
-        //    // Pass the email and token to the view for resetting the password
-        //    var model = new PasswordReset
-        //    {
-        //        Email = email,
-        //        Token = token
-        //    };
-        //    return View(model);
-        //}
-
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult ResetPassword(User model, PasswordReset pmodel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        // Find the user by email
-        //        var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == model.Email);
-        //        if (user == null)
-        //        {
-        //            return RedirectToAction("ForgotPassword", "Home");
-        //        }
-
-        //        // Find the password reset record by email and token
-        //        var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == model.Email && pr.Token == pmodel.Token);
-        //        if (passwordReset == null)
-        //        {
-        //            return RedirectToAction("Index", "Home");
-        //        }
-
-        //        // Update the user's password
-        //        user.Password = model.Password;
-        //        _CIDbContext.SaveChanges();
-
-        //        // Remove the password reset record from the database
-        //        _CIDbContext.PasswordResets.Remove(passwordReset);
-        //        _CIDbContext.SaveChanges();
-
-
-        //    }
-
-        //    return View(model);
-        //}
-
+       
 
 
 
@@ -252,7 +202,35 @@ namespace CI_PlatformWeb.Controllers
 
             return View(resetPasswordView);
         }
+        
+        public ActionResult landingpage(int? pageIndex, string searchQuery)
+        {
+            
+            List<Mission> mission = _CIDbContext.Missions.ToList();
+            foreach (var item in mission)
+            {
+                var City = _CIDbContext.Cities.FirstOrDefault(u => u.CityId == item.CityId);
+                var Theme = _CIDbContext.MissionThemes.FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
 
+            }
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                mission = mission.Where(m => m.Title.Contains(searchQuery)).ToList();
+                ViewBag.searchQuery = Request.Query["searchQuery"];
+            }
+            int pageSize =3;
+            int skip = (pageIndex ?? 0) * pageSize;
+            var Missions = mission.Skip(skip).Take(pageSize).ToList();
+            int totalMissions = mission.Count();
+            ViewBag.TotalMission = totalMissions;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
+            ViewBag.CurrentPage = pageIndex ?? 0;
+            
+
+
+            return View(Missions);
+        }
 
 
 
