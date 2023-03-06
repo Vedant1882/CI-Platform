@@ -213,10 +213,16 @@ namespace CI_PlatformWeb.Controllers
                 var Theme = _CIDbContext.MissionThemes.FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
 
             }
+            mission = _CIDbContext.Missions.ToList();
+            List<Country> Countries = _CIDbContext.Countries.ToList();
+            //Cities=_db.Cities.ToList();
+            List<MissionTheme>Themes = _CIDbContext.MissionThemes.ToList();
+            ViewBag.countries = Countries;
+            ViewBag.themes = Themes;
 
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                mission = mission.Where(m => m.Title.Contains(searchQuery)).ToList();
+                mission = mission.Where(m => m.Title.ToUpper().Contains(searchQuery.ToUpper())).ToList();
                 ViewBag.searchQuery = Request.Query["searchQuery"];
                 if (mission.Count() == 0)
                 {
