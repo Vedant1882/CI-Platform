@@ -218,6 +218,10 @@ namespace CI_PlatformWeb.Controllers
             {
                 mission = mission.Where(m => m.Title.Contains(searchQuery)).ToList();
                 ViewBag.searchQuery = Request.Query["searchQuery"];
+                if (mission.Count() == 0)
+                {
+                    return RedirectToAction("NoMissionFound","Home");
+                }
             }
             int pageSize =3;
             int skip = (pageIndex ?? 0) * pageSize;
