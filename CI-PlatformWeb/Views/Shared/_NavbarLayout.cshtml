@@ -193,16 +193,16 @@
                             </a>
                             <ul class="dropdown-menu">
                                 @foreach (var theme in ViewBag.themes)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item dd-color" >
-                                                <div class="form-check">
-                                                    <input class="form-check-input" name="theme" type="checkbox" value=@theme.Title id=@theme.MissionThemeId onchange="updateUrlForTheme()" />
+                                {
+                                    <li>
+                                        <a class="dropdown-item dd-color">
+                                            <div class="form-check">
+                                                <input class="form-check-input" name="theme" type="checkbox" value=@theme.Title id=@theme.MissionThemeId onchange="updateUrlForTheme()" />
                                                 <label class="form-check-label" for=@theme.MissionThemeId>@theme.Title</label>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         </li>
 
@@ -212,7 +212,7 @@
                                 Skill
                             </a>
                             <ul class="dropdown-menu">
-                               @foreach (var skill in ViewBag.skills)
+                                @foreach (var skill in ViewBag.skills)
                                 {
                                     <li>
                                         <a class="dropdown-item dd-color">
@@ -261,20 +261,20 @@
                                 <img src="~/images/drop-down.png" height="10%" width="10%" class="mt-3 ">
                             </a>
                             <ul class="dropdown-menu" style="height:200px; overflow-y:auto;width:120px">
-                                
-                                    @foreach (var city in ViewBag.cities)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item dd-color" >
-                                                <div class="form-check">
-                                                    <input class="form-check-input" name="city" type="checkbox" value=@city.Name id=@city.CityId onchange="updateUrlForCities()" />
-                                                    <label class="form-check-label" for=@city.CityId>@city.Name</label>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
 
-                               
+                                @foreach (var city in ViewBag.cities)
+                                {
+                                    <li>
+                                        <a class="dropdown-item dd-color">
+                                            <div class="form-check">
+                                                <input class="form-check-input" name="city" type="checkbox" value=@city.Name id=@city.CityId onchange="updateUrlForCities()" />
+                                                <label class="form-check-label" for=@city.CityId>@city.Name</label>
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+
+
                             </ul>
                         </li>
 
@@ -284,17 +284,17 @@
                                 <img src="~/images/drop-down.png" height="10%" width="10%" class="mt-3">
                             </a>
                             <ul class="dropdown-menu" style="height:200px; overflow-y:auto;width:120px">
-                                 @foreach (var theme in ViewBag.themes)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item dd-color" >
-                                                <div class="form-check">
-                                                    <input class="form-check-input" name="theme" type="checkbox" value=@theme.Title id=@theme.MissionThemeId onchange="updateUrlForTheme()" />
+                                @foreach (var theme in ViewBag.themes)
+                                {
+                                    <li>
+                                        <a class="dropdown-item dd-color">
+                                            <div class="form-check">
+                                                <input class="form-check-input" name="theme" type="checkbox" value=@theme.Title id=@theme.MissionThemeId onchange="updateUrlForTheme()" />
                                                 <label class="form-check-label" for=@theme.MissionThemeId>@theme.Title</label>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
 
                             </ul>
                         </li>
@@ -321,17 +321,32 @@
                         </li>
                     </ul>
                 </div>
-                
+
 
             </div>
         </nav>
-        
-        <div style="margin-left:15rem">
-            @ViewBag.country
-            @ViewBag.city
-            @ViewBag.theme
-
+        <div class="d-flex">
+        @if (@ViewBag.country != null)
+        {
+                <div style="border:1px solid black;margin-left:15rem;height:30px;width:9%;border-radius:50px" class="d-flex" id="co">
+                    @ViewBag.country<button type="button" class="btn-close" aria-label="Close" onclick="countryc()"></button>
+            </div>
+        }
+        @if (@ViewBag.city != null)
+        {
+                <div style="border:1px solid black;margin-left:15rem;height:30px;width:9%;border-radius:50px" class="d-flex">
+                @ViewBag.city<button type="button" class="btn-close" aria-label="Close"></button>
+            </div>
+        }
+        @if (@ViewBag.theme != null)
+        {
+                <div style="border:1px solid black;margin-left:15rem;height:30px;width:9%;border-radius:50px" class="d-flex">
+                    @ViewBag.theme<button type="button" class="btn-close" aria-label="Close"></button>
+            </div>
+        }
         </div>
+
+        
     </div>
 
     <main>
@@ -344,24 +359,22 @@
 
     <script>
         
-
+//for Country-------------------------------------------------------------------------------------------------
         function updateUrlForCountry() {
             const country = Array.from(document.querySelectorAll('input[name="country"]:checked')).map(el => el.id);
             let url = window.location.href;
             let separator = url.indexOf('?') !== -1 ? '&' : '?';
-            if (url.includes('ACountries='))
-            {
+            if (url.includes('ACountries=')) {
                 url = url.replace(/ACountries=([^&]*)/, 'ACountries=' + country);
-            } 
-            else 
-            {
+            }
+            else {
                 url += separator + 'ACountries=' + country;
             }
             window.location.href = url;
 
 
         }
-
+//for City---------------------------------------------------------------------------------------------------------
         function updateUrlForCities() {
             const city = Array.from(document.querySelectorAll('input[name="city"]:checked')).map(el => el.id);
             let url = window.location.href;
@@ -376,9 +389,9 @@
 
 
         }
-        
+//for theme---------------------------------------------------------------------------------------------------------
         function updateUrlForTheme() {
-            const theme= Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(el => el.id);
+            const theme = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(el => el.id);
             let url = window.location.href;
             let separator = url.indexOf('?') !== -1 ? '&' : '?';
             if (url.includes('ATheme=')) {
@@ -391,6 +404,39 @@
 
 
         }
+//for search------------------------------------------------------------------------------------------------------------
+        var debounceTimer;
+
+                function debounce(func, delay) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(func, delay);
+                }
+                document.getElementById("search-bar").addEventListener("input", function () {
+                    debounce(function () {
+                        search(document.getElementById("search-bar").value);
+                    }, 1500); // adjust the delay time as needed
+                });
+                function search(query) {
+                    // Get the current URL
+                    let url = window.location.href;
+
+                    let separator = url.indexOf('?') !== -1 ? '&' : '?';
+
+                    // Check if the searchQuery parameter already exists in the URL
+                    if (url.includes('searchQuery=')) {
+                        // Replace the value of the searchQuery parameter
+                        url = url.replace(/searchQuery=([^&]*)/, 'searchQuery=' + query);
+                    } else {
+                        // Append the parameter to the URL
+                        url += separator + 'searchQuery=' + query;
+                    }
+
+                    // Navigate to the updated URL
+                    window.location.href = url;
+
+
+                }
+        //------------------------------------------------------------------------------------------------------------------
     </script>
 </body>
 </html>
