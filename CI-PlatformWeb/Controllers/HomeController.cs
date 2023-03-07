@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Net.Http;
 using CI_PlatformWeb.Models;
+using System.Diagnostics.Metrics;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -121,7 +122,7 @@ namespace CI_PlatformWeb.Controllers
 
 
                 //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("gajeravirajpareshbhai@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("officehl1882@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(model.Email);
                 var subject = "Password reset request";
                 var body = $"Hi,<br /><br />Please click on the following link to reset your password:<br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -134,7 +135,7 @@ namespace CI_PlatformWeb.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("gajeravirajpareshbhai@gmail.com", "drbwjzfrmubtveud"),
+                    Credentials = new NetworkCredential("officehl1882@gmail.com", "yedkuuhuklkqfzwx"),
                     //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                     EnableSsl = true
                 };
@@ -159,7 +160,7 @@ namespace CI_PlatformWeb.Controllers
             var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == email && pr.Token == token);
             if (passwordReset == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Home");
             }
             // Pass the email and token to the view for resetting the password
             var model = new ResetPasswordModel
@@ -181,14 +182,14 @@ namespace CI_PlatformWeb.Controllers
                 var user = _CIDbContext.Users.FirstOrDefault(u => u.Email == resetPasswordView.Email);
                 if (user == null)
                 {
-                    return RedirectToAction("ForgetPassword", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
 
                 // Find the password reset record by email and token
                 var passwordReset = _CIDbContext.PasswordResets.FirstOrDefault(pr => pr.Email == resetPasswordView.Email && pr.Token == resetPasswordView.Token);
                 if (passwordReset == null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
 
                 // Update the user's password
@@ -203,7 +204,7 @@ namespace CI_PlatformWeb.Controllers
             return View(resetPasswordView);
         }
         
-        public ActionResult landingpage(int? pageIndex, string searchQuery)
+        public ActionResult landingpage(int? pageIndex, string searchQuery, long[] ACountries, long[] ACities, long[] ATheme)
         {
             
             List<Mission> mission = _CIDbContext.Missions.ToList();
@@ -215,11 +216,14 @@ namespace CI_PlatformWeb.Controllers
             }
             mission = _CIDbContext.Missions.ToList();
             List<Country> Countries = _CIDbContext.Countries.ToList();
-            //Cities=_db.Cities.ToList();
+            List<Country> countryElements = _CIDbContext.Countries.ToList();
+            List<City> Cities = _CIDbContext.Cities.ToList();
             List<MissionTheme>Themes = _CIDbContext.MissionThemes.ToList();
+            List<Skill> skills= _CIDbContext.Skills.ToList();
             ViewBag.countries = Countries;
             ViewBag.themes = Themes;
-
+            ViewBag.cities=Cities;
+            ViewBag.skills = skills;
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 mission = mission.Where(m => m.Title.ToUpper().Contains(searchQuery.ToUpper())).ToList();
@@ -228,6 +232,67 @@ namespace CI_PlatformWeb.Controllers
                 {
                     return RedirectToAction("NoMissionFound","Home");
                 }
+            }
+            
+            if (ACountries != null && ACountries.Length > 0)
+            {
+                foreach (var country in ACountries)
+                {
+                    mission = mission.Where(m => m.CountryId == country).ToList();
+                    if (mission.Count() == 0)
+                    {
+                        return RedirectToAction("NoMissionFound", "Home");
+                    }
+                    ViewBag.country = country;
+                    if (ViewBag.country != null)
+                    {
+                        var c1 = _CIDbContext.Countries.FirstOrDefault(m => m.CountryId == country);
+                        ViewBag.country =c1.Name;
+                    }
+                }
+                Countries = _CIDbContext.Countries.ToList();
+                
+                
+            }
+            if (ACities != null && ACities.Length > 0)
+            {
+                foreach (var city in ACities)
+                {
+                    mission = mission.Where(m => m.CityId == city).ToList();
+                    if (mission.Count() == 0)
+                    {
+                        return RedirectToAction("NoMissionFound", "Home");
+                    }
+                    ViewBag.city = city;
+                    if (ViewBag.city != null)
+                    {
+                        var c1 = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == city);
+                        ViewBag.city = c1.Name;
+                    }
+                }
+                Cities = _CIDbContext.Cities.ToList();
+                
+                
+            }
+            if (ATheme != null && ATheme.Length > 0)
+            {
+                foreach (var theme in ATheme)
+                {
+                    mission = mission.Where(m => m.ThemeId == theme).ToList();
+                    if (mission.Count() == 0)
+                    {
+                        return RedirectToAction("NoMissionFound", "Home");
+                    }
+                    ViewBag.theme = theme;
+                    if (ViewBag.theme != null)
+                    {
+                        var c1 = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == theme);
+                        ViewBag.theme = c1.Title;
+                    }
+                }
+                Themes = _CIDbContext.MissionThemes.ToList();
+                
+                
             }
             int pageSize =3;
             int skip = (pageIndex ?? 0) * pageSize;
