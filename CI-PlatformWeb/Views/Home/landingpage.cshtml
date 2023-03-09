@@ -70,10 +70,10 @@
                                         </div>
                                         <div class="btn-group d-none d-lg-flex">
 
-                                            <button class="btn" id="grid">
+                                            <button class="btn" id="grid" onclick="gridview()">
                                                 <img src="~/images/grid.png" alt="">
                                             </button>
-                                            <button class="btn" id="list">
+                                            <button class="btn" id="list" onclick="listview()">
                                                 <img src="~/images/list.png" alt="">
                                             </button>
                                         </div>
@@ -99,7 +99,7 @@
                                             <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City.Name</div>
 
                                             <div class="landing-page-bottom-right d-flex flex-column">
-                                                <button class="mb-2 landing-page-btn-img">
+                                                <button class="mb-2 landing-page-btn-img" >
                                                     <img src="~/images/heart.png" alt="">
                                                 </button><button class="landing-page-btn-img">
                                                     <img src="~/images/user.png" alt="">
@@ -210,33 +210,64 @@
 
                 <nav aria-label="Page navigation example" class="d-flex justify-content-center">
                     <ul class="pagination">
+                        @if (@ViewBag.currentUrl.Contains('?')){
                         <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
-                            <a class="page-link" href="/Home/Landingpage/?searchQuery=@ViewBag.searchQuery&pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
+                            <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         @for (int i = 0; i < ViewBag.TotalPages; i++)
                         {
                             <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                <a class="page-link" href="/Home/Landingpage/?searchQuery=@ViewBag.searchQuery&pageIndex=@i">@((i + 1).ToString())</a>
+                                    <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@i">@((i + 1).ToString())</a>
                             </li>
                         }
                         <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
-                            <a class="page-link" href="/Home/Landingpage/?searchQuery=@ViewBag.searchQuery&pageIndex=@(ViewBag.CurrentPage + 1)" aria-label="Next">
+                            <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@(ViewBag.CurrentPage + 1)" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
+                            <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
                         </li>
+                        @for (int i = 0; i < ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@i">@((i + 1).ToString())</a>
+                            </li>
+                        }
+                        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
+                            <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.CurrentPage + 1)" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                            </li>
+                        }
                     </ul>
                 </nav>
 
             </div>
             
             <script>
-                $(document).ready(function () {
-
-                    $('#list').click(function (event) { event.preventDefault(); $('.item').addClass('list-group-item'); });
-                    $('#grid').click(function (event) { event.preventDefault(); $('.item').removeClass('list-group-item'); $('#products .item').addClassN('grid-group-item'); });
-                });
+                if(localStorage.getItem("viewtype")==="list"){
+                    listview();
+                }
+                else{
+                    gridview();
+                }
+                    function listview(){
+                    localStorage.setItem("viewtype","list")
+                         $('.item').addClass('list-group-item');
+                    }
+                function gridview() {
+                    localStorage.setItem("viewtype", "grid")
+                    $('.item').removeClass('list-group-item'); $('#products .item').addClassN('grid-group-item');
+                }
+                    
 
             </script>
             

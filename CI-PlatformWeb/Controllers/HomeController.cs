@@ -9,11 +9,19 @@ using System.Net;
 using System.Net.Http;
 using CI_PlatformWeb.Models;
 using System.Diagnostics.Metrics;
+using System.Web;
+using NuGet.Packaging;
 
 namespace CI_PlatformWeb.Controllers
 {
     public class HomeController : Controller
     {
+        int i = 0;
+        int i1= 0;
+        int j = 0;
+        int j1 = 0;
+        int k = 0;
+        int k1 = 0;
         private readonly ILogger<HomeController> _logger;
 
         private readonly CIDbContext _CIDbContext;
@@ -208,6 +216,8 @@ namespace CI_PlatformWeb.Controllers
         {
             
             List<Mission> mission = _CIDbContext.Missions.ToList();
+            List<Mission> finalmission = _CIDbContext.Missions.ToList();
+            List<Mission> newmission = _CIDbContext.Missions.ToList();
             foreach (var item in mission)
             {
                 var City = _CIDbContext.Cities.FirstOrDefault(u => u.CityId == item.CityId);
@@ -226,7 +236,7 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.skills = skills;
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                mission = mission.Where(m => m.Title.ToUpper().Contains(searchQuery.ToUpper())).ToList();
+                mission = newmission.Where(m => m.Title.ToUpper().Contains(searchQuery.ToUpper())).ToList();
                 ViewBag.searchQuery = Request.Query["searchQuery"];
                 if (mission.Count() == 0)
                 {
@@ -236,21 +246,38 @@ namespace CI_PlatformWeb.Controllers
             
             if (ACountries != null && ACountries.Length > 0)
             {
+                
                 foreach (var country in ACountries)
                 {
-                    mission = mission.Where(m => m.CountryId == country).ToList();
+                    //mission = mission.Where(m => m.CountryId == country).ToList();
+                    if (i == 0)
+                    {
+                        mission = mission.Where(m => m.CountryId == country + 500).ToList();
+                        i++;
+                    }
+
+                    finalmission = newmission.Where(m => m.CountryId == country).ToList();
+
+                    mission.AddRange(finalmission);
                     if (mission.Count() == 0)
                     {
                         return RedirectToAction("NoMissionFound", "Home");
                     }
-                    ViewBag.country = country;
-                    if (ViewBag.country != null)
+                    ViewBag.countryId = country;
+                    if (ViewBag.countryId != null)
                     {
-                        var c1 = _CIDbContext.Countries.FirstOrDefault(m => m.CountryId == country);
-                        ViewBag.country =c1.Name;
+                        var countryElement = _CIDbContext.Countries.Where(m => m.CountryId == country).ToList();
+                        if (i1 == 0) {
+                            countryElements = _CIDbContext.Countries.Where(m => m.CountryId == country+50000).ToList();
+                            i1++;
+                        }
+                        countryElements.AddRange(countryElement);
+                        //var c1 = _CIDbContext.Countries.FirstOrDefault(m => m.CountryId == country);
+                        //ViewBag.country = c1.Name;
                     }
                 }
-                Countries = _CIDbContext.Countries.ToList();
+                ViewBag.country = countryElements;
+                //Countries = _CIDbContext.Countries.ToList();
                 
                 
             }
@@ -258,7 +285,16 @@ namespace CI_PlatformWeb.Controllers
             {
                 foreach (var city in ACities)
                 {
-                    mission = mission.Where(m => m.CityId == city).ToList();
+                    //mission = mission.Where(m => m.CityId == city).ToList();
+                    if (j == 0)
+                    {
+                        mission = mission.Where(m => m.CityId == city + 500).ToList();
+                        j++;
+                    }
+
+                    finalmission = newmission.Where(m => m.CityId == city).ToList();
+
+                    mission.AddRange(finalmission);
                     if (mission.Count() == 0)
                     {
                         return RedirectToAction("NoMissionFound", "Home");
@@ -266,10 +302,18 @@ namespace CI_PlatformWeb.Controllers
                     ViewBag.city = city;
                     if (ViewBag.city != null)
                     {
-                        var c1 = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == city);
-                        ViewBag.city = c1.Name;
+                        var city1 = _CIDbContext.Cities.Where(m => m.CityId == city).ToList();
+                        if (j1 == 0)
+                        {
+                            Cities = _CIDbContext.Cities.Where(m => m.CityId == city + 50000).ToList();
+                            j1++;
+                        }
+                        Cities.AddRange(city1);
+                        //var c1 = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == city);
+                        //ViewBag.city = c1.Name;
                     }
                 }
+                ViewBag.city = Cities;
                 Cities = _CIDbContext.Cities.ToList();
                 
                 
@@ -278,7 +322,16 @@ namespace CI_PlatformWeb.Controllers
             {
                 foreach (var theme in ATheme)
                 {
-                    mission = mission.Where(m => m.ThemeId == theme).ToList();
+                    //mission = mission.Where(m => m.ThemeId == theme).ToList();
+                    if (k == 0)
+                    {
+                        mission = mission.Where(m => m.ThemeId == theme + 500).ToList();
+                        k++;
+                    }
+
+                    finalmission = newmission.Where(m => m.ThemeId == theme).ToList();
+
+                    mission.AddRange(finalmission);
                     if (mission.Count() == 0)
                     {
                         return RedirectToAction("NoMissionFound", "Home");
@@ -286,10 +339,18 @@ namespace CI_PlatformWeb.Controllers
                     ViewBag.theme = theme;
                     if (ViewBag.theme != null)
                     {
-                        var c1 = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == theme);
-                        ViewBag.theme = c1.Title;
+                        var theme1 = _CIDbContext.MissionThemes.Where(m => m.MissionThemeId == theme).ToList();
+                        if (k1 == 0)
+                        {
+                            Themes = _CIDbContext.MissionThemes.Where(m => m.MissionThemeId == theme + 50000).ToList();
+                            k1++;
+                        }
+                        Themes.AddRange(theme1);
+                        //var c1 = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == theme);
+                        //ViewBag.theme = c1.Title;
                     }
                 }
+                ViewBag.theme = Themes;
                 Themes = _CIDbContext.MissionThemes.ToList();
                 
                 
@@ -301,8 +362,24 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.TotalMission = totalMissions;
             ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
             ViewBag.CurrentPage = pageIndex ?? 0;
-            
 
+
+            // Get the current URL
+            UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
+            if (Request.Host.Port.HasValue)
+            {
+                uriBuilder.Port = Request.Host.Port.Value;
+            }
+            uriBuilder.Path = Request.Path;
+
+            // Remove the query parameter you want to exclude
+            var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+            query.Remove("pageIndex");
+            uriBuilder.Query = query.ToString();
+
+
+
+            ViewBag.currentUrl = uriBuilder.ToString();
 
             return View(Missions);
         }

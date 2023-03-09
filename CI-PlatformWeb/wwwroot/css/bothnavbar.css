@@ -8,7 +8,11 @@
 .nav-link {
     color: black !important;
 }
-
+.filter{
+    box-shadow: 6px 10px 10px 0px gray;
+    border-radius: 25px;
+    background-color: #FFFF;
+}
 @media screen and (min-width:767px) {
     .hamburger, #offcanvasWithBothOptions, #filteroffcanvasWithBothOptions{
            display: none;

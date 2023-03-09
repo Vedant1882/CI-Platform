@@ -14,7 +14,8 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/bothnavbar.css">
+    
+    <link rel="stylesheet" href="~/css/bothnavbar.css" asp-append-version="true">
 
 
 </head>
@@ -126,9 +127,9 @@
                 <div class="col-9 col-lg-6 col-md-5 me-2   ">
                     <form role="search" class="d-flex">
                         <!-- <img src="../HTML/images/search.png" height="22px" width="21px"class="mt-2">? -->
-                        <i class="fas fa-search ms-1 mt-2"></i>
+                        
                         <input type="search" class="form-control rounded searchbar ms-2" id="search-bar" placeholder="Search"
-                               aria-label="Search" aria-describedby="search-addon" />
+                               aria-label="Search" aria-describedby="search-addon" value="@ViewBag.searchQuery" />
                     </form>
                 </div>
 
@@ -154,16 +155,19 @@
                                 Country
                             </a>
                             <ul class="dropdown-menu">
-                                @foreach (var country in ViewBag.countries)
+                                @if (ViewBag.countries != null)
                                 {
-                                    <li>
-                                        <a class="dropdown-item dd-color" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="country" type="checkbox" value=@country.Name onchange="updateUrlForCountry()" id=@country.CountryId />
-                                                <label class="form-check-label">@country.Name</label>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @foreach (var country in ViewBag.countries)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item dd-color" href="#">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="country" type="checkbox" value=@country.Name onchange="updateUrlForCountry()" id=@country.CountryId />
+                                                    <label class="form-check-label">@country.Name</label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
                                 }
                             </ul>
                         </li>
@@ -173,16 +177,19 @@
                                 City
                             </a>
                             <ul class="dropdown-menu">
-                                @foreach (var city in ViewBag.cities)
+                                @if (ViewBag.cities != null)
                                 {
-                                    <li>
-                                        <a class="dropdown-item dd-color">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="city" type="checkbox" value=@city.Name id=@city.CityId onchange="updateUrlForCities()" />
-                                                <label class="form-check-label" for=@city.CityId>@city.Name</label>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @foreach (var city in ViewBag.cities)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item dd-color">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="city" type="checkbox" value=@city.Name id=@city.CityId onchange="updateUrlForCities()" />
+                                                    <label class="form-check-label" for=@city.CityId>@city.Name</label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
                                 }
                             </ul>
                         </li>
@@ -192,6 +199,7 @@
                                 Theme
                             </a>
                             <ul class="dropdown-menu">
+                                @if (ViewBag.themes != null){
                                 @foreach (var theme in ViewBag.themes)
                                 {
                                     <li>
@@ -203,6 +211,7 @@
                                         </a>
                                     </li>
                                 }
+                                }
                             </ul>
                         </li>
 
@@ -212,16 +221,19 @@
                                 Skill
                             </a>
                             <ul class="dropdown-menu">
-                                @foreach (var skill in ViewBag.skills)
+                                @if (ViewBag.themes != null)
                                 {
-                                    <li>
-                                        <a class="dropdown-item dd-color">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="city" type="checkbox" value=@skill.Skill id=@skill.MissionSkillId onchange="updateUrlForCities()" />
-                                                <label class="form-check-label" for=@skill.MissionSkillId>@skill.Skill</label>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @foreach (var skill in ViewBag.skills)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item dd-color">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="city" type="checkbox" value=@skill.Skill id=@skill.MissionSkillId onchange="updateUrlForCities()" />
+                                                    <label class="form-check-label" for=@skill.MissionSkillId>@skill.Skill</label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
                                 }
                             </ul>
                         </li>
@@ -239,18 +251,20 @@
 
                             </a>
                             <ul class="dropdown-menu" style="height:200px; overflow-y:auto;width:120px">
-                                @foreach (var country in ViewBag.countries)
+                                @if (ViewBag.countries != null)
                                 {
-                                    <li>
-                                        <a class="dropdown-item dd-color" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="country" type="checkbox" value=@country.Name onchange="updateUrlForCountry()" id=@country.CountryId />
-                                                <label class="form-check-label">@country.Name</label>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @foreach (var country in ViewBag.countries)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item dd-color" href="#">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="country" type="checkbox" value=@country.Name onchange="updateUrlForCountry()" id=@country.CountryId />
+                                                    <label class="form-check-label">@country.Name</label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
                                 }
-
 
                             </ul>
                         </li>
@@ -261,7 +275,7 @@
                                 <img src="~/images/drop-down.png" height="10%" width="10%" class="mt-3 ">
                             </a>
                             <ul class="dropdown-menu" style="height:200px; overflow-y:auto;width:120px">
-
+                                @if (ViewBag.cities != null){
                                 @foreach (var city in ViewBag.cities)
                                 {
                                     <li>
@@ -273,7 +287,7 @@
                                         </a>
                                     </li>
                                 }
-
+                                }
 
                             </ul>
                         </li>
@@ -284,18 +298,20 @@
                                 <img src="~/images/drop-down.png" height="10%" width="10%" class="mt-3">
                             </a>
                             <ul class="dropdown-menu" style="height:200px; overflow-y:auto;width:120px">
-                                @foreach (var theme in ViewBag.themes)
+                                @if (ViewBag.themes != null)
                                 {
-                                    <li>
-                                        <a class="dropdown-item dd-color">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="theme" type="checkbox" value=@theme.Title id=@theme.MissionThemeId onchange="updateUrlForTheme()" />
-                                                <label class="form-check-label" for=@theme.MissionThemeId>@theme.Title</label>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @foreach (var theme in ViewBag.themes)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item dd-color">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="theme" type="checkbox" value=@theme.Title id=@theme.MissionThemeId onchange="updateUrlForTheme()" />
+                                                    <label class="form-check-label" for=@theme.MissionThemeId>@theme.Title</label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
                                 }
-
                             </ul>
                         </li>
 
@@ -306,16 +322,19 @@
                                 <img src="~/images/drop-down.png" height="10%" width="10%" class="mt-3 ">
                             </a>
                             <ul class="dropdown-menu" style="height:200px; overflow-y:auto;width:120px">
-                                @foreach (var skill in ViewBag.skills)
+                                @if (ViewBag.skills != null)
                                 {
-                                    <li>
-                                        <a class="dropdown-item dd-color">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="city" type="checkbox" value=@skill.Skill id=@skill.MissionSkillId onchange="updateUrlForCities()" />
-                                                <label class="form-check-label" for=@skill.MissionSkillId>@skill.Skill</label>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    @foreach (var skill in ViewBag.skills)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item dd-color">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="city" type="checkbox" value=@skill.Skill id=@skill.MissionSkillId onchange="updateUrlForCities()" />
+                                                    <label class="form-check-label" for=@skill.MissionSkillId>@skill.Skill</label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    }
                                 }
                             </ul>
                         </li>
@@ -328,22 +347,35 @@
         <div class="d-flex">
         @if (@ViewBag.country != null)
         {
-                <div style="border:1px solid black;margin-left:15rem;height:30px;width:9%;border-radius:50px" class="d-flex" id="co">
-                    @ViewBag.country<button type="button" class="btn-close" aria-label="Close" onclick="countryc()"></button>
+                @foreach (var country in @ViewBag.country)
+                {
+                <div class="filter ms-2 ps-2"  id="co">
+                    <span class="ps-1">@country.Name</span><button type="button" class="btn-close" aria-label="Close" onclick="countryBtn()"></button>
             </div>
+                }
         }
         @if (@ViewBag.city != null)
         {
-                <div style="border:1px solid black;margin-left:15rem;height:30px;width:9%;border-radius:50px" class="d-flex">
-                @ViewBag.city<button type="button" class="btn-close" aria-label="Close"></button>
+            @foreach (var city in @ViewBag.city)
+                {
+                    <div class="filter ms-2 ps-2" id="ci">
+                    @city.Name<button type="button" class="btn-close" aria-label="Close" onclick="cityBtn()"></button>
             </div>
+                }
         }
         @if (@ViewBag.theme != null)
         {
-                <div style="border:1px solid black;margin-left:15rem;height:30px;width:9%;border-radius:50px" class="d-flex">
-                    @ViewBag.theme<button type="button" class="btn-close" aria-label="Close"></button>
-            </div>
+                @foreach (var theme in @ViewBag.theme)
+                {
+                    <div class="filter ms-2 ps-2"  id="th">
+                        @theme.Title<button type="button" class="btn-close" aria-label="Close" onclick="themeBtn()"></button>
+                    </div>
+                }
+                
         }
+            @if(@ViewBag.country != null || @ViewBag.city != null || @ViewBag.theme != null){
+                <button type="button" class="clearall rounded-3 filter ms-2 ps-2" onclick="clearall()" id="clearall">Clear All</button>
+            }
         </div>
 
         
@@ -358,18 +390,47 @@
     </script>
 
     <script>
-        
-//for Country-------------------------------------------------------------------------------------------------
+     function countryBtn(){
+         var c=document.getElementById("co");
+         c.style.display="none";
+            let url = window.location.href;
+            c="";
+            url = url.replace(/ACountries=([^&]*)/, 'ACountries=' + c);
+            window.location.href = url;
+     }  
+     function cityBtn(){
+         var c=document.getElementById("ci");
+         c.style.display="none";
+            let url = window.location.href;
+            c = "";
+            url = url.replace(/ACities=([^&]*)/, 'ACities=' + c);
+            window.location.href = url;
+     }
+        function themeBtn() {
+            var c = document.getElementById("th");
+            c.style.display = "none";
+            let url = window.location.href;
+            c = "";
+            url = url.replace(/ATheme=([^&]*)/, 'ATheme=' + c);
+            window.location.href = url;
+        }
+        function clearall(){
+            var url = window.location.href
+            var mainurl=url.split("?")[0];
+            window.location.href = mainurl;
+            
+        }
+        //for Country-------------------------------------------------------------------------------------------------
         function updateUrlForCountry() {
             const country = Array.from(document.querySelectorAll('input[name="country"]:checked')).map(el => el.id);
             let url = window.location.href;
             let separator = url.indexOf('?') !== -1 ? '&' : '?';
-            if (url.includes('ACountries=')) {
-                url = url.replace(/ACountries=([^&]*)/, 'ACountries=' + country);
-            }
-            else {
+            //if (url.includes('ACountries=')) {
+            //    url = url.replace(/ACountries=([^&]*)/, 'ACountries=' + country);
+            //}
+            //else {
                 url += separator + 'ACountries=' + country;
-            }
+            //}
             window.location.href = url;
 
 
@@ -379,12 +440,12 @@
             const city = Array.from(document.querySelectorAll('input[name="city"]:checked')).map(el => el.id);
             let url = window.location.href;
             let separator = url.indexOf('?') !== -1 ? '&' : '?';
-            if (url.includes('ACities=')) {
-                url = url.replace(/ACities=([^&]*)/, 'ACities=' + city);
-            }
-            else {
+            //if (url.includes('ACities=')) {
+            //    url = url.replace(/ACities=([^&]*)/, 'ACities=' + city);
+            //}
+            //else {
                 url += separator + 'ACities=' + city;
-            }
+            //}
             window.location.href = url;
 
 
@@ -394,12 +455,12 @@
             const theme = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(el => el.id);
             let url = window.location.href;
             let separator = url.indexOf('?') !== -1 ? '&' : '?';
-            if (url.includes('ATheme=')) {
-                url = url.replace(/ACities=([^&]*)/, 'ATheme=' + theme);
-            }
-            else {
+            //if (url.includes('ATheme=')) {
+            //    url = url.replace(/ATheme=([^&]*)/, 'ATheme=' + theme);
+            //}
+            //else {
                 url += separator + 'ATheme=' + theme;
-            }
+            //}
             window.location.href = url;
 
 
@@ -414,7 +475,7 @@
                 document.getElementById("search-bar").addEventListener("input", function () {
                     debounce(function () {
                         search(document.getElementById("search-bar").value);
-                    }, 1500); // adjust the delay time as needed
+                    },1000); // adjust the delay time as needed
                 });
                 function search(query) {
                     // Get the current URL
