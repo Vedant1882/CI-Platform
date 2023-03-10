@@ -344,13 +344,14 @@
 
             </div>
         </nav>
-        <div class="d-flex">
+        <div class="d-flex mt-2">
         @if (@ViewBag.country != null)
         {
                 @foreach (var country in @ViewBag.country)
                 {
                 <div class="filter ms-2 ps-2"  id="co">
-                    <span class="ps-1">@country.Name</span><button type="button" class="btn-close" aria-label="Close" onclick="countryBtn()"></button>
+                        <span class="ps-1">@country.Name</span><button type="button" class="btn-close me-2" aria-label="Close" onclick="countryBtn(this.id)" id=@country.CountryId></button>
+                        
             </div>
                 }
         }
@@ -359,7 +360,8 @@
             @foreach (var city in @ViewBag.city)
                 {
                     <div class="filter ms-2 ps-2" id="ci">
-                    @city.Name<button type="button" class="btn-close" aria-label="Close" onclick="cityBtn()"></button>
+                        @city.Name<button type="button" class="btn-close me-2" aria-label="Close" onclick="cityBtn(this.id)" id=@city.CityId></button>
+                    
             </div>
                 }
         }
@@ -368,13 +370,15 @@
                 @foreach (var theme in @ViewBag.theme)
                 {
                     <div class="filter ms-2 ps-2"  id="th">
-                        @theme.Title<button type="button" class="btn-close" aria-label="Close" onclick="themeBtn()"></button>
+                        @theme.Title<button type="button" class="btn-close me-2" aria-label="Close" onclick="themeBtn(this.id)" id=@theme.MissionThemeId></button>
                     </div>
                 }
                 
         }
             @if(@ViewBag.country != null || @ViewBag.city != null || @ViewBag.theme != null){
-                <button type="button" class="clearall rounded-3 filter ms-2 ps-2" onclick="clearall()" id="clearall">Clear All</button>
+                <div class="filter">
+                <button type="button" class="clearall ms-2 ps-2 border-0 bg-color" onclick="clearall()" id="clearall">Clear All</button>
+                </div>
             }
         </div>
 
@@ -390,29 +394,109 @@
     </script>
 
     <script>
-     function countryBtn(){
-         var c=document.getElementById("co");
-         c.style.display="none";
-            let url = window.location.href;
-            c="";
-            url = url.replace(/ACountries=([^&]*)/, 'ACountries=' + c);
-            window.location.href = url;
+     function countryBtn(id){
+         //var c=document.getElementById("co");
+         //   var co = document.getElementById("cityinput");
+         //c.style.display="none";
+         //   let url = window.location.href;
+         //   c="";
+         //   url = url.replace(/ACountries=co/,c);
+         //   window.location.href = url;
+         let url = window.location.href;
+    const urlParts = url.split('?');
+
+    if (urlParts.length >= 2) {
+        const baseUrl = urlParts.shift();
+        const queryString = urlParts.join('?');
+        const params = new URLSearchParams(queryString);
+
+                const countries = params.getAll('ACountries').filter(country => country !== id);
+
+        if (countries.length > 0) {
+                    params.delete('ACountries');
+                    countries.forEach(country => params.append('ACountries', country));
+        } else {
+                    params.delete('ACountries');
+        }
+
+        const updatedParams = params.toString();
+        if (updatedParams) {
+            url = `${baseUrl}?${updatedParams}`;
+        } else {
+            url = baseUrl;
+        }
+
+        window.location.href = url;
+        }
+    
      }  
-     function cityBtn(){
-         var c=document.getElementById("ci");
-         c.style.display="none";
+     function cityBtn(id){
+         //var c=document.getElementById("ci");
+         //c.style.display="none";
+         //   let url = window.location.href;
+         //   c = "";
+         //   url = url.replace(/ACities=([^&]*)/, 'ACities=' + c);
+         //   window.location.href = url;
             let url = window.location.href;
-            c = "";
-            url = url.replace(/ACities=([^&]*)/, 'ACities=' + c);
-            window.location.href = url;
+            const urlParts = url.split('?');
+
+            if (urlParts.length >= 2) {
+                const baseUrl = urlParts.shift();
+                const queryString = urlParts.join('?');
+                const params = new URLSearchParams(queryString);
+
+                const countries = params.getAll('ACities').filter(country => country !== id);
+
+                if (countries.length > 0) {
+                    params.delete('ACities');
+                    countries.forEach(country => params.append('ACities', country));
+                } else {
+                    params.delete('ACities');
+                }
+
+                const updatedParams = params.toString();
+                if (updatedParams) {
+                    url = `${baseUrl}?${updatedParams}`;
+                } else {
+                    url = baseUrl;
+                }
+
+                window.location.href = url;
+            }
      }
-        function themeBtn() {
-            var c = document.getElementById("th");
-            c.style.display = "none";
+        function themeBtn(id) {
+            //var c = document.getElementById("th");
+            //c.style.display = "none";
+            //let url = window.location.href;
+            //c = "";
+            //url = url.replace(/ATheme=([^&]*)/, 'ATheme=' + c);
+            //window.location.href = url;
             let url = window.location.href;
-            c = "";
-            url = url.replace(/ATheme=([^&]*)/, 'ATheme=' + c);
-            window.location.href = url;
+            const urlParts = url.split('?');
+
+            if (urlParts.length >= 2) {
+                const baseUrl = urlParts.shift();
+                const queryString = urlParts.join('?');
+                const params = new URLSearchParams(queryString);
+
+                const countries = params.getAll('ATheme').filter(country => country !== id);
+
+                if (countries.length > 0) {
+                    params.delete('ATheme');
+                    countries.forEach(country => params.append('ATheme', country));
+                } else {
+                    params.delete('ATheme');
+                }
+
+                const updatedParams = params.toString();
+                if (updatedParams) {
+                    url = `${baseUrl}?${updatedParams}`;
+                } else {
+                    url = baseUrl;
+                }
+
+                window.location.href = url;
+            }
         }
         function clearall(){
             var url = window.location.href
@@ -435,7 +519,7 @@
 
 
         }
-//for City---------------------------------------------------------------------------------------------------------
+        //for City---------------------------------------------------------------------------------------------------------
         function updateUrlForCities() {
             const city = Array.from(document.querySelectorAll('input[name="city"]:checked')).map(el => el.id);
             let url = window.location.href;
@@ -450,7 +534,7 @@
 
 
         }
-//for theme---------------------------------------------------------------------------------------------------------
+        //for theme---------------------------------------------------------------------------------------------------------
         function updateUrlForTheme() {
             const theme = Array.from(document.querySelectorAll('input[name="theme"]:checked')).map(el => el.id);
             let url = window.location.href;

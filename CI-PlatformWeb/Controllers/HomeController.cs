@@ -11,6 +11,7 @@ using CI_PlatformWeb.Models;
 using System.Diagnostics.Metrics;
 using System.Web;
 using NuGet.Packaging;
+using Microsoft.Data.SqlClient;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -212,7 +213,7 @@ namespace CI_PlatformWeb.Controllers
             return View(resetPasswordView);
         }
         
-        public ActionResult landingpage(int? pageIndex, string searchQuery, long[] ACountries, long[] ACities, long[] ATheme)
+        public ActionResult landingpage(int? pageIndex, string searchQuery, long[] ACountries, long[] ACities, long[] ATheme,string sortOrder)
         {
             
             List<Mission> mission = _CIDbContext.Missions.ToList();
@@ -322,7 +323,10 @@ namespace CI_PlatformWeb.Controllers
             {
                 foreach (var theme in ATheme)
                 {
-                    //mission = mission.Where(m => m.ThemeId == theme).ToList();
+                    if(ACountries !=null || ACities != null) {
+                        mission = mission.Where(m => m.ThemeId == theme).ToList();
+                    }
+                    else { 
                     if (k == 0)
                     {
                         mission = mission.Where(m => m.ThemeId == theme + 500).ToList();
@@ -332,6 +336,7 @@ namespace CI_PlatformWeb.Controllers
                     finalmission = newmission.Where(m => m.ThemeId == theme).ToList();
 
                     mission.AddRange(finalmission);
+                        }
                     if (mission.Count() == 0)
                     {
                         return RedirectToAction("NoMissionFound", "Home");
@@ -354,6 +359,27 @@ namespace CI_PlatformWeb.Controllers
                 Themes = _CIDbContext.MissionThemes.ToList();
                 
                 
+            }
+            switch (sortOrder)
+            {
+                case "Newest":
+                    mission = newmission.OrderByDescending(m => m.StartDate).ToList();
+                    ViewBag.sortby = "Newest";
+                    break;
+                case "Oldest":
+                    mission = newmission.OrderBy(m => m.StartDate).ToList();
+                    ViewBag.sortby = "Oldest";
+                    break;
+                case "Lowest seats":
+                    mission = mission.OrderBy(m => int.Parse(m.Availability)).ToList();
+                    break;
+                case "Highest seats":
+                    mission = mission.OrderByDescending(m => int.Parse(m.Availability)).ToList();
+                    break;
+                case "Registration deadline":
+                    mission = mission.OrderBy(m => m.EndDate).ToList();
+                    break;
+
             }
             int pageSize =3;
             int skip = (pageIndex ?? 0) * pageSize;
@@ -380,6 +406,8 @@ namespace CI_PlatformWeb.Controllers
 
 
             ViewBag.currentUrl = uriBuilder.ToString();
+
+           
 
             return View(Missions);
         }

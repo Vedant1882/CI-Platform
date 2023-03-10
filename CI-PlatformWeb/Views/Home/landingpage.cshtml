@@ -63,9 +63,12 @@
                                                 <img src="~/images/drop-down.png" alt="" class="mt-2">
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                <li><a class="dropdown-item" asp-route-sortOrder="Newest">Newest</a></li>
+                                                <li><a class="dropdown-item" asp-route-sortOrder="Oldest">Oldest  </a></li>
+                                                <li><a class="dropdown-item" asp-route-sortOrder="Lowest seats">Lowest available seats  </a></li>
+                                                <li><a class="dropdown-item" asp-route-sortOrder="Highest seats"> Highest available seats </a></li>
+                                                <li><a class="dropdown-item" asp-route-sortOrder="favourites"> My favourites </a></li>
+                                                <li><a class="dropdown-item" asp-route-sortOrder="Registration deadline"> Registration deadline  </a></li>
                                             </ul>
                                         </div>
                                         <div class="btn-group d-none d-lg-flex">
@@ -146,7 +149,7 @@
                                                     <p class="lead me-2 pt-2">
                                                         <img src="~/images/Seats-left.png" alt="">
                                                         <div>
-                                                            <div>10</div>
+                                                            <div>@item.Availability</div>
                                                             <div class="landing-page-card-vol-small">Seats Left</div>
                                                         </div>
                                                     </p>
@@ -157,7 +160,7 @@
                                                         <p class="lead me-2 pt-2">
                                                             <img src="~/images/deadline.png" alt="">
                                                             <div>
-                                                                <div>09/01/2023</div>
+                                                                <div>@item.EndDate.ToString().Split(" ")[0]</div>
                                                                 <div class="landing-page-card-vol-small">Deadline</div>
                                                             </div>
                                                         </p>
@@ -272,7 +275,7 @@
             </script>
             
           
-            //<script src="~/js/filter.js"></script>
+
 
         </body>
 
