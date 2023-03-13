@@ -36,10 +36,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        public IActionResult Volunteering()
-        {
-            return View();
-        }
+        //public IActionResult Volunteering()
+        //{
+        //    return View();
+        //}
 
         public IActionResult NoMissionFound()
         {
@@ -85,10 +85,10 @@ namespace CI_PlatformWeb.Controllers
             {
                
                 var user = await _CIDbContext.Users.Where(u => u.Email == model.Email && u.Password == model.Password).FirstOrDefaultAsync();
-                var firstname = model.Email.Split("@")[0];
+                //var firstname = model.Email.Split("@")[0];
                 if (user != null)
                 {
-                    HttpContext.Session.SetString("UserID", firstname);
+                    HttpContext.Session.SetString("UserID", user.FirstName);
                     return RedirectToAction(nameof(HomeController.landingpage), "Home");
                 }
                 else
@@ -323,10 +323,7 @@ namespace CI_PlatformWeb.Controllers
             {
                 foreach (var theme in ATheme)
                 {
-                    if(ACountries !=null || ACities != null) {
-                        mission = mission.Where(m => m.ThemeId == theme).ToList();
-                    }
-                    else { 
+                     
                     if (k == 0)
                     {
                         mission = mission.Where(m => m.ThemeId == theme + 500).ToList();
@@ -336,7 +333,7 @@ namespace CI_PlatformWeb.Controllers
                     finalmission = newmission.Where(m => m.ThemeId == theme).ToList();
 
                     mission.AddRange(finalmission);
-                        }
+                            
                     if (mission.Count() == 0)
                     {
                         return RedirectToAction("NoMissionFound", "Home");
@@ -417,83 +414,26 @@ namespace CI_PlatformWeb.Controllers
 
 
 
-
-        // GET: ForgetController
-
-
-        // GET: ForgetController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Volunteering(int missionid)
         {
+            List<Mission> missionlist = _CIDbContext.Missions.ToList();
+            List<City> citylist = new List<City>();
+            List<Country> Countries = _CIDbContext.Countries.ToList();
+           
+            List<City> Cities = _CIDbContext.Cities.ToList();
+            List<MissionTheme> Themes = _CIDbContext.MissionThemes.ToList();
+            List<Skill> skills = _CIDbContext.Skills.ToList();
+            var mission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionid);
+            var themeid = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
+            var cityid = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == mission.CityId);
+            ViewBag.themename =themeid;
+            ViewBag.mission = mission;
+            ViewBag.cityname = cityid;
+            missionlist = missionlist.Where(m => m.ThemeId == mission.ThemeId && m.MissionId!=missionid).ToList();
+           
+            ViewBag.missionlist = missionlist.Take(3);
             return View();
         }
 
-        // GET: ForgetController/Create
-        public ActionResult Create()
-        {
-            return View();
         }
-
-        // POST: ForgetController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ForgetController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ForgetController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ForgetController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ForgetController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
 }

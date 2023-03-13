@@ -125,29 +125,53 @@
             <div class="card col-12 col-lg-6 col-md-12 col-sm-12">
                 <div class="card-body">
                     <div class="card-title">
-                        CSR initiative stands for Coffee & Farmer Equity
+                        @ViewBag.mission.Title
                     </div>
                     <div class="card-subtitle text-muted">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                        @ViewBag.mission.ShortDescription
                     </div>
+                    @if (ViewBag.mission.MissionType=="time"){
                     <div class="rule d-flex mt-4">
                         <hr style="border:1px solid black">
-                        <button class="date-btn mt-1">From 10/01/2019 until 25/02/2019</button>
+                        <button class="date-btn mt-1">From @ViewBag.mission.StartDate.ToString().Split(" ")[0] Until @ViewBag.mission.EndDate.ToString().Split(" ")[0]</button>
                         <hr style="border:1px solid black">
 
-                    </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="rule d-flex mt-4">
+                        <hr style="border:1px solid black">
+                        <button class="date-btn mt-1">Plant 1000 Tress</button>
+                        <hr style="border:1px solid black">
+
+                        </div>
+                    }
                     <div class="row landing-page-box-border">
 
                         <div class="col-6 col-md-6 d-flex align-items-center">
                             <p class="lead me-2 pt-2">
                                 <img src="~/images/Seats-left.png" alt="">
                                 <div>
-                                    <div>10</div>
+                                    <div>@ViewBag.mission.Availability</div>
                                     <div class="landing-page-card-vol-small">Seats Left</div>
                                 </div>
                             </p>
                         </div>
                         <div class="col-6 col-md-6 d-flex align-items-center">
+                            @if (ViewBag.mission.MissionType == "time")
+                            {
+                                <div class="col-6 col-md-6 d-flex align-items-center">
+                                    <p class="lead me-2 pt-2">
+                                        <img src="~/images/deadline.png" alt="">
+                                        <div>
+                                            <div>@ViewBag.mission.EndDate.ToString().Split(" ")[0]</div>
+                                            <div class="landing-page-card-vol-small">Deadline</div>
+                                        </div>
+                                    </p>
+                                </div>
+                            }
+                            else{
                             <p class="lead me-2 pt-2">
                                 <img src="~/images/achieved.png" alt="">
                                 <div style="width: 100%;">
@@ -162,6 +186,7 @@
                                     <div class="landing-page-card-vol-small">8000 achived</div>
                                 </div>
                             </p>
+                            }
                         </div>
                     </div>
                     @*  <div class="d-flex">
@@ -208,7 +233,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>city</div>
-                                <div>London</div>
+                                <div>@ViewBag.cityname.Name</div>
                             </div>
                         </div>
                         <div class="card col-md-3 col-6">
@@ -217,7 +242,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>Theme</div>
-                                <div>Environment</div>
+                                <div>@ViewBag.themename.Title</div>
                             </div>
                         </div>
                         <div class="card col-md-3 col-6">
@@ -236,7 +261,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>Organization</div>
-                                <div>CSE Network</div>
+                                <div>@ViewBag.mission.OrganizationName</div>
                             </div>
                         </div>
                     </div>
