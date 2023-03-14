@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "_NavbarLayout";
+    Layout = "_One-NavbarLayout";
     ViewData["Title"] = "Home Page";
 }
 <!DOCTYPE html>
@@ -125,25 +125,26 @@
             <div class="card col-12 col-lg-6 col-md-12 col-sm-12">
                 <div class="card-body">
                     <div class="card-title">
-                        @ViewBag.mission.Title
+                        @ViewBag.Missiondetail.Title
                     </div>
                     <div class="card-subtitle text-muted">
-                        @ViewBag.mission.ShortDescription
+                        @ViewBag.Missiondetail.ShortDescription
                     </div>
-                    @if (ViewBag.mission.MissionType=="time"){
-                    <div class="rule d-flex mt-4">
-                        <hr style="border:1px solid black">
-                        <button class="date-btn mt-1">From @ViewBag.mission.StartDate.ToString().Split(" ")[0] Until @ViewBag.mission.EndDate.ToString().Split(" ")[0]</button>
-                        <hr style="border:1px solid black">
+                    @if (ViewBag.Missiondetail.MissionType == "time")
+                    {
+                        <div class="rule d-flex mt-4">
+                            <hr style="border:1px solid black">
+                            <button class="date-btn mt-1">From @ViewBag.Missiondetail.StartDate.ToString().Split(" ")[0] Until @ViewBag.Missiondetail.EndDate.ToString().Split(" ")[0]</button>
+                            <hr style="border:1px solid black">
 
                         </div>
                     }
                     else
                     {
                         <div class="rule d-flex mt-4">
-                        <hr style="border:1px solid black">
-                        <button class="date-btn mt-1">Plant 1000 Tress</button>
-                        <hr style="border:1px solid black">
+                            <hr style="border:1px solid black">
+                            <button class="date-btn mt-1">@ViewBag.Missiondetail.GoalObjectiveText</button>
+                            <hr style="border:1px solid black">
 
                         </div>
                     }
@@ -153,39 +154,40 @@
                             <p class="lead me-2 pt-2">
                                 <img src="~/images/Seats-left.png" alt="">
                                 <div>
-                                    <div>@ViewBag.mission.Availability</div>
+                                    <div>@ViewBag.Missiondetail.Availability</div>
                                     <div class="landing-page-card-vol-small">Seats Left</div>
                                 </div>
                             </p>
                         </div>
                         <div class="col-6 col-md-6 d-flex align-items-center">
-                            @if (ViewBag.mission.MissionType == "time")
+                            @if (ViewBag.Missiondetail.MissionType == "time")
                             {
                                 <div class="col-6 col-md-6 d-flex align-items-center">
                                     <p class="lead me-2 pt-2">
                                         <img src="~/images/deadline.png" alt="">
                                         <div>
-                                            <div>@ViewBag.mission.EndDate.ToString().Split(" ")[0]</div>
+                                            <div>@ViewBag.Missiondetail.EndDate.ToString().Split(" ")[0]</div>
                                             <div class="landing-page-card-vol-small">Deadline</div>
                                         </div>
                                     </p>
                                 </div>
                             }
-                            else{
-                            <p class="lead me-2 pt-2">
-                                <img src="~/images/achieved.png" alt="">
-                                <div style="width: 100%;">
-                                    <div>
+                            else
+                            {
+                                <p class="lead me-2 pt-2">
+                                    <img src="~/images/achieved.png" alt="">
+                                    <div style="width: 100%;">
+                                        <div>
 
-                                        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="50"
+                                            <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="50"
                                              aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
-                                            <div class="progress-bar bg-success" style="width: 25%;"></div>
-                                        </div>
+                                                <div class="progress-bar bg-success" style="width: 25%;"></div>
+                                            </div>
 
+                                        </div>
+                                        <div class="landing-page-card-vol-small">8000 achived</div>
                                     </div>
-                                    <div class="landing-page-card-vol-small">8000 achived</div>
-                                </div>
-                            </p>
+                                </p>
                             }
                         </div>
                     </div>
@@ -233,7 +235,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>city</div>
-                                <div>@ViewBag.cityname.Name</div>
+                                <div>@ViewBag.Missiondetail.Cityname</div>
                             </div>
                         </div>
                         <div class="card col-md-3 col-6">
@@ -242,7 +244,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>Theme</div>
-                                <div>@ViewBag.themename.Title</div>
+                                <div>@ViewBag.Missiondetail.Themename</div>
                             </div>
                         </div>
                         <div class="card col-md-3 col-6">
@@ -261,7 +263,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>Organization</div>
-                                <div>@ViewBag.mission.OrganizationName</div>
+                                <div>@ViewBag.Missiondetail.OrganizationName</div>
                             </div>
                         </div>
                     </div>
@@ -335,28 +337,14 @@
                     </div>
                     @*--------Comments------------*@
                     <div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
-                    <ul class="list-unstyled mt-2">
-                        <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                            <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                            <div class="media-body ms-2">
-                                <h5 class="mt-0 mb-1">List-based media object</h5>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            </div>
-                        </li>
-                            <li class="media my-4 d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                            <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                            <div class="media-body ms-2">
-                                <h5 class="mt-0 mb-1">List-based media object</h5>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            </div>
-                        </li>
+                        <ul class="list-unstyled mt-2">
                             <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                            <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                            <div class="media-body ms-2">
-                                <h5 class="mt-0 mb-1">List-based media object</h5>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            </div>
-                        </li>
+                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
+                                <div class="media-body ms-2">
+                                    <h5 class="mt-0 mb-1">List-based media object</h5>
+                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                </div>
+                            </li>
                             <li class="media my-4 d-flex ms-2 me-2 ps-1 pt-1 bg-white">
                                 <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
                                 <div class="media-body ms-2">
@@ -378,7 +366,21 @@
                                     Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
                                 </div>
                             </li>
-                    </ul>
+                            <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white">
+                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
+                                <div class="media-body ms-2">
+                                    <h5 class="mt-0 mb-1">List-based media object</h5>
+                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                </div>
+                            </li>
+                            <li class="media my-4 d-flex ms-2 me-2 ps-1 pt-1 bg-white">
+                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
+                                <div class="media-body ms-2">
+                                    <h5 class="mt-0 mb-1">List-based media object</h5>
+                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -418,58 +420,20 @@
             <div class="volunteering-sec-2-right-down mt-3">
                 <div class="vol-sec-2-right-2nd-header">Recent Volunteers</div>
                 <hr>
-                <div>
-                    <div class="row p-">
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer1.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
+                <div class="overflow-x-auto d-flex">
+                    @foreach (var item in ViewBag.recentvolunteered)
+                    {
+                        <div class="col-4  d-flex">
+                            <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
+                                <img src="~/Images/volunteer1.png" class="involveduserprofile" />
+                                <label id="" class="text-center">@item.username</label>
+                            </a>
                         </div>
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer2.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer3.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer4.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer5.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer6.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer7.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer8.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                        <div class="col mt-1 text-center">
-                            <img class="vol-page-right-recent-vol-img rounded-circle" src="~/Images/volunteer9.png" alt="">
-                            <div class="vol-page-right-2nd-vol-name">Andrew Johnson</div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row text-center">
-                        <div class="col-2"><button class="btn"><img src="~/Images/left.png" alt=""></button></div>
-                        <div class="col-8">Recent Volunteers</div>
-                        <div class="col-2">
-                            <button class="btn"><img src="~/Images/right-arrow1.png" alt=""></button>
-                        </div>
-                    </div>
-                </div>
+                    }
+
+
+
+                
 
             </div>
         </div>

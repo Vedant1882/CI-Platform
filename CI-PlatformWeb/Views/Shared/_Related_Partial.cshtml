@@ -33,9 +33,9 @@
         <div class="container">
             
             <div id="products" class="row view-group">
-                @if (ViewBag.missionlist != null)
+                @if (ViewBag.relatedmission != null)
                 {
-                    @foreach (var item in ViewBag.missionlist)
+                    @foreach (var item in ViewBag.relatedmission)
                     {
                         <div class="item col-xs-4 col-lg-4">
                             <div class="thumbnail card">
@@ -46,7 +46,7 @@
                                     <img class="group list-group-image img-fluid" style="width:100%;"
                                  src="~/images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" alt="Card image cap">
 
-                                    <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City.Name</div>
+                                    <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.Cityname</div>
 
                                     <div class="landing-page-bottom-right d-flex flex-column">
                                         <button class="mb-2 landing-page-btn-img">
@@ -56,7 +56,7 @@
                                         </button>
                                     </div>
 
-                                    <button class="landing-page-bottom-center">@item.Theme.Title</button>
+                                    <button class="landing-page-bottom-center">@item.Themename</button>
                                 </div>
 
 
@@ -85,11 +85,24 @@
                                     </div>
                                     @*From @item.StartDate.ToString().Split(" ")[0] until  @item.EndDate.ToString().Split(" ")[0]*@
 
-                                    <div class="rule d-flex mt-1">
-                                        <hr>
-                                        <button class="date-btn mt-1"> From @item.StartDate.ToString().Split(" ")[0] until  @item.EndDate.ToString().Split(" ")[0]</button>
-                                        <hr>
-                                    </div>
+                                   @if (item.MissionType == "time")
+                                                {
+                                            <div class="rule d-flex mt-1">
+                                                <hr>
+                                                <button class="date-btn mt-1"> From @item.StartDate.ToString().Split(" ")[0] until  @item.EndDate.ToString().Split(" ")[0]</button>
+                                                <hr>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                
+                                                        <div class="rule d-flex mt-1">
+                                                <hr>
+                                                <button class="date-btn mt-1">@item.GoalObjectiveText</button>
+                                                <hr>
+                                                </div>
+                                                    
+                                            }
 
                                     <div class="row landing-page-box-border">
                                         <div class="col-6 col-md-6 d-flex align-items-center">

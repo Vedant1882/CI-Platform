@@ -89,13 +89,16 @@ namespace CI_PlatformWeb.Controllers
                 if (user != null)
                 {
                     HttpContext.Session.SetString("UserID", user.FirstName);
+                    HttpContext.Session.SetString("user", user.UserId.ToString());
                     return RedirectToAction(nameof(HomeController.landingpage), "Home");
                 }
                 else
                 {
                     ViewBag.Email = "email or pass is incorrect";                  
                 }
+                
             }
+            
             return View();
         }
 
@@ -219,6 +222,7 @@ namespace CI_PlatformWeb.Controllers
             List<Mission> mission = _CIDbContext.Missions.ToList();
             List<Mission> finalmission = _CIDbContext.Missions.ToList();
             List<Mission> newmission = _CIDbContext.Missions.ToList();
+            List<GoalMission> goalMissions = _CIDbContext.GoalMissions.ToList();
             foreach (var item in mission)
             {
                 var City = _CIDbContext.Cities.FirstOrDefault(u => u.CityId == item.CityId);
@@ -403,37 +407,94 @@ namespace CI_PlatformWeb.Controllers
 
 
             ViewBag.currentUrl = uriBuilder.ToString();
+            ViewBag.goal = goalMissions;
 
-           
 
             return View(Missions);
         }
 
+            public IActionResult Volunteering(long id, int missionid)
+
+            {
+
+
+                List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
+
+                var volmission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionid);
+                var theme = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == volmission.ThemeId);
+                var City = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == volmission.CityId);
+                var themeobjective = _CIDbContext.GoalMissions.FirstOrDefault(m => m.MissionId == missionid);
+                string[] Startdate = volmission.StartDate.ToString().Split(" ");
+                string[] Enddate = volmission.EndDate.ToString().Split(" ");
+                VolunteeringVM volunteeringVM = new VolunteeringVM();
+                volunteeringVM.MissionId = missionid;
+                volunteeringVM.Title = volmission.Title;
+                volunteeringVM.ShortDescription = volmission.ShortDescription;
+                volunteeringVM.OrganizationName = volmission.OrganizationName;
+                volunteeringVM.Description = volmission.Description;
+                volunteeringVM.OrganizationDetail = volmission.OrganizationDetail;
+                volunteeringVM.Availability = volmission.Availability;
+                volunteeringVM.MissionType = volmission.MissionType;
+                volunteeringVM.Cityname = City.Name;
+                volunteeringVM.Themename = theme.Title;
+                volunteeringVM.EndDate = Enddate[0];
+                volunteeringVM.StartDate = Startdate[0];
+                volunteeringVM.GoalObjectiveText = themeobjective.GoalObjectiveText;
+                ViewBag.Missiondetail = volunteeringVM;
+
+
+                var relatedmission = _CIDbContext.Missions.Where(m => m.ThemeId == volmission.ThemeId && m.MissionId != missionid).ToList();
+                foreach (var item in relatedmission.Take(3))
+                {
+
+                    var relcity = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == item.CityId);
+                    var reltheme = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == item.ThemeId);
+                    var relgoalobj = _CIDbContext.GoalMissions.FirstOrDefault(m => m.MissionId == item.MissionId);
+                    string[] Startdate1 = item.StartDate.ToString().Split(" ");
+                    string[] Enddate2 = item.EndDate.ToString().Split(" ");
 
 
 
+                    relatedlist.Add(new VolunteeringVM
+                    {
+                        MissionId = item.MissionId,
+                        Cityname = relcity.Name,
+                        Themename = reltheme.Title,
+                        Title = item.Title,
+                        ShortDescription = item.ShortDescription,
+                        StartDate = Startdate1[0],
+                        EndDate = Enddate2[0],
+                        Availability = item.Availability,
+                        OrganizationName = item.OrganizationName,
+                        GoalObjectiveText = relgoalobj.GoalObjectiveText,
+                        MissionType = item.MissionType,
 
 
-        public ActionResult Volunteering(int missionid)
-        {
-            List<Mission> missionlist = _CIDbContext.Missions.ToList();
-            List<City> citylist = new List<City>();
-            List<Country> Countries = _CIDbContext.Countries.ToList();
-           
-            List<City> Cities = _CIDbContext.Cities.ToList();
-            List<MissionTheme> Themes = _CIDbContext.MissionThemes.ToList();
-            List<Skill> skills = _CIDbContext.Skills.ToList();
-            var mission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionid);
-            var themeid = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
-            var cityid = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == mission.CityId);
-            ViewBag.themename =themeid;
-            ViewBag.mission = mission;
-            ViewBag.cityname = cityid;
-            missionlist = missionlist.Where(m => m.ThemeId == mission.ThemeId && m.MissionId!=missionid).ToList();
-           
-            ViewBag.missionlist = missionlist.Take(3);
+                    }
+                    );
+                    ;
+                }
+
+
+                ViewBag.relatedmission = relatedlist.Take(3);
+
+            List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
+            //var recentvolunttered = from U in CID.Users join MA in CiMainContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+            var recentvoluntered = from U in _CIDbContext.Users join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == missionid select U;
+            foreach (var item in recentvoluntered)
+            {
+
+
+                recentvolunteredlist.Add(new VolunteeringVM
+                {
+                    username = item.FirstName,
+                });
+
+            }
+            ViewBag.recentvolunteered = recentvolunteredlist;
+
             return View();
+            }
         }
+    }
 
-        }
-}
