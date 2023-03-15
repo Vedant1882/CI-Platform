@@ -26,7 +26,7 @@
             
             <link rel="stylesheet" href="~/css/landing.css" />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
             
 
 
@@ -40,7 +40,7 @@
         <body>
             
             <div class="">
-
+                
 
                 <div class="container" style="margin-top:150px">
                     <div class="filters-section d-flex align-items-center flex-wrap justify-content-center">
@@ -105,7 +105,7 @@
 
                                             <div class="landing-page-bottom-right d-flex flex-column">
                                                 <button class="mb-2 landing-page-btn-img" >
-                                                    <img src="~/images/heart.png" alt="">
+                                                    <i class="bi bi-heart-fill" id="heart" onclick="addtofav(@item.MissionId,@ViewBag.userId)"></i>
                                                 </button><button class="landing-page-btn-img">
                                                     <img src="~/images/user.png" alt="">
                                                 </button>
@@ -289,7 +289,27 @@
                     localStorage.setItem("viewtype", "grid")
                     $('.item').removeClass('list-group-item'); $('#products .item').addClassN('grid-group-item');
                 }
+                 function addtofav(missionId,Id){
+        $.ajax({
+            url: '/Home/Addfav',
+            type: 'POST',
+            data: { missionId: missionId, Id: Id},
+            success: function (result){
+                if (result.favmission == "0") {
                     
+                    var heartbtn = document.getElementById("heart");
+                    heartbtn.style.Color = "#F88634";
+                    favbtn.style.color="orange"
+                }
+                else{
+                    
+                    var heartbtn = document.getElementById("heart");
+                    heartbtn.style.Color = "black";
+                    favbtn.style.color = "black"
+                }
+            }
+        });
+    }   
 
             </script>
             

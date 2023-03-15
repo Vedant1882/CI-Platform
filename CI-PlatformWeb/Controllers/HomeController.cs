@@ -12,6 +12,7 @@ using System.Diagnostics.Metrics;
 using System.Web;
 using NuGet.Packaging;
 using Microsoft.Data.SqlClient;
+using System.Linq;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -218,20 +219,25 @@ namespace CI_PlatformWeb.Controllers
         
         public ActionResult landingpage(int? pageIndex, string searchQuery, long[] ACountries, long[] ACities, long[] ATheme,string sortOrder)
         {
-            
+            var userId = HttpContext.Session.GetString("user");
+            ViewBag.UserId = int.Parse(userId);
             List<Mission> mission = _CIDbContext.Missions.ToList();
+            List<MissionRating> Ratings= _CIDbContext.MissionRatings.ToList();  
             List<City> cityname = new List<City>();
             List<City> cityname1 = new List<City>();
             List<Mission> finalmission = _CIDbContext.Missions.ToList();
             List<Mission> newmission = _CIDbContext.Missions.ToList();
             List<GoalMission> goalMissions = _CIDbContext.GoalMissions.ToList();
-            long[] missionempty; 
+            long[] missionempty;
             foreach (var item in mission)
             {
                 var City = _CIDbContext.Cities.FirstOrDefault(u => u.CityId == item.CityId);
                 var Theme = _CIDbContext.MissionThemes.FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
+                 Ratings = _CIDbContext.MissionRatings.Where(u => u.MissionId == item.MissionId).ToList();
+
 
             }
+            ViewBag.rating = Ratings;
             mission = _CIDbContext.Missions.ToList();
             List<Country> Countries = _CIDbContext.Countries.ToList();
             List<Country> countryElements = _CIDbContext.Countries.ToList();
@@ -411,6 +417,7 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
             ViewBag.CurrentPage = pageIndex ?? 0;
 
+            
 
             // Get the current URL
             UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
