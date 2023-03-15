@@ -220,9 +220,12 @@ namespace CI_PlatformWeb.Controllers
         {
             
             List<Mission> mission = _CIDbContext.Missions.ToList();
+            List<City> cityname = new List<City>();
+            List<City> cityname1 = new List<City>();
             List<Mission> finalmission = _CIDbContext.Missions.ToList();
             List<Mission> newmission = _CIDbContext.Missions.ToList();
             List<GoalMission> goalMissions = _CIDbContext.GoalMissions.ToList();
+            long[] missionempty; 
             foreach (var item in mission)
             {
                 var City = _CIDbContext.Cities.FirstOrDefault(u => u.CityId == item.CityId);
@@ -248,10 +251,10 @@ namespace CI_PlatformWeb.Controllers
                     return RedirectToAction("NoMissionFound","Home");
                 }
             }
-            
+            missionempty = ACountries;
             if (ACountries != null && ACountries.Length > 0)
             {
-                
+               
                 foreach (var country in ACountries)
                 {
                     //mission = mission.Where(m => m.CountryId == country).ToList();
@@ -260,7 +263,7 @@ namespace CI_PlatformWeb.Controllers
                         mission = mission.Where(m => m.CountryId == country + 500).ToList();
                         i++;
                     }
-
+                    
                     finalmission = newmission.Where(m => m.CountryId == country).ToList();
 
                     mission.AddRange(finalmission);
@@ -285,39 +288,57 @@ namespace CI_PlatformWeb.Controllers
                 //Countries = _CIDbContext.Countries.ToList();
                 
                 
+                
+                
+                
+            }
+            if (missionempty.Count() != 0)
+            {
+
+               
+                    foreach (var a in missionempty)
+                    {
+                        cityname1 = _CIDbContext.Cities.Where(m => m.CountryId == a).ToList();
+                        cityname.AddRange(cityname1);
+                    }
+                
+
+                
+                ViewBag.cities = cityname;
             }
             if (ACities != null && ACities.Length > 0)
             {
-                foreach (var city in ACities)
-                {
-                    //mission = mission.Where(m => m.CityId == city).ToList();
-                    if (j == 0)
+                    foreach (var city in ACities)
                     {
-                        mission = mission.Where(m => m.CityId == city + 500).ToList();
-                        j++;
-                    }
-
-                    finalmission = newmission.Where(m => m.CityId == city).ToList();
-
-                    mission.AddRange(finalmission);
-                    if (mission.Count() == 0)
-                    {
-                        return RedirectToAction("NoMissionFound", "Home");
-                    }
-                    ViewBag.city = city;
-                    if (ViewBag.city != null)
-                    {
-                        var city1 = _CIDbContext.Cities.Where(m => m.CityId == city).ToList();
-                        if (j1 == 0)
+                        //mission = mission.Where(m => m.CityId == city).ToList();
+                        if (j == 0)
                         {
-                            Cities = _CIDbContext.Cities.Where(m => m.CityId == city + 50000).ToList();
-                            j1++;
+                            mission = mission.Where(m => m.CityId == city + 500).ToList();
+                            j++;
                         }
-                        Cities.AddRange(city1);
-                        //var c1 = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == city);
-                        //ViewBag.city = c1.Name;
+
+                        finalmission = newmission.Where(m => m.CityId == city).ToList();
+
+                        mission.AddRange(finalmission);
+                        if (mission.Count() == 0)
+                        {
+                            return RedirectToAction("NoMissionFound", "Home");
+                        }
+                        ViewBag.city = city;
+                        if (ViewBag.city != null)
+                        {
+                            var city1 = _CIDbContext.Cities.Where(m => m.CityId == city).ToList();
+                            if (j1 == 0)
+                            {
+                                Cities = _CIDbContext.Cities.Where(m => m.CityId == city + 50000).ToList();
+                                j1++;
+                            }
+                            Cities.AddRange(city1);
+                            //var c1 = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == city);
+                            //ViewBag.city = c1.Name;
+                        }
                     }
-                }
+                
                 ViewBag.city = Cities;
                 Cities = _CIDbContext.Cities.ToList();
                 
@@ -413,12 +434,58 @@ namespace CI_PlatformWeb.Controllers
             return View(Missions);
         }
 
-            public IActionResult Volunteering(long id, int missionid)
+        [HttpPost]
+        public async Task<IActionResult> Addrating(string rating, long Id, long missionId)
+        {
+            MissionRating ratingExists = await _CIDbContext.MissionRatings.FirstOrDefaultAsync(fm => fm.UserId == Id && fm.MissionId == missionId);
+            if (ratingExists != null)
+            {
+                ratingExists.Rating = rating;
+                _CIDbContext.Update(ratingExists);
+                _CIDbContext.SaveChanges();
+                return Json(new { success = true, ratingExists, isRated = true });
+            }
+            else
+            {
+                var ratingele = new MissionRating();
+                ratingele.Rating = rating;
+                ratingele.UserId = Id;
+                ratingele.MissionId = missionId;
+                _CIDbContext.Add(ratingele);
+                _CIDbContext.SaveChanges();
+                return Json(new { success = true, ratingele, isRated = true });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Addfav(long Id, long missionId)
+        {
+            FavoriteMission fav = await _CIDbContext.FavoriteMissions.FirstOrDefaultAsync(fm => fm.UserId == Id && fm.MissionId == missionId);
+            if (fav != null)
+            {
+                
+                _CIDbContext.Remove(fav);
+                _CIDbContext.SaveChanges();
+                return Json(new { success = true,favmission="1"});
+            }
+            else
+            {
+                var ratingele = new FavoriteMission();
+              
+                ratingele.UserId = Id;
+                ratingele.MissionId = missionId;
+                _CIDbContext.AddAsync(ratingele);
+                _CIDbContext.SaveChanges();
+                return Json(new { success = true, favmission="0" });
+            }
+        }
+        public IActionResult Volunteering(long id, int missionid)
 
             {
+            var userId = HttpContext.Session.GetString("user");
+            ViewBag.UserId = int.Parse(userId);
 
-
-                List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
+            List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
 
                 var volmission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionid);
                 var theme = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == volmission.ThemeId);

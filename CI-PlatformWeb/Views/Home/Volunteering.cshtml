@@ -10,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="~/css/Volunteering.css" />
     <link rel="stylesheet" href="~/css/landing.css" />
 
@@ -204,8 +205,8 @@
                     </div>
                     </div>*@
                     <div class="row">
-                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center">
-                            <div><img src="~/images/heart1.png" /></div>
+                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" onclick="addtofav(@ViewBag.Missiondetail.MissionId,@ViewBag.userId)" id="favmissiondiv">
+                            <i class="bi bi-heart-fill" id="heart"></i>
                             <label class="ms-2">ADD to Favourite</label>
 
                         </div>
@@ -219,11 +220,11 @@
                     <div class="rule d-flex mt-4">
                         <hr style="border:1px solid black">
 
-                        <img src="~/images/selected-star.png" alt="">
-                        <img src="~/images/selected-star.png" alt="">
-                        <img src="~/images/selected-star.png" alt="">
-                        <img src="~/images/star.png" alt="">
-                        <img src="~/images/star.png" alt="">
+                        <i class="bi bi-star-fill"  id="1" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
+                        <i class="bi bi-star-fill" id="2" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
+                        <i class="bi bi-star-fill" id="3" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
+                        <i class="bi bi-star-fill" id="4" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
+                        <i class="bi bi-star-fill" id="5" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
 
                         <hr style="border:1px solid black">
 
@@ -440,8 +441,63 @@
     </div>
     <partial name="_Related_Partial" />
 </body>
-<script src="~/js/filter.js"></script>
-<script src="~/js/Volunteering.js"></script>
-<script src="~/js/comments.js"></script>
+<script>
+    function addRating(starId, missionId, Id) {
+        $.ajax({
+            url: '/Home/Addrating',
+            type: 'POST',
+            data: { missionId: missionId, Id: Id, rating: starId },
+            success: function (result) {
+                if (parseInt(result.ratingExists.rating, 10)) {
+                    for (i = 1; i <= parseInt(result.ratingExists.rating, 10); i++) {
+                        var starbtn = document.getElementById(String(i));
+                        
+                        starbtn.style.color = "#F88634";
+                    }
+                    for (i = parseInt(result.ratingExists.rating, 10) + 1; i <= 5; i++) {
+                        var starbtn = document.getElementById(String(i));
+                        
+                        starbtn.style.color = "black";
+                    }
+                }
+                else {
+                    for (i = 1; i <= parseInt(result.newRating.rating, 10); i++) {
+                        var starbtn = document.getElementById(String(i));
+                       
+                        starbtn.style.backgroundColor = "#F88634";
+                    }
+                    
+                }
+            },
+            error: function () {
+                alert("could not like mission");
+            }
+        });
+    }
+    function addtofav(missionId,Id){
+        $.ajax({
+            url: '/Home/Addfav',
+            type: 'POST',
+            data: { missionId: missionId, Id: Id},
+            success: function (result){
+                if (result.favmission == "0") {
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart");
+                    heartbtn.style.Color = "#F88634";
+                    favbtn.style.color="orange"
+                }
+                else{
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart");
+                    heartbtn.style.Color = "black";
+                    favbtn.style.color = "black"
+                }
+            }
+        });
+    }
+</script>
 </html>
+
+<script src="~/js/Volunteering.js"></script>
+
 
