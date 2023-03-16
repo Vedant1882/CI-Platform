@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CI_PlatformWeb.Models.VolunteeringVM;
+@{
     Layout = "_One-NavbarLayout";
     ViewData["Title"] = "Home Page";
 }
@@ -126,16 +127,16 @@
             <div class="card col-12 col-lg-6 col-md-12 col-sm-12">
                 <div class="card-body">
                     <div class="card-title">
-                        @ViewBag.Missiondetail.Title
+                        @Model.SingleTitle
                     </div>
-                    <div class="card-subtitle text-muted">
+                    @*<div class="card-subtitle text-muted">
                         @ViewBag.Missiondetail.ShortDescription
-                    </div>
-                    @if (ViewBag.Missiondetail.MissionType == "time")
+                    </div>*@
+                    @if (Model.missionType == "time")
                     {
                         <div class="rule d-flex mt-4">
                             <hr style="border:1px solid black">
-                            <button class="date-btn mt-1">From @ViewBag.Missiondetail.StartDate.ToString().Split(" ")[0] Until @ViewBag.Missiondetail.EndDate.ToString().Split(" ")[0]</button>
+                            <button class="date-btn mt-1">From @Model.StartDateEndDate.ToString().Split(" ")[0]</button>
                             <hr style="border:1px solid black">
 
                         </div>
@@ -144,7 +145,7 @@
                     {
                         <div class="rule d-flex mt-4">
                             <hr style="border:1px solid black">
-                            <button class="date-btn mt-1">@ViewBag.Missiondetail.GoalObjectiveText</button>
+                            <button class="date-btn mt-1">@Model.GoalText</button>
                             <hr style="border:1px solid black">
 
                         </div>
@@ -155,19 +156,19 @@
                             <p class="lead me-2 pt-2">
                                 <img src="~/images/Seats-left.png" alt="">
                                 <div>
-                                    <div>@ViewBag.Missiondetail.Availability</div>
+                                    <div>10</div>
                                     <div class="landing-page-card-vol-small">Seats Left</div>
                                 </div>
                             </p>
                         </div>
                         <div class="col-6 col-md-6 d-flex align-items-center">
-                            @if (ViewBag.Missiondetail.MissionType == "time")
+                            @if (Model.missionType == "time")
                             {
                                 <div class="col-6 col-md-6 d-flex align-items-center">
                                     <p class="lead me-2 pt-2">
                                         <img src="~/images/deadline.png" alt="">
                                         <div>
-                                            <div>@ViewBag.Missiondetail.EndDate.ToString().Split(" ")[0]</div>
+                                            <div>@Model.EndDate.ToString().Split(" ")[0]</div>
                                             <div class="landing-page-card-vol-small">Deadline</div>
                                         </div>
                                     </p>
@@ -192,24 +193,28 @@
                             }
                         </div>
                     </div>
-                    @*  <div class="d-flex">
-                    <button class="date-btn mt-1 pe-5"><img src="~/Images/heart1.png" /><span>Add to fav</span></button>
-                    <button class="date-btn mt-1 pe-5"><img src="~/Images/add1.png" /><span>Recommend to co-worker</span></button>
-                    </div>*@
-                    @* <div class="row d-flex">
-                    <div class="col-md-6 col-sm-12">
-                    <button class="m-1 btn-add_to_fav"><img src="/Images/heart1.png" /><span class="Text-add_to_fav">Add to fav</span></button>
-                    </div>
-                    <div class="col-md-6 col-sm-12" >
-                    <button class="m-1 btn-rec_co-worker"><img src="/Images/add1.png" /><span class="Text-rec_co-worker">Recommend to co-worker</span></button>
-                    </div>
-                    </div>*@
+                   
                     <div class="row">
-                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" onclick="addtofav(@ViewBag.Missiondetail.MissionId,@ViewBag.userId)" id="favmissiondiv">
-                            <i class="bi bi-heart-fill" id="heart"></i>
-                            <label class="ms-2">ADD to Favourite</label>
+                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" id="favmissiondiv">
+                        @{
+                        var useridforFavM = Context.Session.GetInt32("userIDforfavmission");
+                        }
+                        @if(Model.UserId == useridforFavM && Model.isFavrouite != null)
+                        {
+                        <button class="btn vol-page-group-btn-btn" id="afterApply" onclick="addToFav(@Model.MissionId,@useridforFavM)">
+                        <i class="bi bi-heart-fill" id="heart"></i> Already Added
+                        </button>
+                        }
+                        else
+                        {
+                        <button class="btn vol-page-group-btn-btn" id="beforeApply" onclick="addToFav(@Model.MissionId,@useridforFavM)">
+                        <i class="bi bi-heart" id="heart"></i> Add
+                        to Favourite
+                        </button>
+                        }
 
                         </div>
+                         
                         <div class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3 Addfavourite  justify-content-center">
                             <div><img src="~/images/add1.png" /></div>
 
@@ -220,11 +225,34 @@
                     <div class="rule d-flex mt-4">
                         <hr style="border:1px solid black">
 
-                        <i class="bi bi-star-fill"  id="1" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
-                        <i class="bi bi-star-fill" id="2" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
-                        <i class="bi bi-star-fill" id="3" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
-                        <i class="bi bi-star-fill" id="4" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
-                        <i class="bi bi-star-fill" id="5" onclick="addRating(this.id,@ViewBag.Missiondetail.MissionId,@ViewBag.userId)"></i>
+                        @{
+                            var useridforrating = Context.Session.GetInt32("userIDforfavmission");
+                        }
+
+                        @if (@Model.Rating != null)
+                        {
+
+                            int count = 0;
+
+                            @for (var i = 1; i <= @Model.Rating; i++)
+                            {
+                                <i class="bi bi-star" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                count++;
+                            }
+                            @for (var k = count + 1; k <= 5; k++)
+                            {
+                                <i class="bi bi-star" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            }
+
+                        }
+                        else
+                        {
+                            <i class="bi bi-star" id="1" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="2" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="3" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="4" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="5" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                        }
 
                         <hr style="border:1px solid black">
 
@@ -236,7 +264,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>city</div>
-                                <div>@ViewBag.Missiondetail.Cityname</div>
+                                <div>@Model.City</div>
                             </div>
                         </div>
                         <div class="card col-md-3 col-6">
@@ -245,7 +273,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>Theme</div>
-                                <div>@ViewBag.Missiondetail.Themename</div>
+                                <div>@Model.Theme</div>
                             </div>
                         </div>
                         <div class="card col-md-3 col-6">
@@ -264,7 +292,7 @@
                             </svg>
                             <div class="mt-3 mb-0">
                                 <div>Organization</div>
-                                <div>@ViewBag.Missiondetail.OrganizationName</div>
+                                <div>@Model.Organization</div>
                             </div>
                         </div>
                     </div>
@@ -422,15 +450,19 @@
                 <div class="vol-sec-2-right-2nd-header">Recent Volunteers</div>
                 <hr>
                 <div class="overflow-x-auto d-flex">
-                    @foreach (var item in ViewBag.recentvolunteered)
+                    @if (Model.UserName.Count()!= 0)
                     {
-                        <div class="col-4  d-flex">
-                            <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
-                                <img src="~/Images/volunteer1.png" class="involveduserprofile" />
-                                <label id="" class="text-center">@item.username</label>
-                            </a>
-                        </div>
+                        @foreach (var item in Model.UserName)
+                        {
+                            <div class="col-4  d-flex">
+                                <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
+                                    <img src="~/Images/volunteer1.png" class="involveduserprofile" />
+                                    <label id="" class="text-center">@item</label>
+                                </a>
+                            </div>
+                        }
                     }
+                    
 
 
 
@@ -474,23 +506,32 @@
             }
         });
     }
-    function addtofav(missionId,Id){
+    function addToFav(missionId, userId) {
+
         $.ajax({
-            url: '/Home/Addfav',
+            url: '/Home/AddToFav',
             type: 'POST',
-            data: { missionId: missionId, Id: Id},
-            success: function (result){
-                if (result.favmission == "0") {
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart");
-                    heartbtn.style.Color = "#F88634";
-                    favbtn.style.color="orange"
+            data: { MissionId: missionId, UserId: userId },
+            success: function (result) {
+
+                if (result.favoriteMissionadd) {
+                    location.reload();
+                    var afterapplybtn = document.getElementById("afterApply");
+                    var beforeapplybtn = document.getElementById("beforeApply");
+                    console.log(afterapplybtn);
+                    afterapplybtn.classList.remove('d-none');
+                    beforeapplybtn.classList.add('d-none');
+
+
                 }
-                else{
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart");
-                    heartbtn.style.Color = "black";
-                    favbtn.style.color = "black"
+                else if (result.favoriteMissiondel) {
+                    location.reload();
+                    var afterapplybtn = document.getElementById("afterApply");
+                    var beforeapplybtn = document.getElementById("beforeApply");
+                    beforeapplybtn.classList.remove('d-none');
+                    afterapplybtn.classList.add('d-none');
+
+
                 }
             }
         });

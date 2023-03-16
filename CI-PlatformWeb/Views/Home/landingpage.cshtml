@@ -1,4 +1,4 @@
-﻿@model List<CI_Entity.Models.Mission>
+﻿
 @{
     Layout = "_NavbarLayout";
     ViewData["Title"] = "Home Page";
@@ -90,7 +90,7 @@
                     <div id="products" class="row view-group">
                         <div class="row ltg">
 
-                            @foreach (var item in Model)
+                            @foreach (var item in ViewBag.missions)
                             {
                                 <div class="item col-xs-4 col-lg-4">
                                     <div class="thumbnail card">
@@ -101,17 +101,31 @@
                                             <img class="group list-group-image img-fluid" style="width:100%;"
                                      src="~/images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" alt="Card image cap">
 
-                                            <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City.Name</div>
+                                            <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City</div>
 
                                             <div class="landing-page-bottom-right d-flex flex-column">
-                                                <button class="mb-2 landing-page-btn-img" >
-                                                    <i class="bi bi-heart-fill" id="heart" onclick="addtofav(@item.MissionId,@ViewBag.userId)"></i>
-                                                </button><button class="landing-page-btn-img">
-                                                    <img src="~/images/user.png" alt="">
-                                                </button>
+                                            @{
+                                                    int? useridfavmission = Context.Session.GetInt32("userIDforfavmission");
+                                            }
+                                                @if (@item.MissionId == item.addedtofavM && item.addedtofavU == useridfavmission)
+                                                {
+                                                    <button class="mb-2 landing-page-btn-img afterApply" id="@item.MissionId" onclick="addToFav(@item.MissionId, @useridfavmission)">
+                                                        <img src="~/images/heart red.png" height="25px" width="25px" alt="">
+                                                    </button>
+                                                }
+                                                else
+                                                {
+
+
+                                                    <button class="mb-2 landing-page-btn-img beforeApply" id="@item.MissionId" onclick="addToFav(@item.MissionId, @useridfavmission)">
+                                                        <img src="~/images/heart.png" alt="">
+                                                    </button>
+
+                                                }
+
                                             </div>
 
-                                            <button class="landing-page-bottom-center">@item.Theme.Title</button>
+                                            <button class="landing-page-bottom-center">@item.Theme</button>
                                         </div>
 
 
@@ -122,13 +136,13 @@
                                                     @item.Title
                                                 </h5>
                                                 <p class="group inner landing-page-list-group-item-text" style="overflow: hidden;display: -webkit-box;-webkit-line-clamp:2;-webkit-box-orient: vertical;">
-                                                    @item.ShortDescription
+                                                    @item.Description
                                                 </p>
                                             </div>
 
 
                                             <div class="d-flex justify-content-between landing-page-card-rating">
-                                                <p>@item.OrganizationName</p>
+                                                <p>@item.Organization</p>
                                                 <div>
                                                     <img src="~/images/selected-star.png" alt="">
                                                     <img src="~/images/selected-star.png" alt="">
@@ -139,11 +153,11 @@
                                                 </div>
                                             </div>
                                             @*From @item.StartDate.ToString().Split(" ")[0] until  @item.EndDate.ToString().Split(" ")[0]*@
-                                            @if (item.MissionType == "time")
+                                            @if (item.missionType == "time")
                                                 {
                                             <div class="rule d-flex mt-1">
                                                 <hr>
-                                                <button class="date-btn mt-1"> From @item.StartDate.ToString().Split(" ")[0] until  @item.EndDate.ToString().Split(" ")[0]</button>
+                                                <button class="date-btn mt-1"> @item.StartDateEndDate</button>
                                                 <hr>
                                                 </div>
                                             }
@@ -167,18 +181,18 @@
                                                     <p class="lead me-2 pt-2">
                                                         <img src="~/images/Seats-left.png" alt="">
                                                         <div>
-                                                            <div>@item.Availability</div>
+                                                            <div>10</div>
                                                             <div class="landing-page-card-vol-small">Seats Left</div>
                                                         </div>
                                                     </p>
                                                 </div>
-                                                @if (item.MissionType == "time")
+                                                @if (item.missionType == "time")
                                                 {
                                                     <div class="col-6 col-md-6 d-flex align-items-center">
                                                         <p class="lead me-2 pt-2">
                                                             <img src="~/images/deadline.png" alt="">
                                                             <div>
-                                                                <div>@item.EndDate.ToString().Split(" ")[0]</div>
+                                                                <div>@item.EndDate</div>
                                                                 <div class="landing-page-card-vol-small">Deadline</div>
                                                             </div>
                                                         </p>
@@ -289,27 +303,36 @@
                     localStorage.setItem("viewtype", "grid")
                     $('.item').removeClass('list-group-item'); $('#products .item').addClassN('grid-group-item');
                 }
-                 function addtofav(missionId,Id){
+                 function addToFav(missionId, userId) {
+
         $.ajax({
-            url: '/Home/Addfav',
+            url: '/Home/AddToFav',
             type: 'POST',
-            data: { missionId: missionId, Id: Id},
-            success: function (result){
-                if (result.favmission == "0") {
-                    
-                    var heartbtn = document.getElementById("heart");
-                    heartbtn.style.Color = "#F88634";
-                    favbtn.style.color="orange"
+            data: { MissionId: missionId, UserId: userId },
+            success: function (result) {
+
+                if (result.favoriteMissionadd) {
+                    location.reload();
+                    var afterapplybtn = document.getElementById("afterApply");
+                    var beforeapplybtn = document.getElementById("beforeApply");
+                    console.log(afterapplybtn);
+                    afterapplybtn.classList.remove('d-none');
+                    beforeapplybtn.classList.add('d-none');
+
+
                 }
-                else{
-                    
-                    var heartbtn = document.getElementById("heart");
-                    heartbtn.style.Color = "black";
-                    favbtn.style.color = "black"
+                else if (result.favoriteMissiondel) {
+                    location.reload();
+                    var afterapplybtn = document.getElementById("afterApply");
+                    var beforeapplybtn = document.getElementById("beforeApply");
+                    beforeapplybtn.classList.remove('d-none');
+                    afterapplybtn.classList.add('d-none');
+
+
                 }
             }
         });
-    }   
+    }
 
             </script>
             

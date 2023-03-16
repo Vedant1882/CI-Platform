@@ -1,39 +1,44 @@
-﻿namespace CI.Models
+﻿namespace CI_PlatformWeb.Models
 {
     public class VolunteeringVM
     {
-        public long MissionId { get; set; }
+        public long? MissionId { get; set; }
 
-        public long CityId { get; set; }
-        public string Cityname { get; set; }
-        public long CountryId { get; set; }
-        public string Countryname { get; set; }
-
-        public long ThemeId { get; set; }
-        public string Themename { get; set; }
-
-
-        public string Title { get; set; } = null!;
-
-        public string? ShortDescription { get; set; }
-
+        public string? SingleTitle { get; set; }
         public string? Description { get; set; }
 
-        public string? StartDate { get; set; }
+        public string? Organization { get; set; }
 
-        public string? EndDate { get; set; }
-        public string MissionType { get; set; } = null!;
-        public string? OrganizationName { get; set; }
+        public long? Rating { get; set; } = null;
 
-        public string? OrganizationDetail { get; set; }
+        public string? ImgUrl { get; set; }
 
-        public string? Availability { get; set; }
-        public string? GoalObjectiveText { get; set; }
+        public string? Theme { get; set; }
 
+        public string? missionType { get; set; }
+        public long? isFavrouite { get; set; } = null;
 
-        public string GoalValue { get; set; } = null!;
+        public bool? userApplied { get; set; }
 
-        public string username { get; set; }
+        public string? City { get; set; }
 
+        public string? StartDateEndDate { get; set; }
+
+        public DateTime? StartDate { get; set; } = null;
+
+        public DateTime? EndDate { get; set; }=null;
+
+        public int? NoOfSeatsLeft { get; set; }
+
+        public string? Deadline { get; set; }
+
+        public DateTime? createdAt { get; set; }
+        public long? UserId { get; set; }
+        public string? GoalText { get; set; }
+        public long? addedtofav { get; set; }
+
+        public string? UserName { get; set; }
+
+        
     }
 }

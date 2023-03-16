@@ -188,7 +188,7 @@
 
 .landing-page-btn-img {
     border: none;
-    background-color: rgba(0, 0, 0, 0.6);
+  /*  background-color: rgba(0, 0, 0, 0.6);*/
     border-radius: 30px;
     padding: 6px;
 }

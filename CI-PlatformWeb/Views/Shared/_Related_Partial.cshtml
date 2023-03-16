@@ -46,7 +46,7 @@
                                     <img class="group list-group-image img-fluid" style="width:100%;"
                                  src="~/images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" alt="Card image cap">
 
-                                    <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.Cityname</div>
+                                    <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City</div>
 
                                     <div class="landing-page-bottom-right d-flex flex-column">
                                         <button class="mb-2 landing-page-btn-img">
@@ -56,7 +56,7 @@
                                         </button>
                                     </div>
 
-                                    <button class="landing-page-bottom-center">@item.Themename</button>
+                                    <button class="landing-page-bottom-center">@item.Theme</button>
                                 </div>
 
 
@@ -64,16 +64,16 @@
                                 <div class="caption card-body ">
                                     <div class=" col-12">
                                         <h5 class="group card-title inner list-group-item-heading" style="overflow: hidden;display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;">
-                                            @item.Title
+                                            @item.SingleTitle
                                         </h5>
                                         <p class="group inner landing-page-list-group-item-text" style="overflow: hidden;display: -webkit-box;-webkit-line-clamp:2;-webkit-box-orient: vertical;">
-                                            @item.ShortDescription
+                                            @item.Description
                                         </p>
                                     </div>
 
 
                                     <div class="d-flex justify-content-between landing-page-card-rating">
-                                        <p>@item.OrganizationName</p>
+                                        <p>@item.Organization</p>
                                         <div>
                                             <img src="~/images/selected-star.png" alt="">
                                             <img src="~/images/selected-star.png" alt="">
@@ -85,7 +85,7 @@
                                     </div>
                                     @*From @item.StartDate.ToString().Split(" ")[0] until  @item.EndDate.ToString().Split(" ")[0]*@
 
-                                   @if (item.MissionType == "time")
+                                   @if (item.missionType == "time")
                                                 {
                                             <div class="rule d-flex mt-1">
                                                 <hr>
@@ -98,7 +98,7 @@
                                                 
                                                         <div class="rule d-flex mt-1">
                                                 <hr>
-                                                <button class="date-btn mt-1">@item.GoalObjectiveText</button>
+                                            <button class="date-btn mt-1">@item.GoalText</button>
                                                 <hr>
                                                 </div>
                                                     
@@ -109,12 +109,12 @@
                                             <p class="lead me-2 pt-2">
                                                 <img src="~/images/Seats-left.png" alt="">
                                                 <div>
-                                                    <div>@item.Availability</div>
+                                                    <div>10</div>
                                                     <div class="landing-page-card-vol-small">Seats Left</div>
                                                 </div>
                                             </p>
                                         </div>
-                                        @if (item.MissionType == "time")
+                                        @if (item.missionType == "time")
                                         {
                                             <div class="col-6 col-md-6 d-flex align-items-center">
                                                 <p class="lead me-2 pt-2">
