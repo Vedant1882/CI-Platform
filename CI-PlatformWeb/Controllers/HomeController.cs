@@ -227,7 +227,11 @@ namespace CI_PlatformWeb.Controllers
             int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
             int? user = HttpContext.Session.GetInt32("userIDforfavmission");
             int? useridfavmission = HttpContext.Session.GetInt32("userIDforfavmission");
-            ViewBag.UserId = int.Parse(userId);
+            if(userId != null || user != null)
+            {
+                ViewBag.UserId = int.Parse(userId);
+            }
+            
             List<Mission> mission = _CIDbContext.Missions.ToList();
 
             List<City> cityname = new List<City>();
