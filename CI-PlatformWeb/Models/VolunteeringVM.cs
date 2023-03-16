@@ -37,8 +37,11 @@
         public string? GoalText { get; set; }
         public long? addedtofav { get; set; }
 
+        public string? allusers { get; set; }
         public string? UserName { get; set; }
+        public string? LastName { get; set; }
 
-        
+        public long? UserIdForMail { get; set; }
+
     }
 }

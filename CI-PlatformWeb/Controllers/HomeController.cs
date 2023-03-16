@@ -13,6 +13,7 @@ using System.Web;
 using NuGet.Packaging;
 using Microsoft.Data.SqlClient;
 using System.Linq;
+using NuGet.Common;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -729,6 +730,38 @@ namespace CI_PlatformWeb.Controllers
             return View(Missions);
         }
         [HttpPost]
+        public async Task<IActionResult> Sendmail(long[] id)
+        {
+            foreach(var item in id)
+            {
+                var user = _CIDbContext.Users.FirstOrDefault(u => u.UserId == item);
+                var resetLink = Url.Action("ResetPassword", "Home", new { email = user.Email }, Request.Scheme);
+
+
+                //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("officehl1882@gmail.com", "Sender Name");
+                var toAddress = new MailAddress(user.Email);
+                var subject = "Password reset request";
+                var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
+                var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                };
+                var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("officehl1882@gmail.com", "yedkuuhuklkqfzwx"),
+                    //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
+                    EnableSsl = true
+                };
+                smtpClient.Send(message);
+                
+            }
+            return Json(new { success = true });
+        }
+        [HttpPost]
         public async Task<IActionResult> Addrating(int rating, long Id, long missionId)
         {
             MissionRating ratingExists = await _CIDbContext.MissionRatings.FirstOrDefaultAsync(fm => fm.UserId == Id && fm.MissionId == missionId);
@@ -1028,10 +1061,18 @@ namespace CI_PlatformWeb.Controllers
             }
             ViewBag.recentvolunteered = recentvolunteredlist;
 
+            List<User> Alluser=_CIDbContext.Users.ToList();
+            List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+            foreach(var i in Alluser) {
+                usernamelist.Add(new VolunteeringVM
+            {
+                UserName = i.FirstName,
+                LastName = i.LastName,
+                UserIdForMail=i.UserId,
 
-
-
-
+            }) ;
+            }
+            ViewBag.alluser=usernamelist;
             return View(volunteeringMission);
         }
    
