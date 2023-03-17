@@ -810,7 +810,7 @@ namespace CI_PlatformWeb.Controllers
                 FavoriteMission favoriteMissiondel = _CIDbContext.FavoriteMissions.Where(FM => FM.MissionId == MissionId && FM.UserId == UserId).FirstOrDefault();
                 _CIDbContext.Remove(favoriteMissiondel);
                 _CIDbContext.SaveChanges();
-                return Json(new { success = true, favoriteMissiondel, isRated = true });
+                return Json(new { success = true, favoriteMissiondel, isRated = false });
             }
             else
             {
@@ -861,7 +861,7 @@ namespace CI_PlatformWeb.Controllers
                     Theme = theme.Title,
                     Organization = mission.OrganizationName,
                     Rating = ratings != null ? ratings.Rating : 0,
-                    isFavrouite = favmission == null ? null : favmission.MissionId,
+                    isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == id) : false,
                     UserId = favmission == null ? null : favmission.UserId,
 
 

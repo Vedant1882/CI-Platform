@@ -16,7 +16,7 @@
         public string? Theme { get; set; }
 
         public string? missionType { get; set; }
-        public long? isFavrouite { get; set; } = null;
+        public bool? isFavrouite { get; set; } = null;
 
         public bool? userApplied { get; set; }
 

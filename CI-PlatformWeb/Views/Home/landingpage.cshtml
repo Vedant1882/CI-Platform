@@ -356,7 +356,7 @@
             }
             function gridview() {
                 localStorage.setItem("viewtype", "grid")
-                $('.item').removeClass('list-group-item'); $('#products .item').addClassN('grid-group-item');
+                $('.item').removeClass('list-group-item'); $('#products .item').addClass('grid-group-item');
             }
             function addToFav(missionId, userId) {
 
@@ -365,21 +365,21 @@
                     type: 'POST',
                     data: { MissionId: missionId, UserId: userId },
                     success: function (result) {
-
-                        if (result.favoriteMissionadd) {
+                        //debugger;
+                        if (result.isRated) {
                             location.reload();
-                            var afterapplybtn = document.getElementById("afterApply");
-                            var beforeapplybtn = document.getElementById("beforeApply");
+                            var afterapplybtn = document.getElementsByClassName("afterApply");
+                            var beforeapplybtn = document.getElementsByClassName("beforeApply");
                             console.log(afterapplybtn);
                             afterapplybtn.classList.remove('d-none');
                             beforeapplybtn.classList.add('d-none');
 
 
                         }
-                        else if (result.favoriteMissiondel) {
+                        else{
                             location.reload();
-                            var afterapplybtn = document.getElementById("afterApply");
-                            var beforeapplybtn = document.getElementById("beforeApply");
+                            var afterapplybtn = document.getElementsByClassName("afterApply");
+                            var beforeapplybtn = document.getElementsByClassName("beforeApply");
                             beforeapplybtn.classList.remove('d-none');
                             afterapplybtn.classList.add('d-none');
 
