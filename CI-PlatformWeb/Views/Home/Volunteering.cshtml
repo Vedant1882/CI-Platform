@@ -202,7 +202,7 @@
                         @if(Model.UserId == useridforFavM && Model.isFavrouite != null)
                         {
                         <button class="btn vol-page-group-btn-btn" id="afterApply" onclick="addToFav(@Model.MissionId,@useridforFavM)">
-                        <i class="bi bi-heart-fill" id="heart"></i> Already Added
+                        <i class="bi bi-heart-fill" id="heart" style="color:red"></i> Already Added
                         </button>
                         }
                         else
@@ -246,7 +246,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" onclick="sendmail()">Send Mission</button>
+                                        <button type="button" class="btn btn-primary" id="sendmail" onclick="sendmail(@Model.MissionId)">Send Mission</button>
                                         </div>
                                     </div>
                                 </div>

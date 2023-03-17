@@ -710,7 +710,19 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
             ViewBag.CurrentPage = pageIndex ?? 0;
 
-            
+            List<User> Alluser = _CIDbContext.Users.ToList();
+            List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+            foreach (var i in Alluser)
+            {
+                usernamelist.Add(new VolunteeringVM
+                {
+                    UserName = i.FirstName,
+                    LastName = i.LastName,
+                    UserIdForMail = i.UserId,
+
+                });
+            }
+            ViewBag.alluser = usernamelist;
 
             // Get the current URL
             UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
@@ -734,12 +746,12 @@ namespace CI_PlatformWeb.Controllers
             return View(Missions);
         }
         [HttpPost]
-        public async Task<IActionResult> Sendmail(long[] id)
+        public async Task<IActionResult> Sendmail(long[] userid,int id)
         {
-            foreach(var item in id)
+            foreach(var item in userid)
             {
                 var user = _CIDbContext.Users.FirstOrDefault(u => u.UserId == item);
-                var resetLink = Url.Action("ResetPassword", "Home", new { email = user.Email }, Request.Scheme);
+                var resetLink = Url.Action("Volunteering", "Home", new { user = user.UserId , missionId =id}, Request.Scheme);
 
 
                 //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
@@ -812,35 +824,34 @@ namespace CI_PlatformWeb.Controllers
             }
         }
 
-        public IActionResult Volunteering(int missionId)
+        public IActionResult Volunteering(long id,int missionId)
         {
-            //List<VolunteeringMission> missionsVM = new List<VolunteeringMission>();
-            List<Mission> missionlist = _CIDbContext.Missions.ToList();
             
-            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
-            List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
-            var mission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionId);
-            var favmission = _CIDbContext.FavoriteMissions.FirstOrDefault(FM => FM.MissionId == missionId);
-            missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
-            var theme = _CIDbContext.MissionThemes.FirstOrDefault(t => t.MissionThemeId == mission.ThemeId);
-            var goaltxt = _CIDbContext.GoalMissions.FirstOrDefault(g => g.MissionId == mission.MissionId);
-            var city = _CIDbContext.Cities.FirstOrDefault(s => s.CityId == mission.CityId);
-            var ratings = _CIDbContext.MissionRatings.FirstOrDefault(MR => MR.MissionId == missionId && MR.UserId == useridforrating);
-            var recvoldet = from U in _CIDbContext.Users join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
-            GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
-            string[] startDateNtime = mission.StartDate.ToString().Split(' ');
-            string[] endDateNtime = mission.EndDate.ToString().Split(' ');
+            
+                //List<VolunteeringMission> missionsVM = new List<VolunteeringMission>();
+                List<Mission> missionlist = _CIDbContext.Missions.ToList();
 
-            VolunteeringVM volunteeringMission = new();
+                int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+                List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
+                var mission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionId);
+                var favmission = _CIDbContext.FavoriteMissions.FirstOrDefault(FM => FM.MissionId == missionId);
+                missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
+                var theme = _CIDbContext.MissionThemes.FirstOrDefault(t => t.MissionThemeId == mission.ThemeId);
+                var goaltxt = _CIDbContext.GoalMissions.FirstOrDefault(g => g.MissionId == mission.MissionId);
+                var city = _CIDbContext.Cities.FirstOrDefault(s => s.CityId == mission.CityId);
+                var ratings = _CIDbContext.MissionRatings.FirstOrDefault(MR => MR.MissionId == missionId && MR.UserId == useridforrating);
+                var recvoldet = from U in _CIDbContext.Users join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
+                string[] startDateNtime = mission.StartDate.ToString().Split(' ');
+                string[] endDateNtime = mission.EndDate.ToString().Split(' ');
 
-            if (goalMission != null && ratings != null && favmission != null)
-            {
+                VolunteeringVM volunteeringMission = new();
+
                 volunteeringMission = new()
                 {
                     SingleTitle = mission.Title,
-                    
                     Description = mission.Description,
-                    GoalText = goalMission.GoalObjectiveText,
+                    GoalText = goalMission != null ? goalMission.GoalObjectiveText : "null",
                     StartDate = (DateTime)mission.StartDate,
                     EndDate = (DateTime)mission.EndDate,
                     StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
@@ -849,237 +860,85 @@ namespace CI_PlatformWeb.Controllers
                     City = city.Name,
                     Theme = theme.Title,
                     Organization = mission.OrganizationName,
-                    Rating = ratings.Rating,
-                    UserId = favmission.UserId,
-                    isFavrouite = favmission.MissionId
+                    Rating = ratings != null ? ratings.Rating : 0,
+                    isFavrouite = favmission == null ? null : favmission.MissionId,
+                    UserId = favmission == null ? null : favmission.UserId,
 
 
                 };
 
 
-            }
-            else if (goalMission != null && favmission != null)
-            {
-                volunteeringMission = new()
+
+
+
+                var relatedmission = _CIDbContext.Missions.Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
+                foreach (var item in relatedmission.Take(3))
                 {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    GoalText = goalMission.GoalObjectiveText,
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-                    UserId = favmission.UserId,
-                    isFavrouite = favmission.MissionId
+                    var relcity = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == item.CityId);
+                    var reltheme = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == item.ThemeId);
+                    var relgoalobj = _CIDbContext.GoalMissions.FirstOrDefault(m => m.MissionId == item.MissionId);
+                    var Startdate1 = item.StartDate;
+                    var Enddate2 = item.EndDate;
+
+                    relatedlist.Add(new VolunteeringVM
+                    {
+                        MissionId = item.MissionId,
+                        City = relcity.Name,
+                        Theme = reltheme.Title,
+                        SingleTitle = item.Title,
+                        Description = item.ShortDescription,
+                        StartDate = Startdate1,
+                        EndDate = Enddate2,
+
+                        Organization = item.OrganizationName,
+                        GoalText = relgoalobj.GoalObjectiveText,
+                        missionType = item.MissionType,
 
 
-                };
+                    });
+                }
+
+                ViewBag.relatedmission = relatedlist.Take(3);
+
+                //List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
+
+                //var resentV = _CIDbContext.MissionApplications.FirstOrDefault(m => m.MissionId == missionid);
+                //var uname = _CIDbContext.Users.FirstOrDefault(m=>m.UserId == resentV.UserId);
+                //ViewBag.resentV = uname;
+                ////volunteeringVM.username = uname.FirstName;
+                //volunteeringVM.username= uname.FirstName;
 
 
-            }
-            else if (goalMission != null && ratings != null)
-            {
 
-                volunteeringMission = new()
+                List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
+                //var recentvolunttered = from U in CID.Users join MA in CiMainContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                var recentvoluntered = from U in _CIDbContext.Users join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                foreach (var item in recentvoluntered)
                 {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    GoalText = goalMission.GoalObjectiveText,
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-                    Rating = ratings.Rating,
+                    recentvolunteredlist.Add(new VolunteeringVM
+                    {
+                        UserName = item.FirstName,
+                    });
 
-                };
+                }
+                ViewBag.recentvolunteered = recentvolunteredlist;
 
-
-
-            }
-            else if (ratings != null && favmission != null)
-            {
-
-                volunteeringMission = new()
+                List<User> Alluser = _CIDbContext.Users.ToList();
+                List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+                foreach (var i in Alluser)
                 {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    StartDate = (DateTime)mission.StartDate,
+                    usernamelist.Add(new VolunteeringVM
+                    {
+                        UserName = i.FirstName,
+                        LastName = i.LastName,
+                        UserIdForMail = i.UserId,
 
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-                    Rating = ratings.Rating,
-                    UserId = favmission.UserId,
-                    isFavrouite = favmission.MissionId
-
-                };
-
-
-
+                    });
+                }
+                ViewBag.alluser = usernamelist;
+                return View(volunteeringMission);
             }
-
-            else if (goalMission != null)
-            {
-
-                volunteeringMission = new()
-                {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    GoalText = goalMission.GoalObjectiveText,
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-
-                };
-
-
-
-            }
-            else if (favmission != null)
-            {
-
-                volunteeringMission = new()
-                {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-                    UserId = favmission.UserId,
-                    isFavrouite = favmission.MissionId
-
-                };
-
-
-
-            }
-            else if (ratings != null)
-            {
-                volunteeringMission = new()
-                {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-                    Rating = ratings.Rating
-                };
-
-            }
-            else
-            {
-                volunteeringMission = new()
-                {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName
-
-                };
-
-            }
-
-            var relatedmission = _CIDbContext.Missions.Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
-            foreach (var item in relatedmission.Take(3))
-            {
-                var relcity = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == item.CityId);
-                var reltheme = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == item.ThemeId);
-                var relgoalobj = _CIDbContext.GoalMissions.FirstOrDefault(m => m.MissionId == item.MissionId);
-                var Startdate1 = item.StartDate ;
-                var Enddate2 = item.EndDate;
-
-                relatedlist.Add(new VolunteeringVM
-                {
-                    MissionId = item.MissionId,
-                    City = relcity.Name,
-                    Theme = reltheme.Title,
-                    SingleTitle = item.Title,
-                    Description = item.ShortDescription,
-                    StartDate =Startdate1,
-                    EndDate = Enddate2,
-                    
-                    Organization = item.OrganizationName,
-                    GoalText = relgoalobj.GoalObjectiveText,
-                    missionType = item.MissionType,
-
-
-                });
-            }
-
-            ViewBag.relatedmission = relatedlist.Take(3);
-
-            //List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
-
-            //var resentV = _CIDbContext.MissionApplications.FirstOrDefault(m => m.MissionId == missionid);
-            //var uname = _CIDbContext.Users.FirstOrDefault(m=>m.UserId == resentV.UserId);
-            //ViewBag.resentV = uname;
-            ////volunteeringVM.username = uname.FirstName;
-            //volunteeringVM.username= uname.FirstName;
-
-
-
-            List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
-            //var recentvolunttered = from U in CID.Users join MA in CiMainContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
-            var recentvoluntered = from U in _CIDbContext.Users join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
-            foreach (var item in recentvoluntered)
-            {
-                recentvolunteredlist.Add(new VolunteeringVM
-                {
-                    UserName = item.FirstName,
-                });
-
-            }
-            ViewBag.recentvolunteered = recentvolunteredlist;
-
-            List<User> Alluser=_CIDbContext.Users.ToList();
-            List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
-            foreach(var i in Alluser) {
-                usernamelist.Add(new VolunteeringVM
-            {
-                UserName = i.FirstName,
-                LastName = i.LastName,
-                UserIdForMail=i.UserId,
-
-            }) ;
-            }
-            ViewBag.alluser=usernamelist;
-            return View(volunteeringMission);
         }
-   
-        }
+        
     }
 

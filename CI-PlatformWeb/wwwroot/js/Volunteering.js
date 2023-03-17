@@ -29,19 +29,21 @@ function showSlides(n) {
 /*    captionText.innerHTML = dots[slideIndex - 1].alt;*/
 }
 
-function sendmail() {
+function sendmail(id) {
     const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
-    
+    var send = document.getElementById("sendmail");
+    send.innerHTML="Sending"
     $.ajax({
         url: '/Home/Sendmail',
         type: 'POST',
-        data: { id: mail },
+        data: { userid: mail ,id:id},
         success: function (result) {
             alert("Recomendations sent successfully!");
             const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
             checkboxes.forEach((checkbox) => {
                 checkbox.checked = false;
             });
+            send.innerHTML="sent"
         },
         error: function () {
             // Handle error response from the server, e.g. show an error message to the user
