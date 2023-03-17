@@ -141,24 +141,11 @@
                                                     <img src="~/images/add1.png" class="" />
                                                 </button>
                                             }
-                                            @{
-                                                int? useridfavmission = Context.Session.GetInt32("userIDforfavmission");
-                                            }
-                                            @if (@item.MissionId == item.addedtofavM && item.addedtofavU == useridfavmission)
-                                            {
-                                                <button class="mb-2 landing-page-btn-img afterApply" id="@item.MissionId" onclick="addToFav(@item.MissionId, @useridfavmission)">
-                                                    <img src="~/images/heart red.png" height="25px" width="25px" alt="">
-                                                </button>
-                                            }
-                                            else
-                                            {
+                                                  <button class="mb-2 landing-page-btn-img" id="favmissiondiv" onclick="addtofav(@item.MissionId,@ViewBag.UserId)">
 
+                                                <i class="bi bi-heart-fill" style="@(@item.isFavrouite ? "color:#F88634;" : "color:white;")" mailto:id="heart-@item.MissionId"></i>
 
-                                                <button class="mb-2 landing-page-btn-img beforeApply" id="@item.MissionId" onclick="addToFav(@item.MissionId, @useridfavmission)">
-                                                    <img src="~/images/heart.png" alt="">
-                                                </button>
-
-                                            }
+                            </button>
 
                                         </div>
 
@@ -358,36 +345,34 @@
                 localStorage.setItem("viewtype", "grid")
                 $('.item').removeClass('list-group-item'); $('#products .item').addClass('grid-group-item');
             }
-            function addToFav(missionId, userId) {
-
-                $.ajax({
+            function addtofav(missionId, Id)
+    {
+        $.ajax({
                     url: '/Home/AddToFav',
-                    type: 'POST',
-                    data: { MissionId: missionId, UserId: userId },
-                    success: function (result) {
-                        //debugger;
-                        if (result.isRated) {
+            type: 'POST',
+                    data: { missionId: missionId, UserId: Id },
+            success: function (result)
+            {
+                if (result.favmission == "0") {
                             location.reload();
-                            var afterapplybtn = document.getElementsByClassName("afterApply");
-                            var beforeapplybtn = document.getElementsByClassName("beforeApply");
-                            console.log(afterapplybtn);
-                            afterapplybtn.classList.remove('d-none');
-                            beforeapplybtn.classList.add('d-none');
-
-
-                        }
-                        else{
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "#F88634";
+                    favbtn.style.color = "orange"
+                   
+                }
+                else {
                             location.reload();
-                            var afterapplybtn = document.getElementsByClassName("afterApply");
-                            var beforeapplybtn = document.getElementsByClassName("beforeApply");
-                            beforeapplybtn.classList.remove('d-none');
-                            afterapplybtn.classList.add('d-none');
-
-
-                        }
-                    }
-                });
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "white";
+                    favbtn.style.color = "white"
+                            
+                }
+                
             }
+        });
+        }
             function sendmail(id) {
                 const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
                 var send = document.getElementById("sendmail");

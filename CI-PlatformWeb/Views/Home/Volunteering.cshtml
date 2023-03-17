@@ -193,26 +193,16 @@
                             }
                         </div>
                     </div>
-                   
+                   @{
+
+                   }
                     <div class="row">
                         <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" id="favmissiondiv">
-                        @{
-                        var useridforFavM = Context.Session.GetInt32("userIDforfavmission");
-                        }
-                        @if(Model.UserId == useridforFavM && Model.isFavrouite != null)
-                        {
-                        <button class="btn vol-page-group-btn-btn" id="afterApply" onclick="addToFav(@Model.MissionId,@useridforFavM)">
-                        <i class="bi bi-heart-fill" id="heart" style="color:red"></i> Already Added
-                        </button>
-                        }
-                        else
-                        {
-                        <button class="btn vol-page-group-btn-btn" id="beforeApply" onclick="addToFav(@Model.MissionId,@useridforFavM)">
-                        <i class="bi bi-heart" id="heart"></i> Add
-                        to Favourite
-                        </button>
-                        }
+                            <div class="col  col-11  col-xl-5 col-lg-11 col-md-5 col   me-xl-4  me-md-4 rounded-5 d-flex   Addfavourite   justify-content-center" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
+                                <i class="bi bi-heart-fill" id="heart" style="(@Model.isFavrouite ? "color:#F88634;" : "color:black;")"></i>
+                                <label class="ms-2" id="favmissiondiv" style="(@Model.isFavrouite ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
 
+                            </div>
                         </div>
                          
                         
@@ -536,33 +526,29 @@
             }
         });
     }
-    function addToFav(missionId, userId) {
-
+    function addtofav(missionId, Id) {
         $.ajax({
             url: '/Home/AddToFav',
             type: 'POST',
-            data: { MissionId: missionId, UserId: userId },
+            data: { MissionId: missionId, UserId: Id },
             success: function (result) {
+                if (result.favmission == "0") {
 
-                if (result.favoriteMissionadd) {
-                    location.reload();
-                    var afterapplybtn = document.getElementById("afterApply");
-                    var beforeapplybtn = document.getElementById("beforeApply");
-                    console.log(afterapplybtn);
-                    afterapplybtn.classList.remove('d-none');
-                    beforeapplybtn.classList.add('d-none');
-
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "#F88634";
+                    favbtn.style.color = "orange"
 
                 }
-                else if (result.favoriteMissiondel) {
-                    location.reload();
-                    var afterapplybtn = document.getElementById("afterApply");
-                    var beforeapplybtn = document.getElementById("beforeApply");
-                    beforeapplybtn.classList.remove('d-none');
-                    afterapplybtn.classList.add('d-none');
+                else {
 
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "white";
+                    favbtn.style.color = "white"
 
                 }
+
             }
         });
     }

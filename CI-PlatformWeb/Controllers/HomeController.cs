@@ -832,6 +832,7 @@ namespace CI_PlatformWeb.Controllers
                 List<Mission> missionlist = _CIDbContext.Missions.ToList();
 
                 int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+            ViewBag.userid=useridforrating;
                 List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
                 var mission = _CIDbContext.Missions.FirstOrDefault(m => m.MissionId == missionId);
                 var favmission = _CIDbContext.FavoriteMissions.FirstOrDefault(FM => FM.MissionId == missionId);
@@ -844,8 +845,9 @@ namespace CI_PlatformWeb.Controllers
                 GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
                 string[] startDateNtime = mission.StartDate.ToString().Split(' ');
                 string[] endDateNtime = mission.EndDate.ToString().Split(' ');
-
-                VolunteeringVM volunteeringMission = new();
+            var favrioute = (id != null) ? _CIDbContext.FavoriteMissions.Any(u => u.UserId == id && u.MissionId == mission.MissionId) : false;
+            VolunteeringVM volunteeringMission = new();
+            ViewBag.x = favrioute;
 
                 volunteeringMission = new()
                 {
@@ -862,12 +864,12 @@ namespace CI_PlatformWeb.Controllers
                     Organization = mission.OrganizationName,
                     Rating = ratings != null ? ratings.Rating : 0,
                     isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == id) : false,
-                    UserId = favmission == null ? null : favmission.UserId,
+                    //UserId = favmission == null ? null : favmission.UserId,
 
 
                 };
 
-
+            
 
 
 
