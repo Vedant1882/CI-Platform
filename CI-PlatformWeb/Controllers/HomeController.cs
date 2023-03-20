@@ -73,10 +73,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        //public IActionResult Landingpage()
-        //{
-        //    return View();
-        //}
+        public IActionResult StoryShare()
+        {
+            return View();
+        }
 
         [HttpPost]
         [AllowAnonymous]
