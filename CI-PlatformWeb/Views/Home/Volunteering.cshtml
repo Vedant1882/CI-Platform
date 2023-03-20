@@ -197,12 +197,13 @@
 
                    }
                     <div class="row">
-                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" id="favmissiondiv">
-                            <div class="col  col-11  col-xl-5 col-lg-11 col-md-5 col   me-xl-4  me-md-4 rounded-5 d-flex   Addfavourite   justify-content-center" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
-                                <i class="bi bi-heart-fill" id="heart" style="(@Model.isFavrouite ? "color:#F88634;" : "color:black;")"></i>
-                                <label class="ms-2" id="favmissiondiv" style="(@Model.isFavrouite ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
+                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" id="favmissiondiv" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
+                            
+                               
+                                <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
+                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
 
-                            </div>
+                            
                         </div>
                          
                         
@@ -379,57 +380,31 @@
 
                 </div>
                 <div class="tab-pane fade ms-3" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                    <textarea style="width:100%" placeholder="Enter Your Comments" oninput="getVal(event)"></textarea>
+                    <textarea style="width:100%" placeholder="Enter Your Comments" id="commenttext"></textarea>
                     <div>
-                        <a class="btn mt-2 landing-page-apply-mission-btn" href="">
+                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="comment(@Model.MissionId,@Model.UserId)">
                             Post comments
                         </a>
                     </div>
                     @*--------Comments------------*@
                     <div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
                         <ul class="list-unstyled mt-2">
-                            <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                <div class="media-body ms-2">
-                                    <h5 class="mt-0 mb-1">List-based media object</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </li>
-                            <li class="media my-4 d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                <div class="media-body ms-2">
-                                    <h5 class="mt-0 mb-1">List-based media object</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </li>
-                            <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                <div class="media-body ms-2">
-                                    <h5 class="mt-0 mb-1">List-based media object</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </li>
-                            <li class="media my-4 d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                <div class="media-body ms-2">
-                                    <h5 class="mt-0 mb-1">List-based media object</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </li>
-                            <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                <div class="media-body ms-2">
-                                    <h5 class="mt-0 mb-1">List-based media object</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </li>
-                            <li class="media my-4 d-flex ms-2 me-2 ps-1 pt-1 bg-white">
-                                <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                <div class="media-body ms-2">
-                                    <h5 class="mt-0 mb-1">List-based media object</h5>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </li>
+                            @if (ViewBag.missioncomment != null)
+                            {
+                                @foreach (var c in ViewBag.missioncomment)
+                                {
+                                    <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
+                                        <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
+                                        <div class="media-body ms-2">
+                                            <h5 class="mt-0 mb-1">@c.UserName</h5>
+                                            @c.commenttext
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            
+                            
+                            
                         </ul>
                     </div>
                 </div>
@@ -533,6 +508,34 @@
             data: { MissionId: missionId, UserId: Id },
             success: function (result) {
                 if (result.favmission == "0") {
+                   location.reload();
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "#F88634";
+                    favbtn.style.color = "orange"
+                    
+                }
+                else {
+                    location.reload();
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "white";
+                    favbtn.style.color = "white"
+                    
+                }
+
+            }
+        });
+    }
+    function comment(mid,uid){
+        var text=document.getElementById("commenttext").value;
+        alert(text + mid + uid);
+         $.ajax({
+            url: '/Home/comment',
+            type: 'POST',
+            data: { MissionId: mid, UserId: uid ,comment:text },
+            success: function (result) {
+                if (result.favmission == "0") {
 
                     var favbtn = document.getElementById("favmissiondiv");
                     var heartbtn = document.getElementById("heart-" + missionId.toString());
@@ -552,7 +555,6 @@
             }
         });
     }
-
 </script>
 </html>
 

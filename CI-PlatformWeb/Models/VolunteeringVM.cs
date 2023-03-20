@@ -41,6 +41,7 @@
         public string? UserName { get; set; }
         public string? LastName { get; set; }
 
+        public string? commenttext { get; set; }
         public long? UserIdForMail { get; set; }
 
     }

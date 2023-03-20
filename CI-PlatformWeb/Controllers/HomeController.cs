@@ -801,6 +801,22 @@ namespace CI_PlatformWeb.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> comment(long MissionId, long UserId,String comment)
+        {
+            
+            var newcomment = new Comment();
+            newcomment.UserId = UserId;
+            newcomment.MissionId = MissionId;
+            newcomment.CommentText = comment;
+            _CIDbContext.Add(newcomment);
+            _CIDbContext.SaveChanges();
+            
+            return Json(new { success = true, newcomment });
+
+
+        }
+
+            [HttpPost]
         public async Task<IActionResult> AddToFav(long MissionId, long UserId)
         {
             FavoriteMission favoriteMission = await _CIDbContext.FavoriteMissions.FirstOrDefaultAsync(FM => FM.MissionId == MissionId && FM.UserId == UserId);
@@ -863,17 +879,33 @@ namespace CI_PlatformWeb.Controllers
                     Theme = theme.Title,
                     Organization = mission.OrganizationName,
                     Rating = ratings != null ? ratings.Rating : 0,
-                    isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == id) : false,
-                    //UserId = favmission == null ? null : favmission.UserId,
+                    isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
+                    UserId = useridforrating,
 
 
                 };
-
-            
-
+            ViewBag.fav = volunteeringMission.isFavrouite;
 
 
-                var relatedmission = _CIDbContext.Missions.Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
+            List<VolunteeringVM> missioncomment = new List<VolunteeringVM>();
+            var commentlist = _CIDbContext.Comments.Where(m => m.MissionId == missionId).ToList();
+            foreach (var comment in commentlist)
+            {
+                var user=_CIDbContext.Users.FirstOrDefault(m => m.UserId== comment.UserId);
+                missioncomment.Add(new VolunteeringVM
+                {
+                    commenttext = comment.CommentText,
+                    UserName=user.FirstName,
+                    LastName=user.LastName,
+
+                });
+
+
+            }
+            ViewBag.missioncomment = missioncomment;
+
+
+            var relatedmission = _CIDbContext.Missions.Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
                 foreach (var item in relatedmission.Take(3))
                 {
                     var relcity = _CIDbContext.Cities.FirstOrDefault(m => m.CityId == item.CityId);
