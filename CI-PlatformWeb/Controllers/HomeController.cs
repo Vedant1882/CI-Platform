@@ -77,6 +77,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
+        public IActionResult StoryDetail()
+        {
+            return View();
+        }
 
         [HttpPost]
         [AllowAnonymous]
@@ -677,6 +681,7 @@ namespace CI_PlatformWeb.Controllers
                 }
                 finalrating = rat / ratinglist.Count();
             }
+            ViewBag.totalvol= ratinglist.Count();
             volunteeringMission = new()
             {
                 SingleTitle = mission.Title,
@@ -797,7 +802,7 @@ namespace CI_PlatformWeb.Controllers
                 {
                     StoryTitle = item.Title,
                     Description = item.Description,
-
+                    StoryId= item.StoryId,
                     MissionId = item.MissionId,
                     UserName = user.FirstName,
                     LastName = user.LastName,

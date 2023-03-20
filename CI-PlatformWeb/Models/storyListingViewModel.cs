@@ -2,6 +2,7 @@
 {
     public class storyListingViewModel
     {
+        public long? StoryId { get; set; }
         public long? MissionId { get; set; }
         public string? StoryTitle { get; set; }
         public string? Description { get; set; }

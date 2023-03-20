@@ -3,6 +3,9 @@
     Layout = "_NavbarLayout";
     ViewData["Title"] = "Home Page";
 }
+@{
+    var userid = Context.Session.GetInt32("userIDforfavmission");
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,7 +52,7 @@
                                     <img class="card-img-top storyimg"
                                      src="~/images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" alt="Card image cap">
                                     <div class="ABC position-absolute top-0 start-0" style="height:100%; width:100%;">
-                                        <a class="btn-view  rounded-5 p-1 px-4 position-absolute top-50 start-50 translate-middle">
+                                        <a class="btn-view  rounded-5 p-1 px-4 position-absolute top-50 start-50 translate-middle" href="/Home/StoryDetail/@userid?storyid=@item.StoryId">
                                             View Details
                                             <i class="bi bi-arrow-right  "></i>
 
@@ -59,7 +62,8 @@
                                 </div>
                                 <div class="card-body">
                                     <p class="card-title">
-                                        @item.StoryTitle</p>
+                                        @item.StoryTitle
+                                    </p>
                                     <p class="card-text">
                                         @item.Description
                                     </p>
