@@ -141,11 +141,11 @@
                                                     <img src="~/images/add1.png" class="" />
                                                 </button>
                                             }
-                                                  <button class="mb-2 landing-page-btn-img" id="favmissiondiv" onclick="addtofav(@item.MissionId,@ViewBag.UserId)">
+                                            <button class="mb-2 landing-page-btn-img" id="favmissiondiv" onclick="addtofav(@item.MissionId,@ViewBag.UserId)">
 
-                                                <i class="bi bi-heart-fill" style="@(@item.isFavrouite ? "color:#F88634;" : "color:white;")" mailto:id="heart-@item.MissionId"></i>
+                                                <i class="bi bi-heart-fill" style="@(@item.isFavrouite ? "color:#F88634;" : "color:white;")" id="heart-@item.MissionId"></i>
 
-                            </button>
+                                            </button>
 
                                         </div>
 
@@ -168,11 +168,20 @@
                                         <div class="d-flex justify-content-between landing-page-card-rating">
                                             <p>@item.Organization</p>
                                             <div>
-                                                <img src="~/images/selected-star.png" alt="">
-                                                <img src="~/images/selected-star.png" alt="">
-                                                <img src="~/images/selected-star.png" alt="">
-                                                <img src="~/images/star.png" alt="">
-                                                <img src="~/images/star.png" alt="">
+                                                @if (item.avgrating != null)
+                                                {
+                                                    @for (int i = 0; i < item.avgrating; i++)
+                                                    {
+                                                        <img src="~/images/selected-star.png">
+
+                                                    }
+                                                    @for (int i = item.avgrating; i < 5; i++)
+                                                    {
+                                                        <img src="~/images/star.png">
+
+                                                    }
+                                                }
+
 
                                             </div>
                                         </div>
@@ -345,34 +354,32 @@
                 localStorage.setItem("viewtype", "grid")
                 $('.item').removeClass('list-group-item'); $('#products .item').addClass('grid-group-item');
             }
-            function addtofav(missionId, Id)
-    {
-        $.ajax({
+            function addtofav(missionId, Id) {
+                $.ajax({
                     url: '/Home/AddToFav',
-            type: 'POST',
+                    type: 'POST',
                     data: { missionId: missionId, UserId: Id },
-            success: function (result)
-            {
-                if (result.favmission == "0") {
+                    success: function (result) {
+                        if (result.favmission == "0") {
                             location.reload();
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart-" + missionId.toString());
-                    heartbtn.style.color = "#F88634";
-                    favbtn.style.color = "orange"
-                   
-                }
-                else {
+                            var favbtn = document.getElementById("favmissiondiv");
+                            var heartbtn = document.getElementById("heart-" + missionId.toString());
+                            heartbtn.style.color = "#F88634";
+                            favbtn.style.color = "orange"
+
+                        }
+                        else {
                             location.reload();
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart-" + missionId.toString());
-                    heartbtn.style.color = "white";
-                    favbtn.style.color = "white"
-                            
-                }
-                
+                            var favbtn = document.getElementById("favmissiondiv");
+                            var heartbtn = document.getElementById("heart-" + missionId.toString());
+                            heartbtn.style.color = "white";
+                            favbtn.style.color = "white"
+
+                        }
+
+                    }
+                });
             }
-        });
-        }
             function sendmail(id) {
                 const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
                 var send = document.getElementById("sendmail");
@@ -380,7 +387,7 @@
                 $.ajax({
                     url: '/Home/Sendmail',
                     type: 'POST',
-                    data: { userid: mail,id:id },
+                    data: { userid: mail, id: id },
                     success: function (result) {
                         alert("Recomendations sent successfully!");
                         const checkboxes = document.querySelectorAll('input[name="mail"]:checked');

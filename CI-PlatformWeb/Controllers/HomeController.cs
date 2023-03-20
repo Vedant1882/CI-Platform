@@ -14,6 +14,7 @@ using NuGet.Packaging;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using NuGet.Common;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -51,10 +52,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        public IActionResult storyListing()
-        {
-            return View();
-        }
+        //public IActionResult storyListing()
+        //{
+        //    return View();
+        //}
         public IActionResult Login()
         {
             HttpContext.Session.Clear();
@@ -240,10 +241,14 @@ namespace CI_PlatformWeb.Controllers
             List<Mission> newmission = _CIDbContext.Missions.ToList();
             List<GoalMission> goalMissions = _CIDbContext.GoalMissions.ToList();
             long[] missionempty;
+            
+            
             foreach (var item in mission)
             {
+                
                 var City = _CIDbContext.Cities.FirstOrDefault(u => u.CityId == item.CityId);
                 var Theme = _CIDbContext.MissionThemes.FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
+                
                 
 
 
@@ -431,26 +436,29 @@ namespace CI_PlatformWeb.Controllers
                 
                 foreach (var missions in mission)
                 {
+                    int finalrating = 0;
                     City city = _CIDbContext.Cities.Where(e => e.CityId == missions.CityId).FirstOrDefault();
                     MissionTheme theme = _CIDbContext.MissionThemes.Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
                     GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
                     FavoriteMission favoriteMissions = _CIDbContext.FavoriteMissions.Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
+                    var ratinglist = _CIDbContext.MissionRatings.Where(m => m.MissionId == missions.MissionId).ToList();
+                    if (ratinglist.Count() > 0)
+                    {
+                        int rat = 0;
+                        foreach (var m in ratinglist)
+                        {
+                            rat = rat + (m.Rating);
 
+
+                        }
+                        finalrating = rat / ratinglist.Count();
+                    }
 
                     string[] startDateNtime = missions.StartDate.ToString().Split(' ');
                     string[] endDateNtime = missions.EndDate.ToString().Split(' ');
                     var ratings = _CIDbContext.MissionRatings.Where(e => e.MissionId == missions.MissionId).ToList();
-                    var rating = 0;
-                    var sum = 0;
-                    //foreach (var entry in ratings)
-                    //{
-
-                    //    sum = sum + int.Parse(entry.Rating);
-
-                    //}
-                    //rating = sum / ratings.Count;
-                    if (goalMission != null && favoriteMissions != null)
-                    {
+                   
+                    
                         missionsVMList.Add(new MissionViewModel
                         {
                             MissionId = missions.MissionId,
@@ -473,88 +481,13 @@ namespace CI_PlatformWeb.Controllers
                             GoalText = goalMission.GoalObjectiveText,
                             UserId = useridfavmission,
                             addedtofavM = favoriteMissions.MissionId,
-                            addedtofavU = (long)favoriteMissions.UserId
+                            addedtofavU = (long)favoriteMissions.UserId,
+                            avgrating=finalrating,
                         });
-                    }
-                    else if (goalMission != null)
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                            //Rating = rating,
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            //userApplied = (user != null) ? _CiMainContext.MissionApplications.Any(e => e.MissionId == mission.MissionId && e.UserId == id && e.ApprovalStatus == '1') : false,
-                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            GoalText = goalMission.GoalObjectiveText,
-                            UserId = useridfavmission
-
-                        });
-                    }
-                    else if (favoriteMissions != null)
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                            //Rating = rating,
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            //userApplied = (user != null) ? _CiMainContext.MissionApplications.Any(e => e.MissionId == mission.MissionId && e.UserId == id && e.ApprovalStatus == '1') : false,
-                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            UserId = useridfavmission,
-
-                            addedtofavM = favoriteMissions.MissionId,
-                            addedtofavU = (long)favoriteMissions.UserId
-                        });
-                    }
-                    else
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                            //Rating = rating,
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            //userApplied = (user != null) ? _CiMainContext.MissionApplications.Any(e => e.MissionId == mission.MissionId && e.UserId == id && e.ApprovalStatus == '1') : false,
-                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            UserId = useridfavmission
-
-
-                        });
-                    }
+                    
+                    
+                    
+                    
                    
                 }
 
@@ -565,151 +498,9 @@ namespace CI_PlatformWeb.Controllers
 
                 
             }
-            else
-            {
-                
-                foreach (var missions in mission)
-                {
-                    City city = _CIDbContext.Cities.Where(e => e.CityId == missions.CityId).FirstOrDefault();
-                    MissionTheme theme = _CIDbContext.MissionThemes.Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
-                    GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
-                    FavoriteMission favoriteMissions = _CIDbContext.FavoriteMissions.Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
-
-                    string[] startDateNtime = missions.StartDate.ToString().Split(' ');
-                    string[] endDateNtime = missions.EndDate.ToString().Split(' ');
-                    var ratings = _CIDbContext.MissionRatings.Where(e => e.MissionId == missions.MissionId).ToList();
-                    var rating = 0;
-                    var sum = 0;
-                 
-
-                    if (goalMission != null && favoriteMissions != null)
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                            //Rating = rating,
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            //userApplied = (user != null) ? _CiMainContext.MissionApplications.Any(e => e.MissionId == mission.MissionId && e.UserId == id && e.ApprovalStatus == '1') : false,
-                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            GoalText = goalMission.GoalObjectiveText,
-                            UserId = useridfavmission,
-                            addedtofavM = favoriteMissions.MissionId,
-                            addedtofavU = (long)favoriteMissions.UserId
-                        });
-                    }
-                    else if (goalMission != null)
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                            
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            
-                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            GoalText = goalMission.GoalObjectiveText,
-                            UserId = useridfavmission
-
-                        });
-                    }
-                    else if (favoriteMissions != null)
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                           
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                           
-                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            UserId = useridfavmission,
-                            addedtofavM = favoriteMissions.MissionId,
-                            addedtofavU = (long)favoriteMissions.UserId
-
-                        });
-                    }
-                    else
-                    {
-                        missionsVMList.Add(new MissionViewModel
-                        {
-                            MissionId = missions.MissionId,
-                            Title = missions.Title,
-                            Description = missions.ShortDescription,
-                            City = city.Name,
-                            Organization = missions.OrganizationName,
-                            Theme = theme.Title,
-                         
-                            StartDate = (DateTime)missions.StartDate,
-                            EndDate = (DateTime)missions.EndDate,
-                            missionType = missions.MissionType,
-                            isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            
-                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                            NoOfSeatsLeft = 10,
-                            Deadline = endDateNtime[0],
-                            createdAt = (DateTime)missions.CreatedAt,
-                            UserId = useridfavmission
-
-
-                        });
-                    }
-
-
-
-                }
-               
-
-                if (mission.Count() == 0)
-                {
-                    return RedirectToAction("Nomission", "Home");
-                }
-
-               
-            }
+            
 
             //------------------------------------------------------------------------------------------------------------------------------
-            int pageSize =3;
-            int skip = (pageIndex ?? 0) * pageSize;
-            var Missions = missionsVMList.Skip(skip).Take(pageSize).ToList();
-            int totalMissions = missionsVMList.Count();
-            ViewBag.TotalMission = totalMissions;
-            ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
-            ViewBag.CurrentPage = pageIndex ?? 0;
-
             List<User> Alluser = _CIDbContext.Users.ToList();
             List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
             foreach (var i in Alluser)
@@ -723,6 +514,16 @@ namespace CI_PlatformWeb.Controllers
                 });
             }
             ViewBag.alluser = usernamelist;
+
+            int pageSize =3;
+            int skip = (pageIndex ?? 0) * pageSize;
+            var Missions = missionsVMList.Skip(skip).Take(pageSize).ToList();
+            int totalMissions = missionsVMList.Count();
+            ViewBag.TotalMission = totalMissions;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
+            ViewBag.CurrentPage = pageIndex ?? 0;
+
+            
 
             // Get the current URL
             UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
@@ -863,25 +664,36 @@ namespace CI_PlatformWeb.Controllers
                 string[] endDateNtime = mission.EndDate.ToString().Split(' ');
             var favrioute = (id != null) ? _CIDbContext.FavoriteMissions.Any(u => u.UserId == id && u.MissionId == mission.MissionId) : false;
             VolunteeringVM volunteeringMission = new();
-            ViewBag.x = favrioute;
-
-                volunteeringMission = new()
+            int finalrating = 0;
+            var ratinglist = _CIDbContext.MissionRatings.Where(m => m.MissionId == mission.MissionId).ToList();
+            if (ratinglist.Count() > 0)
+            {
+                int rat = 0;
+                foreach (var m in ratinglist)
                 {
-                    SingleTitle = mission.Title,
-                    Description = mission.Description,
-                    GoalText = goalMission != null ? goalMission.GoalObjectiveText : "null",
-                    StartDate = (DateTime)mission.StartDate,
-                    EndDate = (DateTime)mission.EndDate,
-                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                    missionType = mission.MissionType,
-                    MissionId = mission.MissionId,
-                    City = city.Name,
-                    Theme = theme.Title,
-                    Organization = mission.OrganizationName,
-                    Rating = ratings != null ? ratings.Rating : 0,
-                    isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
-                    UserId = useridforrating,
+                    rat = rat + (m.Rating);
 
+
+                }
+                finalrating = rat / ratinglist.Count();
+            }
+            volunteeringMission = new()
+            {
+                SingleTitle = mission.Title,
+                Description = mission.Description,
+                GoalText = goalMission != null ? goalMission.GoalObjectiveText : "null",
+                StartDate = (DateTime)mission.StartDate,
+                EndDate = (DateTime)mission.EndDate,
+                StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
+                missionType = mission.MissionType,
+                MissionId = mission.MissionId,
+                City = city.Name,
+                Theme = theme.Title,
+                Organization = mission.OrganizationName,
+                Rating = ratings != null ? ratings.Rating : 0,
+                isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
+                UserId = useridforrating,
+                avgrating = finalrating,
 
                 };
             ViewBag.fav = volunteeringMission.isFavrouite;
@@ -972,7 +784,56 @@ namespace CI_PlatformWeb.Controllers
                 ViewBag.alluser = usernamelist;
                 return View(volunteeringMission);
             }
+
+        public IActionResult storyListing(int? pageIndex)
+        {
+            List<Story> story=_CIDbContext.Stories.ToList();
+            
+            List<storyListingViewModel> storylist = new List<storyListingViewModel>();
+            foreach(var item in story)
+            {
+                var user = _CIDbContext.Users.FirstOrDefault(u => u.UserId == item.UserId);
+                storylist.Add(new storyListingViewModel
+                {
+                    StoryTitle = item.Title,
+                    Description = item.Description,
+
+                    MissionId = item.MissionId,
+                    UserName = user.FirstName,
+                    LastName = user.LastName,
+
+                });
+                
+            }
+            
+            ViewBag.story= storylist;
+            int pageSize = 3;
+            int skip = (pageIndex ?? 0) * pageSize;
+            var Missions = storylist.Skip(skip).Take(pageSize).ToList();
+            int totalMissions = storylist.Count();
+            ViewBag.TotalMission = totalMissions;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
+            ViewBag.CurrentPage = pageIndex ?? 0;
+
+
+
+            // Get the current URL
+            UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
+            if (Request.Host.Port.HasValue)
+            {
+                uriBuilder.Port = Request.Host.Port.Value;
+            }
+            uriBuilder.Path = Request.Path;
+
+            // Remove the query parameter you want to exclude
+            var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+            query.Remove("pageIndex");
+            uriBuilder.Query = query.ToString();
+            ViewBag.currentUrl = uriBuilder.ToString();
+            return View(Missions);
+
         }
+    }
         
     }
 

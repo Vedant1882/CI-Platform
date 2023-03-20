@@ -43,6 +43,8 @@
 
         public string? commenttext { get; set; }
         public long? UserIdForMail { get; set; }
+        
+        public int ? avgrating { get; set; }
 
     }
 }

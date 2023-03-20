@@ -130,7 +130,7 @@
                         @Model.SingleTitle
                     </div>
                     @*<div class="card-subtitle text-muted">
-                        @ViewBag.Missiondetail.ShortDescription
+                    @ViewBag.Missiondetail.ShortDescription
                     </div>*@
                     @if (Model.missionType == "time")
                     {
@@ -193,20 +193,28 @@
                             }
                         </div>
                     </div>
-                   @{
+                    @{
 
-                   }
+                    }
                     <div class="row">
                         <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" id="favmissiondiv" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
-                            
-                               
-                                <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
-                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
 
-                            
+
+                            <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
+                            @if (ViewBag.fav == true)
+                            {
+                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">Remove From Favourite</label>
+                            }
+                            else
+                            {
+                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
+                            }
+
+
+
                         </div>
-                         
-                        
+
+
                         <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
 
                             <img src="~/images/add1.png" class="" />
@@ -217,31 +225,31 @@
                         </button>
 
                         <div class="modal fade modal-dialog-scrollable" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Send Recommend TO</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body overflow-y-auto" style="height:200px;">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body overflow-y-auto" style="height:200px;">
                                         @foreach (var user in ViewBag.alluser)
-                                            {
-             
+                                        {
+
                                             <div class="d-flex my-3 bg-light ">
                                                 <img src="~/images/volunteer1.png" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
                                                 <label class=" ms-4 mt-2 me-auto">   @user.UserName  @user.LastName </label>
                                                 <input class="form-check-input me-2 mt-2" type="checkbox" value="" id=@user.UserIdForMail name="mail">
                                             </div>
 
-                                            }
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary" id="sendmail" onclick="sendmail(@Model.MissionId)">Send Mission</button>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
                     </div>
                     <div class="rule d-flex mt-4">
@@ -269,7 +277,7 @@
                         }
                         else
                         {
-                            <i class="bi bi-star" id="1" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="1"  onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
                             <i class="bi bi-star" id="2" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
                             <i class="bi bi-star" id="3" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
                             <i class="bi bi-star" id="4" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
@@ -402,9 +410,9 @@
                                     </li>
                                 }
                             }
-                            
-                            
-                            
+
+
+
                         </ul>
                     </div>
                 </div>
@@ -432,11 +440,19 @@
                 <hr>
                 <div class="vol-sec-2-right-1st-sub">
                     <span>Ratings</span> <span class="vol-sec-2-right-1st-sub-sec ms-4">
-                        <img src="~/Images/star-empty.png" alt="">
-                        <img src="~/Images/star-empty.png" alt="">
-                        <img src="~/Images/star-empty.png" alt="">
-                        <img src="~/Images/star-empty.png" alt="">
-                        <img src="~/Images/star-empty.png" alt="">
+                        @if (Model.avgrating != null)
+                        {
+                            @for (int i = 0; i < Model.avgrating; i++)
+                            {
+                                <img src="~/images/selected-star.png">
+
+                            }
+                            @for (int? i = Model.avgrating; i < 5; i++)
+                            {
+                                <img src="~/images/star.png">
+
+                            }
+                        }
 
                     </span>
                 </div>
@@ -448,28 +464,31 @@
                 <div class="overflow-x-auto d-flex">
 
                     @foreach (var item in ViewBag.recentvolunteered)
-                        {
-                            <div class="col-4  d-flex">
-                                <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
-                                    <img src="~/Images/volunteer1.png" class="involveduserprofile" />
+                    {
+                        <div class="col-4  d-flex">
+                            <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
+                                <img src="~/Images/volunteer1.png" class="involveduserprofile" />
                                 <label id="" class="text-center">@item.UserName</label>
-                                </a>
-                            </div>
-                        }
-                    
-                    
+                            </a>
+                        </div>
+                    }
 
 
 
-                
 
+
+
+
+                </div>
             </div>
         </div>
-    </div>
-    <partial name="_Related_Partial" />
+        <partial name="_Related_Partial" />
 </body>
 <script>
+
     function addRating(starId, missionId, Id) {
+
+        
         $.ajax({
             url: '/Home/Addrating',
             type: 'POST',
@@ -478,22 +497,22 @@
                 if (parseInt(result.ratingExists.rating, 10)) {
                     for (i = 1; i <= parseInt(result.ratingExists.rating, 10); i++) {
                         var starbtn = document.getElementById(String(i));
-                        
+
                         starbtn.style.color = "#F88634";
                     }
                     for (i = parseInt(result.ratingExists.rating, 10) + 1; i <= 5; i++) {
                         var starbtn = document.getElementById(String(i));
-                        
+
                         starbtn.style.color = "black";
                     }
                 }
                 else {
                     for (i = 1; i <= parseInt(result.newRating.rating, 10); i++) {
                         var starbtn = document.getElementById(String(i));
-                       
+
                         starbtn.style.backgroundColor = "#F88634";
                     }
-                    
+
                 }
             },
             error: function () {
@@ -508,12 +527,12 @@
             data: { MissionId: missionId, UserId: Id },
             success: function (result) {
                 if (result.favmission == "0") {
-                   location.reload();
+                    location.reload();
                     var favbtn = document.getElementById("favmissiondiv");
                     var heartbtn = document.getElementById("heart-" + missionId.toString());
                     heartbtn.style.color = "#F88634";
                     favbtn.style.color = "orange"
-                    
+
                 }
                 else {
                     location.reload();
@@ -521,19 +540,19 @@
                     var heartbtn = document.getElementById("heart-" + missionId.toString());
                     heartbtn.style.color = "white";
                     favbtn.style.color = "white"
-                    
+
                 }
 
             }
         });
     }
-    function comment(mid,uid){
-        var text=document.getElementById("commenttext").value;
+    function comment(mid, uid) {
+        var text = document.getElementById("commenttext").value;
         alert(text + mid + uid);
-         $.ajax({
+        $.ajax({
             url: '/Home/comment',
             type: 'POST',
-            data: { MissionId: mid, UserId: uid ,comment:text },
+            data: { MissionId: mid, UserId: uid, comment: text },
             success: function (result) {
                 if (result.favmission == "0") {
 

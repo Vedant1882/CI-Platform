@@ -39,5 +39,6 @@
         public long addedtofavU { get; set; }
 
         public string UserName { get; set; }
+        public int? avgrating { get; set; }
     }
 }
