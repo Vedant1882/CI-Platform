@@ -804,7 +804,7 @@ namespace CI_PlatformWeb.Controllers
             }
             
             ViewBag.story= storylist;
-            int pageSize = 3;
+            int pageSize = 1;
             int skip = (pageIndex ?? 0) * pageSize;
             var Missions = storylist.Skip(skip).Take(pageSize).ToList();
             int totalMissions = storylist.Count();
