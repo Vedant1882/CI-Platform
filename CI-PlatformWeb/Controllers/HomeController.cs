@@ -77,10 +77,7 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        public IActionResult StoryDetail()
-        {
-            return View();
-        }
+       
 
         [HttpPost]
         [AllowAnonymous]
@@ -446,6 +443,8 @@ namespace CI_PlatformWeb.Controllers
                     GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
                     FavoriteMission favoriteMissions = _CIDbContext.FavoriteMissions.Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                     var ratinglist = _CIDbContext.MissionRatings.Where(m => m.MissionId == missions.MissionId).ToList();
+                    var applicationmission = _CIDbContext.MissionApplications.Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
+                    
                     if (ratinglist.Count() > 0)
                     {
                         int rat = 0;
@@ -476,7 +475,6 @@ namespace CI_PlatformWeb.Controllers
                             EndDate = (DateTime)missions.EndDate,
                             missionType = missions.MissionType,
                             isFavrouite = (user != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                            //userApplied = (user != null) ? _CiMainContext.MissionApplications.Any(e => e.MissionId == mission.MissionId && e.UserId == id && e.ApprovalStatus == '1') : false,
                             ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
                             StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
                             NoOfSeatsLeft = 10,
@@ -487,6 +485,8 @@ namespace CI_PlatformWeb.Controllers
                             addedtofavM = favoriteMissions.MissionId,
                             addedtofavU = (long)favoriteMissions.UserId,
                             avgrating=finalrating,
+                            available = missions.Availability,
+                            isapplied= (applicationmission != null) ? 1:0,
                         });
                     
                     
@@ -666,7 +666,9 @@ namespace CI_PlatformWeb.Controllers
                 GoalMission goalMission = _CIDbContext.GoalMissions.Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
                 string[] startDateNtime = mission.StartDate.ToString().Split(' ');
                 string[] endDateNtime = mission.EndDate.ToString().Split(' ');
-            var favrioute = (id != null) ? _CIDbContext.FavoriteMissions.Any(u => u.UserId == id && u.MissionId == mission.MissionId) : false;
+            var applicationmission = _CIDbContext.MissionApplications.FirstOrDefault(m => m.UserId == useridforrating && m.MissionId==missionId);
+            
+                //var favrioute = (id != null) ? _CIDbContext.FavoriteMissions.Any(u => u.UserId == id && u.MissionId == mission.MissionId) : false;
             VolunteeringVM volunteeringMission = new();
             int finalrating = 0;
             var ratinglist = _CIDbContext.MissionRatings.Where(m => m.MissionId == mission.MissionId).ToList();
@@ -699,8 +701,9 @@ namespace CI_PlatformWeb.Controllers
                 isFavrouite = (useridforrating != null) ? _CIDbContext.FavoriteMissions.Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
                 UserId = useridforrating,
                 avgrating = finalrating,
-
-                };
+                available=mission.Availability,
+                isapplied = (applicationmission != null) ? 1 : 0,
+            };
             ViewBag.fav = volunteeringMission.isFavrouite;
 
 
@@ -750,19 +753,7 @@ namespace CI_PlatformWeb.Controllers
                 }
 
                 ViewBag.relatedmission = relatedlist.Take(3);
-
-                //List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
-
-                //var resentV = _CIDbContext.MissionApplications.FirstOrDefault(m => m.MissionId == missionid);
-                //var uname = _CIDbContext.Users.FirstOrDefault(m=>m.UserId == resentV.UserId);
-                //ViewBag.resentV = uname;
-                ////volunteeringVM.username = uname.FirstName;
-                //volunteeringVM.username= uname.FirstName;
-
-
-
                 List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
-                //var recentvolunttered = from U in CID.Users join MA in CiMainContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
                 var recentvoluntered = from U in _CIDbContext.Users join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
                 foreach (var item in recentvoluntered)
                 {
@@ -800,6 +791,7 @@ namespace CI_PlatformWeb.Controllers
                 var user = _CIDbContext.Users.FirstOrDefault(u => u.UserId == item.UserId);
                 storylist.Add(new storyListingViewModel
                 {
+                    UserId= user.UserId,
                     StoryTitle = item.Title,
                     Description = item.Description,
                     StoryId= item.StoryId,
@@ -837,6 +829,90 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.currentUrl = uriBuilder.ToString();
             return View(Missions);
 
+        }
+
+        public IActionResult StoryDetail(int id,int storyid)
+        {
+            var user = _CIDbContext.Users.FirstOrDefault(u => u.UserId == id);
+            var story=_CIDbContext.Stories.Where(s=>s.StoryId==storyid).ToList();
+            List<storyListingViewModel> storylist = new List<storyListingViewModel>();
+            foreach (var item in story)
+            {
+                
+                storylist.Add(new storyListingViewModel
+                {
+                    StoryTitle = item.Title,
+                    Description = item.Description,
+                    StoryId = item.StoryId,
+                    MissionId = item.MissionId,
+                    UserName = user.FirstName,
+                    LastName = user.LastName,
+                    UserId= user.UserId,
+
+                });
+
+            }
+             List<User> Alluser = _CIDbContext.Users.ToList();
+                List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+                foreach (var i in Alluser)
+                {
+                    usernamelist.Add(new VolunteeringVM
+                    {
+                        UserName = i.FirstName,
+                        LastName = i.LastName,
+                        UserIdForMail = i.UserId,
+
+                    });
+                }
+                ViewBag.alluser = usernamelist;
+            return View(storylist);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendmailForStory(long[] userid, int id)
+        {
+            foreach (var item in userid)
+            {
+                var user = _CIDbContext.Users.FirstOrDefault(u => u.UserId == item);
+                var story = _CIDbContext.Stories.FirstOrDefault(s => s.StoryId == id);
+                var resetLink = Url.Action("StoryDetail", "Home", new { id=story.UserId, storyid = id }, Request.Scheme);
+
+
+                //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("officehl1882@gmail.com", "Sender Name");
+                var toAddress = new MailAddress(user.Email);
+                var subject = "Password reset request";
+                var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
+                var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                };
+                var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("officehl1882@gmail.com", "yedkuuhuklkqfzwx"),
+                    //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
+                    EnableSsl = true
+                };
+                smtpClient.Send(message);
+
+            }
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> applymission(int MissionId,int UserId)
+        {
+            var missionapplication = new MissionApplication();
+            missionapplication.UserId = UserId;
+            missionapplication.MissionId = MissionId;
+            missionapplication.AppliedAt= DateTime.Now;
+            missionapplication.ApprovalStatus = "1";
+            _CIDbContext.Add(missionapplication);
+            _CIDbContext.SaveChanges();
+
+            return Json(new { success = true });
         }
     }
         

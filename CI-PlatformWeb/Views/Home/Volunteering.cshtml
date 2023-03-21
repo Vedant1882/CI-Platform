@@ -118,7 +118,7 @@
                             <p class="lead me-2 pt-2">
                                 <img src="~/images/Seats-left.png" alt="">
                                 <div>
-                                    <div>10</div>
+                                    <div>@Model.available</div>
                                     <div class="landing-page-card-vol-small">Seats Left</div>
                                 </div>
                             </p>
@@ -288,11 +288,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center">
-                        <a class="btn mt-2 landing-page-apply-mission-btn" href="#">
-                            Apply <img src="~/images/right-arrow.png" alt="">
-                        </a>
-                    </div>
+                    @if (Model.isapplied == 1)
+                    {
+                        <div class="text-center">
+                            <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
+                                Already Applied <img src="~/images/right-arrow.png" alt="">
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
+                                Apply <img src="~/images/right-arrow.png" alt="">
+                            </a>
+                        </div>
+                    }
+                    
                 </div>
             </div>
         </div>
@@ -535,6 +547,19 @@
                 }
 
             }
+        });
+    }
+    function applyformission(missionid, userid) {
+        $.ajax({
+            url: '/Home/applymission',
+            type: 'POST',
+            data: { MissionId: missionid, UserId: userid},
+            success: function (result) {
+                alert("Succesfully applied")
+                location.reload();
+             }
+
+     
         });
     }
 </script>

@@ -40,5 +40,8 @@
 
         public string UserName { get; set; }
         public int? avgrating { get; set; }
+        public String? available { get; set; }
+
+        public int? isapplied { get; set; }
     }
 }

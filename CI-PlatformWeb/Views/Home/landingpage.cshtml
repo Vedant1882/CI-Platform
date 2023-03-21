@@ -99,7 +99,11 @@
                                     <div class="img-event">
                                         <img class="group list-group-image img-fluid" style="width:100%;"
                                      src="~/images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" alt="Card image cap">
-
+                                        @if (item.isapplied == 1)
+                                        {
+                                            <div class="applied-div">Applied</div>
+                                        }
+                                        <div class="closed-div">Closed</div>
                                         <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City</div>
 
                                         <div class="landing-page-bottom-right d-flex flex-column">
@@ -214,7 +218,7 @@
                                                 <p class="lead me-2 pt-2">
                                                     <img src="~/images/Seats-left.png" alt="">
                                                     <div>
-                                                        <div>10</div>
+                                                        <div>@item.available</div>
                                                         <div class="landing-page-card-vol-small">Seats Left</div>
                                                     </div>
                                                 </p>
@@ -256,27 +260,52 @@
                                         </div>
 
                                         <hr>
-                                        @if (Context.Session.GetString("UserID") == null)
+                                        @if (item.isapplied == 1)
                                         {
-                                            <div class="d-flex justify-content-center">
-                                                <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
-                                                        Apply <img src="~/images/right-arrow.png" alt="">
-                                                    </a>
+                                            @if (Context.Session.GetString("UserID") == null)
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
+                                                           View Details <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                            View Details <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
                                         }
                                         else
                                         {
-                                            <div class="d-flex justify-content-center">
-                                                <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
-                                                        Apply <img src="~/images/right-arrow.png" alt="">
-                                                    </a>
+                                            @if (Context.Session.GetString("UserID") == null)
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
+                                                            Apply <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                            Apply <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
                                         }
-
 
 
                                     </div>

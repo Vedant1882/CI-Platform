@@ -46,5 +46,11 @@
         
         public int ? avgrating { get; set; }
 
+        public string? available { get; set; }
+
+        public int? appMissionId { get; set; }
+
+        public int? isapplied { get; set; }
+
     }
 }
