@@ -1,0 +1,570 @@
+﻿@model CI_PlatformWeb.Models.VolunteeringVM;
+@{
+    Layout = "_One-NavbarLayout";
+    ViewData["Title"] = "Home Page";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/css/Volunteering.css" />
+    <link rel="stylesheet" href="~/css/landing.css" />
+
+
+
+
+
+
+</head>
+
+<body>
+
+    <div class="container" style="margin-top:150px">
+        <div class="filters-section d-flex align-items-center flex-wrap justify-content-center">
+        </div>
+        <div class="row">
+
+            <div class="col-12 col-lg-6 col-md-12 col-sm-12">
+                <div class="container p-0">
+
+                    <!-- Full-width images with number text -->
+                    <div class="mySlides">
+                        <div class="numbertext">1 / 6</div>
+                        <img src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-3.png" style="width:100%">
+                    </div>
+
+                    <div class="mySlides">
+                        <div class="numbertext">2 / 6</div>
+                        <img src="/Images/img1.png" style="width:100%">
+                    </div>
+
+                    <div class="mySlides">
+                        <div class="numbertext">3 / 6</div>
+                        <img src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-2.png" style="width:100%">
+                    </div>
+
+                    <div class="mySlides">
+                        <div class="numbertext">4 / 6</div>
+                        <img src="/Images/img11.png" style="width:100%">
+                    </div>
+
+
+
+                    <!-- Next and previous buttons -->
+                    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+                    <!-- Image text -->
+                    <!-- Thumbnail images -->
+                    <div class="row mt-1">
+                        <div class="column" style="width:25%">
+                            <img class="demo cursor" src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-1.png" style="width:100%" onclick="currentSlide(1)" alt="The Woods">
+                        </div>
+                        <div class="column" style="width:25%">
+                            <img class="demo cursor" src="/Images/img1.png" style="width:100%" onclick="currentSlide(2)" alt="Cinque Terre">
+                        </div>
+                        <div class="column" style="width:25%">
+                            <img class="demo cursor" src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" style="width:100%" onclick="currentSlide(3)" alt="Mountains and fjords">
+                        </div>
+                        <div class="column" style="width:25%">
+                            <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
+                        </div>
+                        @*<div class="column">
+                        <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(5)" alt="Nature and sunrise">
+                        </div>
+                        <div class="column">
+                        <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(6)" alt="Snowy Mountains">
+                        </div>*@
+
+                    </div>
+                   
+                </div>
+            </div>
+
+            <div class="card col-12 col-lg-6 col-md-12 col-sm-12">
+                <div class="card-body">
+                    <div class="card-title">
+                        @Model.SingleTitle
+                    </div>
+                    @*<div class="card-subtitle text-muted">
+                    @ViewBag.Missiondetail.ShortDescription
+                    </div>*@
+                    @if (Model.missionType == "time")
+                    {
+                        <div class="rule d-flex mt-4">
+                            <hr style="border:1px solid black">
+                            <button class="date-btn mt-1">From @Model.StartDateEndDate.ToString().Split(" ")[0]</button>
+                            <hr style="border:1px solid black">
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="rule d-flex mt-4">
+                            <hr style="border:1px solid black">
+                            <button class="date-btn mt-1">@Model.GoalText</button>
+                            <hr style="border:1px solid black">
+
+                        </div>
+                    }
+                    <div class="row landing-page-box-border">
+
+                        <div class="col-6 col-md-6 d-flex align-items-center">
+                            <p class="lead me-2 pt-2">
+                                <img src="~/images/Seats-left.png" alt="">
+                                <div>
+                                    <div>@Model.available</div>
+                                    <div class="landing-page-card-vol-small">Seats Left</div>
+                                </div>
+                            </p>
+                        </div>
+                        <div class="col-6 col-md-6 d-flex align-items-center">
+                            @if (Model.missionType == "time")
+                            {
+                                <div class="col-6 col-md-6 d-flex align-items-center">
+                                    <p class="lead me-2 pt-2">
+                                        <img src="~/images/deadline.png" alt="">
+                                        <div>
+                                            <div>@Model.EndDate.ToString().Split(" ")[0]</div>
+                                            <div class="landing-page-card-vol-small">Deadline</div>
+                                        </div>
+                                    </p>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="lead me-2 pt-2">
+                                    <img src="~/images/achieved.png" alt="">
+                                    <div style="width: 100%;">
+                                        <div>
+
+                                            <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="50"
+                                             aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 25%;"></div>
+                                            </div>
+
+                                        </div>
+                                        <div class="landing-page-card-vol-small">8000 achived</div>
+                                    </div>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                    @{
+
+                    }
+                    <div class="row">
+                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center" id="favmissiondiv" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
+
+
+                            <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
+                            @if (ViewBag.fav == true)
+                            {
+                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">Remove From Favourite</label>
+                            }
+                            else
+                            {
+                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
+                            }
+
+
+
+                        </div>
+
+
+                        <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+
+                            <img src="~/images/add1.png" class="" />
+
+
+                            <label class="ms-2"> Recommend to a Co-Worker</label>
+
+                        </button>
+
+                        <div class="modal fade modal-dialog-scrollable" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Send Recommend TO</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body overflow-y-auto" style="height:200px;">
+                                        @foreach (var user in ViewBag.alluser)
+                                        {
+
+                                            <div class="d-flex my-3 bg-light ">
+                                                <img src="~/images/volunteer1.png" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
+                                                <label class=" ms-4 mt-2 me-auto">   @user.UserName  @user.LastName </label>
+                                                <input class="form-check-input me-2 mt-2" type="checkbox" value="" id=@user.UserIdForMail name="mail">
+                                            </div>
+
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" id="sendmail" onclick="sendmail(@Model.MissionId)">Send Mission</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="rule d-flex mt-4">
+                        <hr style="border:1px solid black">
+
+                        @{
+                            var useridforrating = Context.Session.GetInt32("userIDforfavmission");
+                        }
+
+                        @if (@Model.Rating != null)
+                        {
+
+                            int count = 0;
+
+                            @for (var i = 1; i <= @Model.Rating; i++)
+                            {
+                                <i class="bi bi-star" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                count++;
+                            }
+                            @for (var k = count + 1; k <= 5; k++)
+                            {
+                                <i class="bi bi-star" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            }
+
+                        }
+                        else
+                        {
+                            <i class="bi bi-star" id="1"  onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="2" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="3" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="4" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star" id="5" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                        }
+
+                        <hr style="border:1px solid black">
+
+                    </div>
+                    <div class="row d-flex mt-3 d-lg-none d-xl-flex">
+                        <div class="card col-md-3  col-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill mt-2 mb-auto" viewBox="0 0 16 16">
+                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                            </svg>
+                            <div class="mt-3 mb-0">
+                                <div>city</div>
+                                <div>@Model.City</div>
+                            </div>
+                        </div>
+                        <div class="card col-md-3 col-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-globe mt-2 mb-auto" viewBox="0 0 16 16">
+                                <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm2.802-3.5a6.959 6.959 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5h2.49zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7.024 7.024 0 0 0-3.072-2.472c.218.284.418.598.597.933zM10.855 4a7.966 7.966 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4h2.355z" />
+                            </svg>
+                            <div class="mt-3 mb-0">
+                                <div>Theme</div>
+                                <div>@Model.Theme</div>
+                            </div>
+                        </div>
+                        <div class="card col-md-3 col-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-week mt-2 mb-auto" viewBox="0 0 16 16">
+                                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z" />
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                            </svg>
+                            <div class="mt-3 mb-0">
+                                <div>Date</div>
+                                <div>Ongoing Opportunity</div>
+                            </div>
+                        </div>
+                        <div class="card col-md-3 col-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people mt-2 mb-auto" viewBox="0 0 16 16">
+                                <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+                            </svg>
+                            <div class="mt-3 mb-0">
+                                <div>Organization</div>
+                                <div>@Model.Organization</div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.isapplied == 1)
+                    {
+                        <div class="text-center">
+                            <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
+                                Already Applied <img src="~/images/right-arrow.png" alt="">
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
+                                Apply <img src="~/images/right-arrow.png" alt="">
+                            </a>
+                        </div>
+                    }
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+        </div>
+    </div>
+
+
+    <hr style="border:1px solid black" />
+
+    @*-----------------------------------tab and volunteer----------------------------*@
+
+    <div class="row mt-5" style="margin-right:0">
+        <div class="col-12 col-lg-8">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="mission-tab" data-bs-toggle="tab" data-bs-target="#mission" type="button" role="tab" aria-controls="mission" aria-selected="true">Mission</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="org-tab" data-bs-toggle="tab" data-bs-target="#org" type="button" role="tab" aria-controls="org" aria-selected="false">Organization</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Comments</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active ms-3" id="mission" role="tabpanel" aria-labelledby="mission-tab">
+                    <h1>Introduction</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <br /><br />
+                    <h1>Challenge</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <h1>Documents</h1>
+                    <div class="row">
+                        <div class="col  col-12  col-xl-3 col-lg-12 col-md-3 col-sm-12  me-xl-3 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center">
+                            <div><img src="~/images/doc.png" /></div>
+                            <label class="ms-2">lorem-ipsum.pdf</label>
+
+                        </div>
+                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 Addfavourite  justify-content-center">
+                            <div><img src="~/images/doc.png" /></div>
+
+                            <label class="ms-2"> Recommend to a Co-Worker</label>
+                        </div>
+                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 ms-3 Addfavourite  justify-content-center">
+                            <div><img src="~/images/doc.png" /></div>
+
+                            <label class="ms-2"> Recommend to a Co-Worker</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade ms-3" id="org" role="tabpanel" aria-labelledby="org-tab">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+                </div>
+                <div class="tab-pane fade ms-3" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    <textarea style="width:100%" placeholder="Enter Your Comments" id="commenttext"></textarea>
+                    <div>
+                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="comment(@Model.MissionId,@Model.UserId)">
+                            Post comments
+                        </a>
+                    </div>
+                    @*--------Comments------------*@
+                    <div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
+                        <ul class="list-unstyled mt-2">
+                            @if (ViewBag.missioncomment != null)
+                            {
+                                @foreach (var c in ViewBag.missioncomment)
+                                {
+                                    <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
+                                        <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
+                                        <div class="media-body ms-2">
+                                            <h5 class="mt-0 mb-1">@c.UserName</h5>
+                                            @c.commenttext
+                                        </div>
+                                    </li>
+                                }
+                            }
+
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="volunteering-sec-2-right-top mt-3">
+                <div class="vol-sec-2-right-1st-header">
+                    Information
+                </div>
+                <hr>
+                <div class="vol-sec-2-right-1st-sub">
+                    <span> Skills</span> <span class="vol-sec-2-right-1st-sub-sec ms-5">
+                        Cool, Easy
+                        Going, Math, Computer
+                    </span>
+                </div>
+                <hr>
+                <div class="vol-sec-2-right-1st-sub">
+                    <span>Days</span> <span class="vol-sec-2-right-1st-sub-sec ms-5">
+                        Cool, Easy
+                        Going, Math, Computer
+                    </span>
+                </div>
+                <hr>
+                <div class="vol-sec-2-right-1st-sub">
+                    <span>Ratings</span> <span class="vol-sec-2-right-1st-sub-sec ms-4">
+                        @if (Model.avgrating != null)
+                        {
+                            @for (int i = 0; i < Model.avgrating; i++)
+                            {
+                                <img src="~/images/selected-star.png">
+
+                            }
+                            @for (int? i = Model.avgrating; i < 5; i++)
+                            {
+                                <img src="~/images/star.png">
+
+                            }
+                        }
+
+                    </span>
+                    <span class="mt-2">(By @ViewBag.totalvol Volunteers)</span>
+                </div>
+            </div>
+
+            <div class="volunteering-sec-2-right-down mt-3">
+                <div class="vol-sec-2-right-2nd-header">Recent Volunteers</div>
+                <hr>
+                <div class="overflow-x-auto d-flex">
+
+                    @foreach (var item in ViewBag.recentvolunteered)
+                    {
+                        <div class="col-4  d-flex">
+                            <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
+                                <img src="~/Images/volunteer1.png" class="involveduserprofile" />
+                                <label id="" class="text-center">@item.UserName</label>
+                            </a>
+                        </div>
+                    }
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+        <partial name="_Related_Partial" />
+</body>
+<script>
+
+    function addRating(starId, missionId, Id) {
+
+        
+        $.ajax({
+            url: '/Home/Addrating',
+            type: 'POST',
+            data: { missionId: missionId, Id: Id, rating: starId },
+            success: function (result) {
+                if (parseInt(result.ratingExists.rating, 10)) {
+                    for (i = 1; i <= parseInt(result.ratingExists.rating, 10); i++) {
+                        var starbtn = document.getElementById(String(i));
+
+                        starbtn.style.color = "#F88634";
+                    }
+                    for (i = parseInt(result.ratingExists.rating, 10) + 1; i <= 5; i++) {
+                        var starbtn = document.getElementById(String(i));
+
+                        starbtn.style.color = "black";
+                    }
+                }
+                else {
+                    for (i = 1; i <= parseInt(result.newRating.rating, 10); i++) {
+                        var starbtn = document.getElementById(String(i));
+
+                        starbtn.style.backgroundColor = "#F88634";
+                    }
+
+                }
+            },
+            error: function () {
+                alert("could not like mission");
+            }
+        });
+    }
+    function addtofav(missionId, Id) {
+        $.ajax({
+            url: '/Home/AddToFav',
+            type: 'POST',
+            data: { MissionId: missionId, UserId: Id },
+            success: function (result) {
+                if (result.favmission == "0") {
+                    location.reload();
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "#F88634";
+                    favbtn.style.color = "orange"
+
+                }
+                else {
+                    location.reload();
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "white";
+                    favbtn.style.color = "white"
+
+                }
+
+            }
+        });
+    }
+    function comment(mid, uid) {
+        var text = document.getElementById("commenttext").value;
+        alert(text + mid + uid);
+        $.ajax({
+            url: '/Home/comment',
+            type: 'POST',
+            data: { MissionId: mid, UserId: uid, comment: text },
+            success: function (result) {
+                if (result.favmission == "0") {
+
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "#F88634";
+                    favbtn.style.color = "orange"
+
+                }
+                else {
+
+                    var favbtn = document.getElementById("favmissiondiv");
+                    var heartbtn = document.getElementById("heart-" + missionId.toString());
+                    heartbtn.style.color = "white";
+                    favbtn.style.color = "white"
+
+                }
+
+            }
+        });
+    }
+    function applyformission(missionid, userid) {
+        $.ajax({
+            url: '/Home/applymission',
+            type: 'POST',
+            data: { MissionId: missionid, UserId: userid},
+            success: function (result) {
+                alert("Succesfully applied")
+                location.reload();
+             }
+
+     
+        });
+    }
+</script>
+</html>
+
+<script src="~/js/Volunteering.js"></script>
+
+

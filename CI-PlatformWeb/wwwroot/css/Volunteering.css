@@ -1,0 +1,140 @@
+﻿* {
+    box-sizing: border-box;
+}
+.Addfavourite {
+    border: 1px solid black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.apply-1{
+    display:none;
+
+}
+.btn-add_to_fav {
+    padding: 5px 80px 5px 80px;
+    background-color:white;
+    border-radius:50px;
+}
+.btn-rec_co-worker {
+    background-color: white;
+    border-radius: 50px;
+    padding: 5px 33px 5px 33px;
+}
+/* Position the image container (needed to position the left and right arrows) */
+.container {
+    position: relative;
+}
+
+/* Hide the images by default */
+.mySlides {
+    display: none;
+}
+
+/* Add a pointer when hovering over the thumbnail images */
+.cursor {
+    cursor: pointer;
+}
+
+/* Next & previous buttons */
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 84%;
+    width: auto;
+    padding: 16px;
+    /* margin-top: -50px; */
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+    right:0;
+    border-radius: 3px 0 0 3px;
+}
+
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover,
+    .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+/* Number text (1/3 etc) */
+.numbertext {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+}
+
+/* Container for image text */
+.caption-container {
+    text-align: center;
+    background-color: #222;
+    padding: 2px 16px;
+    color: white;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Six columns side by side */
+.column {
+    float: left;
+    
+}
+
+/* Add a transparency effect for thumnbail images */
+.demo {
+    opacity: 0.6;
+}
+
+    .active,
+    .demo:hover {
+        opacity: 1;
+    }
+    /*----------------Tab---------------------------------------*/
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    border-bottom:3px solid red;
+}
+/*--------------------Side card------------------*/
+/*@media only screen and (max-width: 1400px) {
+    .btn-add_to_fav {
+        padding: 5px 74px 5px 56px;
+    }
+    .btn-rec_co-worker {
+        padding: 5px 10px 5px 11px;
+    }
+}*/
+@media only screen and (min-width:992px) and (max-width: 1200px) {
+    /*.btn-add_to_fav {
+        padding: 7px 42px 7px 42px;
+    }
+
+    .btn-rec_co-worker {
+        padding: 9px 16px 8px 29px;
+        font-size: 10px;
+    }*/
+    .apply-1{
+        display:block;
+    }
+    .apply-2 {
+        display: none;
+    }
+}
+@media only screen and (max-width: 1150px) {
+    .vol-page-right-recent-vol-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+    }
+    }

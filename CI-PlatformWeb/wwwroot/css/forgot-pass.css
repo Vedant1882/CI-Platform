@@ -1,0 +1,78 @@
+.btn{
+    border:2px solid #F88634 ;
+    border-radius:24px;
+    width:100%;
+    height:10%;
+    background-color:#F8863400;
+    color: #F88634
+    
+}
+
+.create-account-link-1{
+    /* display: flex; */
+}
+.create-account-link-2{
+    display: flex;
+    flex-direction: column;
+    display: none;
+}
+/* .carousel-control-prev{
+    height:5%;
+    opacity: 0;
+}
+.carousel-control-next{
+    height:5%;
+    opacity: 0;
+} */
+.carousel-caption{
+    background-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.5),
+        transparent 
+      );
+    
+    width:100%;
+    left:0;
+    bottom:0;
+    height:40vh;
+}
+p{
+    margin-top: 2rem;
+}
+
+h5{
+    font-size: xx-large;
+    width:60%
+}
+.text-left{
+    padding-left:10%;
+}
+span{
+    font-size:14px;;
+}
+.bolder-text{
+    font-weight:bolder;
+    color: white;
+    font-size: xx-large;
+}
+@media screen and (max-width:991px){
+    .img1{
+        height:75vh;
+    }
+}
+@media screen and (min-width:768px) and (max-width:1309px) {
+    .create-account-link-1{
+        display:none;
+    }
+    .create-account-link-2{
+        display: flex;
+        flex-direction: column;
+        display:inline;
+    }
+    .img-size{
+        height: 107vh;
+    }
+    
+}
