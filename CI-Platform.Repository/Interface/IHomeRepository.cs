@@ -37,7 +37,23 @@ namespace CI_Platform.Repository.Interface
 
         public MissionTheme MissionThemeByThemeid(long themeid);
 
-        
+        public MissionRating addratings(int rating,long id,long missionid);
+        public MissionRating updaterating(MissionRating ratingExists,int rating);
+
+        public Comment addcomment(long MissionId, long UserId, String comment);
+
+        public FavoriteMission removefav(FavoriteMission favmission);
+
+        public FavoriteMission addfav(long MissionId, long UserId);
+
+        public void addtopassreset(PasswordReset passreset);
+
+        public List<Comment> comment();
+
+        public List<MissionTheme> alltheme();
+        public List<Country> allcountry();
+
+        public void savechanges();
 
         public List<Story> story();
         public List<Story> StoryByStoryidList(long storyid); 

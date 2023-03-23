@@ -132,8 +132,7 @@ namespace CI_PlatformWeb.Controllers
                     Email = model.Email,
                     Token = token
                 };
-                _CIDbContext.PasswordResets.Add(passwordReset);
-                _CIDbContext.SaveChanges();
+                _IHome.addtopassreset(passwordReset);
 
 
                 var resetLink = Url.Action("ResetPassword", "Home", new { email = model.Email, token }, Request.Scheme);
@@ -212,7 +211,7 @@ namespace CI_PlatformWeb.Controllers
 
                 // Update the user's password
                 user.Password = resetPasswordView.Password;
-                _CIDbContext.SaveChanges();
+                _IHome.savechanges();
 
 
 
@@ -240,11 +239,11 @@ namespace CI_PlatformWeb.Controllers
             List<Mission> finalmission = _IHome.Allmissions();
             List<Mission> newmission = _IHome.Allmissions();
             List<GoalMission> goalMissions = _IHome.goalmission();
-            List<Country> Countries = _CIDbContext.Countries.ToList();
+            List<Country> Countries = _IHome.allcountry().ToList();
             List<FavoriteMission> addfav = _IHome.favmission();
-            List<Country> countryElements = _CIDbContext.Countries.ToList();
+            List<Country> countryElements = _IHome.allcountry().ToList();
             List<City> Cities = _IHome.AllCity();
-            List<MissionTheme> Themes = _CIDbContext.MissionThemes.ToList();
+            List<MissionTheme> Themes = _IHome.alltheme().ToList();
             List<Skill> skills = _CIDbContext.Skills.ToList();
             List<City> cityname = new List<City>();
             List<City> cityname1 = new List<City>();
@@ -259,7 +258,7 @@ namespace CI_PlatformWeb.Controllers
             {
                 
                 var City = _IHome.AllCity().FirstOrDefault(u => u.CityId == item.CityId);
-                var Theme = _CIDbContext.MissionThemes.FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
+                var Theme = _IHome.alltheme().FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
                 
                 
 
@@ -302,18 +301,17 @@ namespace CI_PlatformWeb.Controllers
                     ViewBag.countryId = country;
                     if (ViewBag.countryId != null)
                     {
-                        var countryElement = _CIDbContext.Countries.Where(m => m.CountryId == country).ToList();
+                        var countryElement = _IHome.allcountry().Where(m => m.CountryId == country).ToList();
                         if (i1 == 0) {
-                            countryElements = _CIDbContext.Countries.Where(m => m.CountryId == country+50000).ToList();
+                            countryElements = _IHome.allcountry().Where(m => m.CountryId == country+50000).ToList();
                             i1++;
                         }
                         countryElements.AddRange(countryElement);
-                        //var c1 = _CIDbContext.Countries.FirstOrDefault(m => m.CountryId == country);
-                        //ViewBag.country = c1.Name;
+                       
                     }
                 }
                 ViewBag.country = countryElements;
-                //Countries = _CIDbContext.Countries.ToList();
+                
                 
                 
                 
@@ -393,30 +391,29 @@ namespace CI_PlatformWeb.Controllers
                     ViewBag.theme = theme;
                     if (ViewBag.theme != null)
                     {
-                        var theme1 = _CIDbContext.MissionThemes.Where(m => m.MissionThemeId == theme).ToList();
+                        var theme1 = _IHome.alltheme().Where(m => m.MissionThemeId == theme).ToList();
                         if (k1 == 0)
                         {
-                            Themes = _CIDbContext.MissionThemes.Where(m => m.MissionThemeId == theme + 50000).ToList();
+                            Themes = _IHome.alltheme().Where(m => m.MissionThemeId == theme + 50000).ToList();
                             k1++;
                         }
                         Themes.AddRange(theme1);
-                        //var c1 = _CIDbContext.MissionThemes.FirstOrDefault(m => m.MissionThemeId == theme);
-                        //ViewBag.theme = c1.Title;
                     }
                 }
                 ViewBag.theme = Themes;
-                Themes = _CIDbContext.MissionThemes.ToList();
-                
-                
+                Themes = _IHome.alltheme();
+
+
+
             }
             switch (sortOrder)
             {
                 case "Newest":
-                    mission = newmission.OrderByDescending(m => m.StartDate).ToList();
+                    mission = mission.OrderByDescending(m => m.StartDate).ToList();
                     ViewBag.sortby = "Newest";
                     break;
                 case "Oldest":
-                    mission = newmission.OrderBy(m => m.StartDate).ToList();
+                    mission = mission.OrderBy(m => m.StartDate).ToList();
                     ViewBag.sortby = "Oldest";
                     break;
                 case "Lowest seats":
@@ -440,7 +437,7 @@ namespace CI_PlatformWeb.Controllers
                 {
                     int finalrating = 0;
                     City city = _IHome.AllCity().Where(e => e.CityId == missions.CityId).FirstOrDefault();
-                    MissionTheme theme = _CIDbContext.MissionThemes.Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
+                    MissionTheme theme = _IHome.alltheme().Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
                     GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
                     FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                     var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
@@ -460,7 +457,7 @@ namespace CI_PlatformWeb.Controllers
 
                     string[] startDateNtime = missions.StartDate.ToString().Split(' ');
                     string[] endDateNtime = missions.EndDate.ToString().Split(' ');
-                    var ratings = _CIDbContext.MissionRatings.Where(e => e.MissionId == missions.MissionId).ToList();
+                    var ratings = _IHome.missionRatings().Where(e => e.MissionId == missions.MissionId).ToList();
                    
                     
                         missionsVMList.Add(new MissionViewModel
@@ -589,19 +586,12 @@ namespace CI_PlatformWeb.Controllers
             MissionRating ratingExists = _IHome.MissionratingByUserid_Missionid(Id, missionId);
             if (ratingExists != null)
             {
-                ratingExists.Rating = rating;
-                _CIDbContext.Update(ratingExists);
-                _CIDbContext.SaveChanges();
+                ratingExists = _IHome.updaterating(ratingExists, rating);
                 return Json(new { success = true, ratingExists, isRated = true });
             }
             else
             {
-                var ratingele = new MissionRating();
-                ratingele.Rating = rating;
-                ratingele.UserId = Id;
-                ratingele.MissionId = missionId;
-                _CIDbContext.Add(ratingele);
-                _CIDbContext.SaveChanges();
+                var ratingele= _IHome.addratings(rating,Id,missionId);
                 return Json(new { success = true, ratingele, isRated = true });
             }
         }
@@ -609,13 +599,8 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> comment(long MissionId, long UserId,String comment)
         {
-            
-            var newcomment = new Comment();
-            newcomment.UserId = UserId;
-            newcomment.MissionId = MissionId;
-            newcomment.CommentText = comment;
-            _CIDbContext.Add(newcomment);
-            _CIDbContext.SaveChanges();
+
+            var newcomment=_IHome.addcomment(MissionId, UserId, comment);
             
             return Json(new { success = true, newcomment });
 
@@ -630,18 +615,13 @@ namespace CI_PlatformWeb.Controllers
             if (favoriteMission != null)
             {
                 FavoriteMission favoriteMissiondel = _IHome.FavmissionByMissionid_Userid(MissionId, UserId);
-                _CIDbContext.Remove(favoriteMissiondel);
-                _CIDbContext.SaveChanges();
+               var favoriteMissionde=_IHome.removefav(favoriteMission);
                 return Json(new { success = true, favoriteMissiondel, isRated = false });
             }
             else
             {
 
-                var favoriteMissionadd = new FavoriteMission();
-                favoriteMissionadd.UserId = UserId;
-                favoriteMissionadd.MissionId = MissionId;
-                _CIDbContext.Add(favoriteMissionadd);
-                _CIDbContext.SaveChanges();
+               var favoriteMissionadd=_IHome.addfav(MissionId, UserId);
                 return Json(new { success = true, favoriteMissionadd, isRated = true });
             }
         }
@@ -659,7 +639,7 @@ namespace CI_PlatformWeb.Controllers
                 var theme = _IHome.MissionThemeByThemeid(mission.ThemeId); 
                 var city = _IHome.AllCity().FirstOrDefault(s => s.CityId == mission.CityId);
                 var ratings =_IHome.missionRatings().FirstOrDefault(MR => MR.MissionId == missionId && MR.UserId == useridforrating);
-                var recvoldet = from U in _IHome.alluser() join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                var recvoldet = from U in _IHome.alluser() join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
                 GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
                 var goaltxt =_IHome.goalmission().FirstOrDefault(g => g.MissionId == mission.MissionId);
                 missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
@@ -705,7 +685,7 @@ namespace CI_PlatformWeb.Controllers
 
 
             List<VolunteeringVM> missioncomment = new List<VolunteeringVM>();
-            var commentlist = _CIDbContext.Comments.Where(m => m.MissionId == missionId).ToList();
+            var commentlist = _IHome.comment().Where(m => m.MissionId == missionId).ToList();
             foreach (var comment in commentlist)
             {
                 var user= _IHome.alluser().FirstOrDefault(m => m.UserId== comment.UserId);
@@ -751,7 +731,7 @@ namespace CI_PlatformWeb.Controllers
 
                 ViewBag.relatedmission = relatedlist.Take(3);
                 List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
-                var recentvoluntered = from U in _IHome.alluser() join MA in _CIDbContext.MissionApplications on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                var recentvoluntered = from U in _IHome.alluser() join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
                 foreach (var item in recentvoluntered)
                 {
                     recentvolunteredlist.Add(new VolunteeringVM
