@@ -32,22 +32,37 @@ function showSlides(n) {
 function sendmail(id) {
     const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
     var send = document.getElementById("sendmail");
-    send.innerHTML="Sending"
+    Swal.fire({
+        icon: 'info',
+        title: 'Sending',
+        text: 'Sending Mail....',
+        
+    })
     $.ajax({
         url: '/Home/Sendmail',
         type: 'POST',
         data: { userid: mail ,id:id},
         success: function (result) {
-            alert("Recomendations sent successfully!");
+            
             const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
             checkboxes.forEach((checkbox) => {
                 checkbox.checked = false;
             });
-            send.innerHTML="sent"
+            Swal.fire({
+                icon: 'success',
+                title: 'Sent',
+                text: 'Recommandation sent succesfully',
+                
+            })
         },
         error: function () {
             // Handle error response from the server, e.g. show an error message to the user
-            alert('Error: Could not recommend mission.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                
+            })
         }
     });
 

@@ -51,6 +51,7 @@
         public int? appMissionId { get; set; }
 
         public int? isapplied { get; set; }
+        public int? isclosed { get; set; }
 
     }
 }

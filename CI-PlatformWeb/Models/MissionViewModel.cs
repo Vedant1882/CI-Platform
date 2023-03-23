@@ -27,6 +27,7 @@
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
+        public DateTime? deadline { get; set; }
 
         public int NoOfSeatsLeft { get; set; }
 
@@ -43,5 +44,6 @@
         public String? available { get; set; }
 
         public int? isapplied { get; set; }
+        public int? isclosed { get; set; }
     }
 }

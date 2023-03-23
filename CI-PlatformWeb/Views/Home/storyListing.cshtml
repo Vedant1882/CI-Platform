@@ -58,7 +58,7 @@
 
                                         </a>
                                     </div>
-                                    <button class="theme-btn position-absolute top-100 start-50 translate-middle ">Environment</button>
+                                    <button class="theme-btn position-absolute top-100 start-50 translate-middle border-2" style="">@item.Theme</button>
                                 </div>
                                 <div class="card-body">
                                     <p class="card-title">
@@ -92,6 +92,11 @@
                         @if (@ViewBag.currentUrl.Contains('?'))
                         {
                             <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
+                                <a class="page-link" href="@ViewBag.currentUrl&pageIndex=0" aria-label="Previous">
+                                    <span aria-hidden="true">FirstPage</span>
+                                </a>
+                            </li>
+                            <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
                                 <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
@@ -107,9 +112,19 @@
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
+                            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
+                                <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@(ViewBag.TotalPages-1)" aria-label="Next">
+                                    <span aria-hidden="true">LastPage</span>
+                                </a>
+                            </li>
                         }
                         else
                         {
+                            <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
+                                <a class="page-link" href="@ViewBag.currentUrl?pageIndex=0" aria-label="Previous">
+                                    <span aria-hidden="true">FirstPage</span>
+                                </a>
+                            </li>
                             <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
                                 <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
@@ -124,6 +139,11 @@
                             <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
                                 <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.CurrentPage + 1)" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
+                                <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.TotalPages-1)" aria-label="Next">
+                                    <span aria-hidden="true">LastPage</span>
                                 </a>
                             </li>
                         }

@@ -87,7 +87,11 @@
                                     {
                                         <div class="applied-div">Applied</div>
                                     }
-                                    <div class="closed-div">Closed</div>
+                                    @if (item.isclosed == 0)
+                                    {
+                                        <div class="closed-div">Closed</div>
+                                    }
+
                                     <div class="landing-page-top-right"><img src="~/images/pin.png" alt="">@item.City</div>
 
                                     <div class="landing-page-bottom-right d-flex flex-column">
@@ -213,7 +217,7 @@
                                                 <p class="lead me-2 pt-2">
                                                     <img src="~/images/deadline.png" alt="">
                                                     <div>
-                                                        <div>@item.EndDate.ToString().Split(" ")[0]</div>
+                                                        <div>@item.deadline.ToString().Split(" ")[0]</div>
                                                         <div class="landing-page-card-vol-small">Deadline</div>
                                                     </div>
                                                 </p>
@@ -244,14 +248,14 @@
                                     </div>
 
                                     <hr>
-                                    @if (item.isapplied == 1)
+                                    @if (item.isclosed == 0)
                                     {
                                         @if (Context.Session.GetString("UserID") == null)
                                         {
                                             <div class="d-flex justify-content-center">
                                                 <div class="">
                                                     <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
-                                                        View Details <img src="~/images/right-arrow.png" alt="">
+                                                        Mission Closed <img src="~/images/right-arrow.png" alt="">
                                                     </a>
                                                 </div>
                                             </div>
@@ -261,7 +265,7 @@
                                             <div class="d-flex justify-content-center">
                                                 <div class="">
                                                     <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
-                                                        View Details <img src="~/images/right-arrow.png" alt="">
+                                                        Mission Closed <img src="~/images/right-arrow.png" alt="">
                                                     </a>
                                                 </div>
                                             </div>
@@ -269,27 +273,54 @@
                                     }
                                     else
                                     {
-                                        @if (Context.Session.GetString("UserID") == null)
+                                        @if (item.isapplied == 1)
                                         {
-                                            <div class="d-flex justify-content-center">
-                                                <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
-                                                        Apply <img src="~/images/right-arrow.png" alt="">
-                                                    </a>
+                                            @if (Context.Session.GetString("UserID") == null)
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
+                                                            View Details <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                            View Details <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
                                         }
                                         else
                                         {
-                                            <div class="d-flex justify-content-center">
-                                                <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
-                                                        Apply <img src="~/images/right-arrow.png" alt="">
-                                                    </a>
+                                            @if (Context.Session.GetString("UserID") == null)
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
+                                                            Apply <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="d-flex justify-content-center">
+                                                    <div class="">
+                                                        <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                            Apply <img src="~/images/right-arrow.png" alt="">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
                                         }
                                     }
+
 
 
                                 </div>
@@ -309,6 +340,11 @@
                 @if (@ViewBag.currentUrl.Contains('?'))
                 {
                     <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
+                        <a class="page-link" href="@ViewBag.currentUrl&pageIndex=0" aria-label="Previous">
+                            <span aria-hidden="true">FirstPage</span>
+                        </a>
+                    </li>
+                    <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
                         <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
@@ -324,9 +360,19 @@
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
+                    <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
+                        <a class="page-link" href="@ViewBag.currentUrl&pageIndex=@(ViewBag.TotalPages-1)" aria-label="Next">
+                            <span aria-hidden="true">LastPage</span>
+                        </a>
+                    </li>
                 }
                 else
                 {
+                    <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
+                        <a class="page-link" href="@ViewBag.currentUrl?pageIndex=0" aria-label="Previous">
+                            <span aria-hidden="true">FirstPage</span>
+                        </a>
+                    </li>
                     <li class="page-item @(ViewBag.CurrentPage == 0 ? "disabled" : "")">
                         <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
@@ -343,6 +389,11 @@
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
+                    <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages - 1 ? "disabled" : "")">
+                        <a class="page-link" href="@ViewBag.currentUrl?pageIndex=@(ViewBag.TotalPages-1)" aria-label="Next">
+                            <span aria-hidden="true">LastPage</span>
+                        </a>
+                    </li>
                 }
             </ul>
         </nav>
@@ -357,7 +408,12 @@
             gridview();
         }
         function alertforapply() {
-            alert("please login first")
+            Swal.fire({
+                icon: 'error',
+                title: 'Login First',
+                
+
+            })
         }
         function listview() {
             localStorage.setItem("viewtype", "list")
@@ -373,7 +429,7 @@
                 type: 'POST',
                 data: { missionId: missionId, UserId: Id },
                 success: function (result) {
-                    if (result.favmission == "0") {
+                    if (result) {
                         location.reload();
                         var favbtn = document.getElementById("favmissiondiv");
                         var heartbtn = document.getElementById("heart-" + missionId.toString());
@@ -396,28 +452,42 @@
         function sendmail(id) {
             const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
             var send = document.getElementById("sendmail");
-            send.innerHTML = "Sending"
-            $.ajax({
-                url: '/Home/Sendmail',
-                type: 'POST',
-                data: { userid: mail, id: id },
-                success: function (result) {
-                    alert("Recomendations sent successfully!");
-                    const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
-                    checkboxes.forEach((checkbox) => {
-                        checkbox.checked = false;
-                    });
-                    send.innerHTML = "sent"
-                },
-                error: function () {
-                    // Handle error response from the server, e.g. show an error message to the user
-                    alert('Error: Could not recommend mission.');
-                }
-            });
+            Swal.fire({
+                icon: 'info',
+                title: 'Sending',
+                text: 'Sending Mail....',
 
-        }
+            })
+                $.ajax({
+                    url: '/Home/Sendmail',
+                    type: 'POST',
+                    data: { userid: mail, id: id },
+                    success: function (result) {
+                        
+                        const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
+                        checkboxes.forEach((checkbox) => {
+                            checkbox.checked = false;
+                        });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sent',
+                        text: 'Recommandation sent succesfully',
+
+                    })
+                    },
+                    error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+
+                    })
+                    }
+                });
+
+            }
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 

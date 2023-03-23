@@ -80,6 +80,10 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.MissionThemes.FirstOrDefault(t => t.MissionThemeId == themeid);
         }
+        public List<MissionTheme> missiontheme()
+        {
+            return _CIDbContext.MissionThemes.ToList();
+        }
         public FavoriteMission FavmissionByMissionid(long missionid)
         {
             return _CIDbContext.FavoriteMissions.FirstOrDefault(FM => FM.MissionId == missionid);

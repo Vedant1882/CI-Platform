@@ -98,7 +98,7 @@
                     {
                         <div class="rule d-flex mt-4">
                             <hr style="border:1px solid black">
-                            <button class="date-btn mt-1">From @Model.StartDateEndDate.ToString().Split(" ")[0]</button>
+                            <button class="date-btn mt-1">@Model.StartDateEndDate</button>
                             <hr style="border:1px solid black">
 
                         </div>
@@ -288,22 +288,34 @@
                             </div>
                         </div>
                     </div>
-                    @if (Model.isapplied == 1)
+                    @if(Model.isclosed == 0)
                     {
                         <div class="text-center">
                             <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
-                                Already Applied <img src="~/images/right-arrow.png" alt="">
+                                Mission Closed <img src="~/images/right-arrow.png" alt="">
                             </button>
                         </div>
                     }
                     else
                     {
-                        <div class="text-center">
-                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
-                                Apply <img src="~/images/right-arrow.png" alt="">
-                            </a>
-                        </div>
+                        @if (Model.isapplied == 1)
+                        {
+                            <div class="text-center">
+                                <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
+                                    Already Applied <img src="~/images/right-arrow.png" alt="">
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center">
+                                <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
+                                    Apply <img src="~/images/right-arrow.png" alt="">
+                                </a>
+                            </div>
+                        }
                     }
+                    
                     
                 </div>
             </div>
@@ -369,26 +381,8 @@
                         </a>
                     </div>
                     @*--------Comments------------*@
-                    <div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
-                        <ul class="list-unstyled mt-2">
-                            @if (ViewBag.missioncomment != null)
-                            {
-                                @foreach (var c in ViewBag.missioncomment)
-                                {
-                                    <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
-                                        <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image">
-                                        <div class="media-body ms-2">
-                                            <h5 class="mt-0 mb-1">@c.UserName</h5>
-                                            @c.commenttext
-                                        </div>
-                                    </li>
-                                }
-                            }
-
-
-
-                        </ul>
-                    </div>
+                    
+                    <partial name="_Comment_PartialView"></partial>
                 </div>
             </div>
         </div>
@@ -523,29 +517,17 @@
     }
     function comment(mid, uid) {
         var text = document.getElementById("commenttext").value;
-        alert(text + mid + uid);
+       
         $.ajax({
             url: '/Home/comment',
             type: 'POST',
             data: { MissionId: mid, UserId: uid, comment: text },
             success: function (result) {
-                if (result.favmission == "0") {
+                location.reload();
 
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart-" + missionId.toString());
-                    heartbtn.style.color = "#F88634";
-                    favbtn.style.color = "orange"
-
-                }
-                else {
-
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart-" + missionId.toString());
-                    heartbtn.style.color = "white";
-                    favbtn.style.color = "white"
-
-                }
-
+            },
+            error: function () {
+                alert("could not comment");
             }
         });
     }
@@ -555,8 +537,13 @@
             type: 'POST',
             data: { MissionId: missionid, UserId: userid},
             success: function (result) {
-                alert("Succesfully applied")
-                location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Applied',
+                    text: 'Applied Successfully',
+
+                })
+                
              }
 
      
@@ -566,5 +553,5 @@
 </html>
 
 <script src="~/js/Volunteering.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

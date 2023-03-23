@@ -17,6 +17,7 @@ using NuGet.Common;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using CI_Platform.Repository.Interface;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -442,7 +443,11 @@ namespace CI_PlatformWeb.Controllers
                     FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                     var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
                     var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
-                    
+                    var close = "0";
+                    if (DateTime.Now > missions.Deadline)
+                    {
+                        close = "1";
+                    }
                     if (ratinglist.Count() > 0)
                     {
                         int rat = 0;
@@ -484,7 +489,9 @@ namespace CI_PlatformWeb.Controllers
                             addedtofavU = (long)favoriteMissions.UserId,
                             avgrating=finalrating,
                             available = missions.Availability,
+                            deadline=missions.Deadline,
                             isapplied= (applicationmission != null) ? 1:0,
+                            isclosed= (close == "1") ? 0:1,
                         });
                     
                     
@@ -601,8 +608,9 @@ namespace CI_PlatformWeb.Controllers
         {
 
             var newcomment=_IHome.addcomment(MissionId, UserId, comment);
-            
-            return Json(new { success = true, newcomment });
+
+            //return Json(new { success = true, newcomment });
+            return PartialView("_Comment_PartialView",newcomment);
 
 
         }
@@ -649,6 +657,11 @@ namespace CI_PlatformWeb.Controllers
             VolunteeringVM volunteeringMission = new();
             int finalrating = 0;
             var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
+            var close = "0";
+            if (DateTime.Now > mission.Deadline)
+            {
+                close = "1";
+            }
             if (ratinglist.Count() > 0)
             {
                 int rat = 0;
@@ -680,6 +693,7 @@ namespace CI_PlatformWeb.Controllers
                 avgrating = finalrating,
                 available=mission.Availability,
                 isapplied = (applicationmission != null) ? 1 : 0,
+                isclosed = (close == "1") ? 0 : 1,
             };
             ViewBag.fav = volunteeringMission.isFavrouite;
 
@@ -766,6 +780,9 @@ namespace CI_PlatformWeb.Controllers
             foreach(var item in story)
             {
                 var user = _IHome.UserByUserid(item.UserId);
+                var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == item.MissionId);
+                var missiontheme= _IHome.missiontheme().FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
+                
                 storylist.Add(new storyListingViewModel
                 {
                     UserId= user.UserId,
@@ -775,6 +792,7 @@ namespace CI_PlatformWeb.Controllers
                     MissionId = item.MissionId,
                     UserName = user.FirstName,
                     LastName = user.LastName,
+                    Theme= missiontheme.Title,
 
                 });
                 

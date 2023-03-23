@@ -1,0 +1,22 @@
+﻿
+<div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
+    <ul class="list-unstyled mt-2">
+        @if (ViewBag.missioncomment != null)
+        {
+            @foreach (var c in ViewBag.missioncomment)
+            {
+                <div id="comment"></div>
+                <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
+                    <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image" style="height:50px;width:50px">
+                    <div class="media-body ms-2">
+                        <h5 class="mt-0 mb-1">@c.UserName</h5>
+                        @c.commenttext
+                    </div>
+                </li>
+            }
+        }
+
+
+
+    </ul>
+</div>

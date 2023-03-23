@@ -28,6 +28,7 @@ namespace CI_Platform.Repository.Interface
         public List<GoalMission> goalmission();
 
         public List<MissionApplication> missionapplication();
+        public List<MissionTheme> missiontheme();
         public MissionRating MissionratingByUserid_Missionid(long userid, long missionid);
 
         public FavoriteMission FavmissionByMissionid_Userid(long missionid, long userid);
