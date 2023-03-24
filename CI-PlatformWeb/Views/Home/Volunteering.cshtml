@@ -450,15 +450,15 @@
             <div class="volunteering-sec-2-right-down mt-3">
                 <div class="vol-sec-2-right-2nd-header">Recent Volunteers</div>
                 <hr>
-                <div class="overflow-x-auto d-flex">
+                <div class="d-flex">
 
                     @foreach (var item in ViewBag.recentvolunteered)
                     {
                         <div class="col-4  d-flex">
-                            <a class=" ms-4 me-2 text-decoration-none text-black justify-content-center " asp-area="" asp-controller="home" asp-action="login">
+                            <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
                                 <img src="~/Images/volunteer1.png" class="involveduserprofile" />
                                 <label id="" class="text-center">@item.UserName</label>
-                            </a>
+                            </div>
                         </div>
                     }
 
@@ -469,6 +469,9 @@
 
 
                 </div>
+                                    <hr>                        <div class="row text-center">                            <div class="col-2">                                @if (ViewBag.PageIndex > 1)                                {                                    <a class="btn" href="@Url.Action("Volunteering", new { pageIndex = ViewBag.PageIndex - 1 , missionId = @Model.MissionId})"><img src="~/Images/left.png" alt=""></a>                                }                            </div>                            <div class="col-8">Recent Volunteers</div>                            <div class="col-2">                                @if (ViewBag.PageIndex < ViewBag.TotalPages)                                {
+                            <a class="btn" href="@Url.Action("Volunteering", new { pageIndex = ViewBag.PageIndex + 1 , missionId = @Model.MissionId})"><img src="~/Images/right-arrow1.png" alt=""></a>
+                        }                            </div>                        </div>
             </div>
         </div>
         <partial name="_Related_Partial" />

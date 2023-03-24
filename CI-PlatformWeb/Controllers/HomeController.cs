@@ -639,7 +639,7 @@ namespace CI_PlatformWeb.Controllers
             }
         }
 
-        public IActionResult Volunteering(long id,int missionId)
+        public IActionResult Volunteering(long id,int missionId,int pageIndex=1)
         {
             int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
             ViewBag.userid = useridforrating;
@@ -762,7 +762,13 @@ namespace CI_PlatformWeb.Controllers
                     });
 
                 }
-                ViewBag.recentvolunteered = recentvolunteredlist;
+            int pageSize = 9; // Set the page size to 9
+            var volunteers = recentvolunteredlist; // Retrieve all volunteers from data source
+            int totalCount = volunteers.Count(); // Get the total number of volunteers
+            int skip = (pageIndex - 1) * pageSize;            var volunteersOnPage = volunteers.Skip(skip).Take(pageSize).ToList(); // Get the volunteers for the current page
+
+            ViewBag.TotalCount = totalCount;            ViewBag.PageSize = pageSize;            ViewBag.PageIndex = pageIndex;            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);            ViewBag.recentvolunteered = volunteersOnPage;
+            
 
                 List<User> Alluser = _IHome.alluser();
                 List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
@@ -777,6 +783,7 @@ namespace CI_PlatformWeb.Controllers
                     });
                 }
                 ViewBag.alluser = usernamelist;
+
                 return View(volunteeringMission);
             }
 
