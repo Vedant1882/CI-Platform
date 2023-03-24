@@ -588,19 +588,20 @@ namespace CI_PlatformWeb.Controllers
             return Json(new { success = true });
         }
         [HttpPost]
-        public async Task<IActionResult> Addrating(int rating, long Id, long missionId)
+        public IActionResult Addrating(int rating, long Id, long missionId)
         {
             MissionRating ratingExists = _IHome.MissionratingByUserid_Missionid(Id, missionId);
             if (ratingExists != null)
             {
                 ratingExists = _IHome.updaterating(ratingExists, rating);
-                return Json(new { success = true, ratingExists, isRated = true });
+               // return Json(new { success = true, ratingExists, isRated = true });
             }
             else
             {
                 var ratingele= _IHome.addratings(rating,Id,missionId);
-                return Json(new { success = true, ratingele, isRated = true });
+                //return Json(new { success = true, ratingele, isRated = true });
             }
+            return RedirectToAction("Volunteering", new {id=Id, missionId = missionId});
         }
 
         [HttpPost]
