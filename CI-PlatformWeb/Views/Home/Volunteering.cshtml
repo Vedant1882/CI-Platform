@@ -82,7 +82,7 @@
                         </div>*@
 
                     </div>
-                   
+
                 </div>
             </div>
 
@@ -287,35 +287,36 @@
                             </div>
                         </div>
                     </div>
-                    @if(Model.isclosed == 0)
-                    {
-                        <div class="text-center">
-                            <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
-                                Mission Closed <img src="~/images/right-arrow.png" alt="">
-                            </button>
-                        </div>
-                    }
-                    else
-                    {
-                        @if (Model.isapplied == 1)
+                    <div id="applydiv">
+                        @if (Model.isclosed == 0)
                         {
                             <div class="text-center">
                                 <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
-                                    Already Applied <img src="~/images/right-arrow.png" alt="">
+                                    Mission Closed <img src="~/images/right-arrow.png" alt="">
                                 </button>
                             </div>
                         }
                         else
                         {
-                            <div class="text-center">
-                                <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
-                                    Apply <img src="~/images/right-arrow.png" alt="">
-                                </a>
-                            </div>
+                            @if (Model.isapplied == 1)
+                            {
+                                <div class="text-center">
+                                    <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
+                                        Already Applied <img src="~/images/right-arrow.png" alt="">
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center">
+                                    <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
+                                        Apply <img src="~/images/right-arrow.png" alt="">
+                                    </a>
+                                </div>
+                            }
                         }
-                    }
-                    
-                    
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -380,7 +381,7 @@
                         </a>
                     </div>
                     @*--------Comments------------*@
-                    
+
                     @*<partial name="_Comment_PartialView"></partial>*@
                     <div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
                         <ul class="list-unstyled mt-2">
@@ -446,10 +447,10 @@
                 </div>
             </div>
 
-            <div class="volunteering-sec-2-right-down mt-3">
+            <div class="volunteering-sec-2-right-down mt-3 recentvol">
                 <div class="vol-sec-2-right-2nd-header">Recent Volunteers</div>
                 <hr>
-                <div class="d-flex">
+                <div class="overflow-x-auto d-flex">
 
                     @foreach (var item in ViewBag.recentvolunteered)
                     {
@@ -468,18 +469,51 @@
 
 
                 </div>
-                                    <hr>                        <div class="row text-center">                            <div class="col-2">                                @if (ViewBag.PageIndex > 1)                                {                                    <a class="btn" href="@Url.Action("Volunteering", new { pageIndex = ViewBag.PageIndex - 1 , missionId = @Model.MissionId})"><img src="~/Images/left.png" alt=""></a>                                }                            </div>                            <div class="col-8">Recent Volunteers</div>                            <div class="col-2">                                @if (ViewBag.PageIndex < ViewBag.TotalPages)                                {
-                            <a class="btn" href="@Url.Action("Volunteering", new { pageIndex = ViewBag.PageIndex + 1 , missionId = @Model.MissionId})"><img src="~/Images/right-arrow1.png" alt=""></a>
-                        }                            </div>                        </div>
+                <hr>
+                @*<div class="row text-center">
+                <div class="col-2">
+                @if (ViewBag.PageIndex > 1)
+                {
+
+                <button onclick="recent(@ViewBag.PageIndex - 1,@Model.MissionId)"><img src="~/Images/left.png" alt=""></button>
+
+                }
+                </div>
+                <div class="col-8">Recent Volunteers</div>
+                <div class="col-2">
+                @if (ViewBag.PageIndex < ViewBag.TotalPages)
+                {
+                <button onclick="recent(@ViewBag.PageIndex + 1,@Model.MissionId)"><img src="~/Images/right-arrow1.png" alt=""></button>
+
+                }
+                </div>
+                </div>*@
             </div>
         </div>
         <partial name="_Related_Partial" />
 </body>
 <script>
+    function recent(index, missionid) {
 
+
+        $.ajax({
+            url: '/Home/Volunteering',
+            type: 'POST',
+            data: { pageindex: index, missionId: missionid },
+            success: function (response) {
+
+                $('.recentvol').html($(response).find('.recentvol').html());
+                $('#avgrating').html($(response).find('#avgrating').html());
+
+            },
+            error: function () {
+                alert("could not like mission");
+            }
+        });
+    }
     function addRating(starId, missionId, Id) {
 
-        
+
         $.ajax({
             url: '/Home/Addrating',
             type: 'POST',
@@ -488,7 +522,7 @@
 
                 $('#starsr').html($(response).find('#starsr').html());
                 $('#avgrating').html($(response).find('#avgrating').html());
-                
+
             },
             error: function () {
                 alert("could not like mission");
@@ -522,30 +556,34 @@
         });
     }
 
-    
+
     function applyformission(missionid, userid) {
         $.ajax({
+
             url: '/Home/applymission',
             type: 'POST',
-            data: { MissionId: missionid, UserId: userid},
-            success: function (result) {
+            data: { MissionId: missionid, UserId: userid },
+
+            success: function (response) {
+
                 Swal.fire({
+                    position: 'top-end',
                     icon: 'success',
-                    title: 'Applied',
-                    text: 'Applied Successfully',
-
+                    title: 'Successfully Applied',
+                    showConfirmButton: false,
+                    timer: 2500
                 })
-                
-             }
+                $('#applydiv').html($(response).find('#applydiv').html());
+            }
 
-     
+
         });
     }
 </script>
 <script>
     function comment(mid, uid) {
         var text = document.getElementById("commenttext").value;
-     
+
         $.ajax({
             url: '/Home/comment',
             type: 'POST',
@@ -560,8 +598,8 @@
                 alert("could not comment");
             }
         });
-    }   
-    </script>
+    }
+</script>
 </html>
 
 <script src="~/js/Volunteering.js"></script>

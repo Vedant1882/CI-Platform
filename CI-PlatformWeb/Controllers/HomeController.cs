@@ -916,8 +916,8 @@ namespace CI_PlatformWeb.Controllers
         public async Task<IActionResult> applymission(int MissionId,int UserId)
         {
             _IHome.apply(MissionId, UserId);
-
-            return Json(new { success = true });
+            return RedirectToAction("Volunteering", new { id = UserId, missionId = MissionId });
+            //return Json(new { success = true });
         }
     }
         
