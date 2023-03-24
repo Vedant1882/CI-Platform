@@ -96,6 +96,7 @@ namespace CI_PlatformWeb.Controllers
                     HttpContext.Session.SetString("UserID", user.FirstName);
                     HttpContext.Session.SetString("user", user.UserId.ToString());
                     HttpContext.Session.SetInt32("userIDforfavmission", userid);
+                    TempData["Done"] = "logged in";
                     return RedirectToAction(nameof(HomeController.landingpage), "Home");
                 }
                 else
