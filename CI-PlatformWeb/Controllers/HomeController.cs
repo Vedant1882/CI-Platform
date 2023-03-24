@@ -604,18 +604,23 @@ namespace CI_PlatformWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> comment(long MissionId, long UserId,String comment)
+        public IActionResult comment(long MissionId, long UserId,String comment)
         {
 
             var newcomment=_IHome.addcomment(MissionId, UserId, comment);
 
+          
+
+
+                return RedirectToAction("Volunteering", new {id= UserId, missionId = MissionId });
+
             //return Json(new { success = true, newcomment });
-            return PartialView("_Comment_PartialView",newcomment);
+
 
 
         }
 
-            [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> AddToFav(long MissionId, long UserId)
         {
             FavoriteMission favoriteMission = _IHome.FavmissionByMissionid_Userid(MissionId, UserId);
@@ -708,12 +713,15 @@ namespace CI_PlatformWeb.Controllers
                     commenttext = comment.CommentText,
                     UserName=user.FirstName,
                     LastName=user.LastName,
+                    createdAt=comment.CreatedAt,
+
 
                 });
 
 
             }
-            ViewBag.missioncomment = missioncomment;
+            ViewBag.missioncomment = missioncomment.OrderByDescending(m => m.createdAt).ToList(); ;
+            
 
 
             var relatedmission = _IHome.Allmissions().Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();

@@ -2,18 +2,15 @@
     var firstname = Context.Session.GetString("UserID");
     var id = Context.Session.GetString("user");
 
-    if (firstname == null)
-    {
-
-        Layout = "old-nav";
-        ViewData["Title"] = "Home Page";
-    }
-    else
-    {
-
+   
+   
         Layout = "_NavbarLayout";
         ViewData["Title"] = "Home Page";
-    }
+    
+       
+    
+
+     
     <partial name="_Missions_PartialView"></partial>
 
 }

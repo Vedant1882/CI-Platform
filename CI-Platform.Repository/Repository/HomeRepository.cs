@@ -115,6 +115,7 @@ namespace CI_Platform.Repository.Repository
             newcomment.UserId = UserId;
             newcomment.MissionId = MissionId;
             newcomment.CommentText = comment;
+            newcomment.CreatedAt= DateTime.Now;
             _CIDbContext.Add(newcomment);
             _CIDbContext.SaveChanges();
             return newcomment;
