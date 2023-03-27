@@ -174,15 +174,17 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Add(missionapplication);
             _CIDbContext.SaveChanges();
         }
-        public void addstory(long MissionId)
+        public void addstory(long MissionId, string title, DateTime date, string discription)
         {
             var Stories = new Story();
                 Stories.MissionId = MissionId;
             Stories.UserId = 9;
-            Stories.Title = "Nourish the Children in African country";
-            Stories.Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...";
-            Stories.CreatedAt= DateTime.Now;
-                _CIDbContext.SaveChanges();
+            Stories.Title = title;
+            Stories.Description = discription;
+            Stories.Status = "1";   
+            Stories.CreatedAt= date;
+            _CIDbContext.Add(Stories);
+            _CIDbContext.SaveChanges();
                 
             
         }

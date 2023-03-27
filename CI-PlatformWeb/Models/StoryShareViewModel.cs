@@ -8,5 +8,11 @@ namespace CI_PlatformWeb.Models
         public List<MissionApplication> missionapplication { get; set; }
 
         public long MissionId { get; set; }
+
+        public string title { get; set; }
+
+        public string description { get; set; }
+
+        public DateTime date { get; set; }
     }
 }

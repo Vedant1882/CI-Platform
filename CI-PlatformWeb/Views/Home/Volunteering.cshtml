@@ -304,8 +304,8 @@
                         @if (Model.isclosed == 0)
                         {
                             <div class="text-center">
-                                <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
-                                    Mission Closed <img src="~/images/right-arrow.png" alt="">
+                                <button class="btn mt-2 landing-page-apply-mission-btn" style="color:red" disabled>
+                                    Mission Closed
                                 </button>
                             </div>
                         }
@@ -314,8 +314,8 @@
                             @if (Model.isapplied == 1)
                             {
                                 <div class="text-center">
-                                    <button class="btn mt-2 landing-page-apply-mission-btn" disabled>
-                                        Already Applied <img src="~/images/right-arrow.png" alt="">
+                                    <button class="btn mt-2 landing-page-apply-mission-btn" style="color:red" disabled>
+                                        Already Applied 
                                     </button>
                                 </div>
                             }
@@ -481,7 +481,7 @@
                     {
                         <div class="col-4  ">
                             <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
-                                <img src="~/Images/volunteer1.png" class="involveduserprofile" />
+                                <img src="~/Images/volunteer1.png" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
                                 <label id="" class="text-center">@item.UserName</label>
                             </div>
                         </div>
@@ -496,22 +496,22 @@
                 </div>
                 <hr>
                 <div class="row text-center">
-                <div class="col-2">
-                @if (ViewBag.PageIndex > 1)
-                {
+                    <div class="col-2">
+                        @if (ViewBag.PageIndex > 1)
+                        {
 
-                <button onclick="recent(@ViewBag.PageIndex - 1,@Model.MissionId)"><img src="~/Images/left.png" alt=""></button>
+                            <button class="page-link" onclick="recent(@ViewBag.PageIndex - 1,@Model.MissionId)"><img src="~/Images/left.png" alt=""></button>
 
-                }
-                </div>
-                <div class="col-8">@ViewBag.TotalVol Recent Volunteers</div>
-                <div class="col-2">
-                @if (ViewBag.PageIndex < ViewBag.TotalPages)
-                {
-                <button onclick="recent(@ViewBag.PageIndex + 1,@Model.MissionId)"><img src="~/Images/right-arrow1.png" alt=""></button>
+                        }
+                    </div>
+                    <div class="col-8">@ViewBag.TotalVol Recent Volunteers</div>
+                    <div class="col-2">
+                        @if (ViewBag.PageIndex < ViewBag.TotalPages)
+                        {
+                            <button class="page-link" onclick="recent(@ViewBag.PageIndex + 1,@Model.MissionId)"><img src="~/Images/right-arrow1.png" alt=""></button>
 
-                }
-                </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
