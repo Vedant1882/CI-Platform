@@ -78,10 +78,7 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        public IActionResult StoryShare()
-        {
-            return View();
-        }
+        
        
 
         [HttpPost]
@@ -645,6 +642,7 @@ namespace CI_PlatformWeb.Controllers
                 return Json(new { success = true, favoriteMissionadd, isRated = true });
             }
         }
+        
 
         public IActionResult Volunteering(long id,int missionId,int pageIndex=1)
         {
@@ -727,7 +725,7 @@ namespace CI_PlatformWeb.Controllers
 
 
             }
-            ViewBag.missioncomment = missioncomment.OrderByDescending(m => m.createdAt).ToList(); ;
+            ViewBag.missioncomment = missioncomment.OrderByDescending(m => m.createdAt).ToList();
             
 
 
@@ -769,12 +767,12 @@ namespace CI_PlatformWeb.Controllers
                     });
 
                 }
-            int pageSize = 9; // Set the page size to 9
+            int pageSize = 3; // Set the page size to 9
             var volunteers = recentvolunteredlist; // Retrieve all volunteers from data source
             int totalCount = volunteers.Count(); // Get the total number of volunteers
             int skip = (pageIndex - 1) * pageSize;            var volunteersOnPage = volunteers.Skip(skip).Take(pageSize).ToList(); // Get the volunteers for the current page
 
-            ViewBag.TotalCount = totalCount;            ViewBag.PageSize = pageSize;            ViewBag.PageIndex = pageIndex;            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);            ViewBag.recentvolunteered = volunteersOnPage;
+            ViewBag.TotalCount = totalCount;            ViewBag.PageSize = pageSize;            ViewBag.PageIndex = pageIndex;            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);            ViewBag.TotalVol= recentvolunteredlist.Count();            ViewBag.recentvolunteered = volunteersOnPage;
             
 
                 List<User> Alluser = _IHome.alluser();
@@ -923,7 +921,25 @@ namespace CI_PlatformWeb.Controllers
         {
             _IHome.apply(MissionId, UserId);
             return RedirectToAction("Volunteering", new { id = UserId, missionId = MissionId });
-            //return Json(new { success = true });
+            
+        }
+        [HttpPost]
+        public IActionResult addstory(StoryShareViewModel model)
+        {
+            _IHome.addstory(model.MissionId);
+           return RedirectToAction("storyShare","Home");
+            
+          
+        }
+        public IActionResult storyShare()
+        {
+            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+            StoryShareViewModel storyVm= new StoryShareViewModel();
+            storyVm.missions = _IHome.Allmissions();
+            storyVm.missionapplication= _IHome.missionapplication().Where(m => m.UserId == useridforrating).ToList();
+           
+      
+            return View(storyVm);
         }
     }
         

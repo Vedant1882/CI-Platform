@@ -174,6 +174,18 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Add(missionapplication);
             _CIDbContext.SaveChanges();
         }
+        public void addstory(long MissionId)
+        {
+            var Stories = new Story();
+                Stories.MissionId = MissionId;
+            Stories.UserId = 9;
+            Stories.Title = "Nourish the Children in African country";
+            Stories.Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...";
+            Stories.CreatedAt= DateTime.Now;
+                _CIDbContext.SaveChanges();
+                
+            
+        }
 
     }
 }

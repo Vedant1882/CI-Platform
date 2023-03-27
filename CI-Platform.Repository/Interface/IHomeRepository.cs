@@ -61,6 +61,7 @@ namespace CI_Platform.Repository.Interface
         public Story StoryByStoryid(long storyid);
 
         public void apply(long missionid,long userid);
+        public void addstory(long MissionId);
 
 
 

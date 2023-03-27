@@ -1,4 +1,6 @@
-﻿namespace CI_PlatformWeb.Models
+﻿using CI_Entity.Models;
+
+namespace CI_PlatformWeb.Models
 {
     public class storyListingViewModel
     {
@@ -11,6 +13,8 @@
         public string? UserName { get; set; }
         public string? LastName { get; set; }
         public string? Theme { get; set; }
+
+       
 
 
     }
