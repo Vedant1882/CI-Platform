@@ -23,7 +23,9 @@
 </head>
 
 <body>
-
+    @{
+        var useridforrating = Context.Session.GetInt32("userIDforfavmission");
+    }
     <div class="container" style="margin-top:150px">
         <div class="filters-section d-flex align-items-center flex-wrap justify-content-center">
         </div>
@@ -74,12 +76,7 @@
                         <div class="column" style="width:25%">
                             <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
                         </div>
-                        @*<div class="column">
-                        <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(5)" alt="Nature and sunrise">
-                        </div>
-                        <div class="column">
-                        <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(6)" alt="Snowy Mountains">
-                        </div>*@
+
 
                     </div>
 
@@ -176,15 +173,29 @@
 
                         </div>
 
+                        @if (useridforrating != null)
+                        {
+                            <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
 
-                        <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-
-                            <img src="~/images/add1.png" class="" />
+                                <img src="~/images/add1.png" class="" />
 
 
-                            <label class="ms-2"> Recommend to a Co-Worker</label>
+                                <label class="ms-2"> Recommend to a Co-Worker</label>
 
-                        </button>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button">
+
+                                <img src="~/images/add1.png" class="" />
+
+
+                                <label class="ms-2"> Recommend to a Co-Worker</label>
+
+                            </button>
+                        }
+
 
                         <div class="modal fade modal-dialog-scrollable" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -217,34 +228,36 @@
                     <div class="rule d-flex mt-4" id="starsr">
                         <hr style="border:1px solid black">
 
-                        @{
-                            var useridforrating = Context.Session.GetInt32("userIDforfavmission");
-                        }
 
-                        @if (@Model.Rating != null)
+                        @if (useridforrating != null)
                         {
-
-                            int count = 0;
-
-                            @for (var i = 1; i <= @Model.Rating; i++)
+                            @if (@Model.Rating != null)
                             {
-                                <i class="bi bi-star-fill" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                                count++;
-                            }
-                            @for (var k = count + 1; k <= 5; k++)
-                            {
-                                <i class="bi bi-star-fill" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                            }
 
+                                int count = 0;
+
+                                @for (var i = 1; i <= @Model.Rating; i++)
+                                {
+                                    <i class="bi bi-star-fill" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                    count++;
+                                }
+                                @for (var k = count + 1; k <= 5; k++)
+                                {
+                                    <i class="bi bi-star-fill" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                }
+
+                            }
                         }
                         else
                         {
-                            <i class="bi bi-star-fill" id="1" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                            <i class="bi bi-star-fill" id="2" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                            <i class="bi bi-star-fill" id="3" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                            <i class="bi bi-star-fill" id="4" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                            <i class="bi bi-star-fill" id="5" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
                         }
+
+
 
                         <hr style="border:1px solid black">
                     </div>
@@ -375,11 +388,23 @@
                 </div>
                 <div class="tab-pane fade ms-3 abcs" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                     <textarea style="width:100%" placeholder="Enter Your Comments" id="commenttext"></textarea>
-                    <div>
-                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="comment(@Model.MissionId,@Model.UserId)">
-                            Post comments
-                        </a>
-                    </div>
+                    @if (useridforrating != null)
+                    {
+                        <div>
+                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="comment(@Model.MissionId,@Model.UserId)">
+                                Post comments
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforlogin()">
+                                Post comments
+                            </a>
+                        </div>
+                    }
+
                     @*--------Comments------------*@
 
                     @*<partial name="_Comment_PartialView"></partial>*@
@@ -525,7 +550,7 @@
 
             },
             error: function () {
-                alert("could not like mission");
+                alert("could not add rating");
             }
         });
     }
@@ -581,6 +606,9 @@
     }
 </script>
 <script>
+    function alertforlogin() {
+        alert("Login First");
+    }
     function comment(mid, uid) {
         var text = document.getElementById("commenttext").value;
 

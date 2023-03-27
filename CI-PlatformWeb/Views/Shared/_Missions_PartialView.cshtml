@@ -264,18 +264,7 @@
                                     <hr>
                                     @if (item.isclosed == 0)
                                     {
-                                        @if (Context.Session.GetString("UserID") == null)
-                                        {
-                                            <div class="d-flex justify-content-center">
-                                                <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
-                                                        Mission Closed <img src="~/images/right-arrow.png" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        }
-                                        else
-                                        {
+                                        
                                             <div class="d-flex justify-content-center">
                                                 <div class="">
                                                     <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
@@ -283,24 +272,13 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                        }
+                                        
                                     }
                                     else
                                     {
                                         @if (item.isapplied == 1)
                                         {
-                                            @if (Context.Session.GetString("UserID") == null)
-                                            {
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="">
-                                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
-                                                            View Details <img src="~/images/right-arrow.png" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            }
-                                            else
-                                            {
+                                            
                                                 <div class="d-flex justify-content-center">
                                                     <div class="">
                                                         <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
@@ -308,22 +286,11 @@
                                                         </a>
                                                     </div>
                                                 </div>
-                                            }
+                                            
                                         }
                                         else
                                         {
-                                            @if (Context.Session.GetString("UserID") == null)
-                                            {
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="">
-                                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforapply()">
-                                                            Apply <img src="~/images/right-arrow.png" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            }
-                                            else
-                                            {
+                                           
                                                 <div class="d-flex justify-content-center">
                                                     <div class="">
                                                         <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
@@ -331,7 +298,7 @@
                                                         </a>
                                                     </div>
                                                 </div>
-                                            }
+                                            
                                         }
                                     }
 

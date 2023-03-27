@@ -61,6 +61,11 @@ namespace CI_PlatformWeb.Controllers
             HttpContext.Session.Clear();
             return View();
         }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("landingpage", "Home");
+        }
         public IActionResult ForgetPass()
         {
             return View();
@@ -594,12 +599,12 @@ namespace CI_PlatformWeb.Controllers
             MissionRating ratingExists = _IHome.MissionratingByUserid_Missionid(Id, missionId);
             if (ratingExists != null)
             {
-                ratingExists = _IHome.updaterating(ratingExists, rating);
+                _IHome.updaterating(ratingExists, rating);
                // return Json(new { success = true, ratingExists, isRated = true });
             }
             else
             {
-                var ratingele= _IHome.addratings(rating,Id,missionId);
+                _IHome.addratings(rating,Id,missionId);
                 //return Json(new { success = true, ratingele, isRated = true });
             }
             return RedirectToAction("Volunteering", new {id=Id, missionId = missionId});
