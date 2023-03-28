@@ -926,7 +926,7 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public IActionResult addstory(StoryShareViewModel model)
         {
-            _IHome.addstory(model.MissionId,model.title,model.date,model.description);
+            _IHome.addstory(model.MissionId,model.title,model.date,model.editor1);
            return RedirectToAction("storyShare","Home");
             
           

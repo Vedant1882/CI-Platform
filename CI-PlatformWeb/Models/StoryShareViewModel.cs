@@ -11,7 +11,7 @@ namespace CI_PlatformWeb.Models
 
         public string title { get; set; }
 
-        public string description { get; set; }
+        public string editor1 { get; set; }
 
         public DateTime date { get; set; }
     }
