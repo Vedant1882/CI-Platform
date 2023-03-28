@@ -209,7 +209,14 @@
                                         {
 
                                             <div class="d-flex my-3 bg-light ">
-                                                <img src="~/images/volunteer1.png" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
+                                                @if (@user.avtarpath != "")
+                                                {
+                                                    <img src="@user.avtarpath" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/Images/user1.png" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
+                                                }
                                                 <label class=" ms-4 mt-2 me-auto">   @user.UserName  @user.LastName </label>
                                                 <input class="form-check-input me-2 mt-2" type="checkbox" value="" id=@user.UserIdForMail name="mail">
                                             </div>
@@ -416,7 +423,15 @@
                                 {
                                     <div id="comment"></div>
                                     <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
-                                        <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
+                                        @if (c.cmtavtarpath != "")
+                                        {
+                                            <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
+                                        }
+                                        else
+                                        {
+                                            <img class="mr-3 rounded-circle" src="~/Images/user1.png" alt="Generic placeholder image" style="height:50px;width:50px">
+                                        }
+
                                         <div class="media-body ms-2">
                                             <h5 class="mt-0 mb-1">@c.UserName</h5>
                                             @c.commenttext<br>

@@ -95,7 +95,11 @@ namespace CI_PlatformWeb.Controllers
                     HttpContext.Session.SetString("UserID", user.FirstName);
                     HttpContext.Session.SetString("user", user.UserId.ToString());
                     HttpContext.Session.SetInt32("userIDforfavmission", userid);
-                    HttpContext.Session.SetString("avtarpath", user.Avatar);
+                    if (user.Avatar != null)
+                    {
+                        HttpContext.Session.SetString("avtarpath", user.Avatar);
+                    }
+                    
                     TempData["Done"] = "logged in";
                     return RedirectToAction(nameof(HomeController.landingpage), "Home");
                 }
@@ -446,6 +450,7 @@ namespace CI_PlatformWeb.Controllers
                     var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
                     var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId).FirstOrDefault();
                     int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
+                    
                     var close = "0";
                     if (DateTime.Now > missions.Deadline)
                     {
@@ -498,6 +503,7 @@ namespace CI_PlatformWeb.Controllers
                             path= missionmedia.MediaPath,
                             defaultimg =missionmedia.Default,
                             goalval= Convert.ToInt32(goalMission.GoalValue),
+                           
                         });
                     
                     
@@ -525,7 +531,7 @@ namespace CI_PlatformWeb.Controllers
                     UserName = i.FirstName,
                     LastName = i.LastName,
                     UserIdForMail = i.UserId,
-
+                    avtarpath = i.Avatar,
                 });
             }
             ViewBag.alluser = usernamelist;
@@ -792,6 +798,7 @@ namespace CI_PlatformWeb.Controllers
                         UserName = i.FirstName,
                         LastName = i.LastName,
                         UserIdForMail = i.UserId,
+                        avtarpath=i.Avatar,
 
                     });
                 }

@@ -47,12 +47,18 @@
                         }
                         else
                         {
-                            
-                        
-                        <div class=" dropdown text-end ">
-                            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+
+
+                            <div class=" dropdown text-end ">
+                                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                    <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                                    @if(avtarpath!=""){
+                                        <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                                    }
                                     @{
                                     if (@firstname != null)
                                     {
@@ -114,7 +120,14 @@
                     <div class="dropdown text-end userprofile ">
                         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                            <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                            @if (avtarpath != "")
+                            {
+                                <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                            }
+                            else
+                            {
+                                <img src="~/Images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                            }
                             @{
                                 if (@firstname != null)
                                 {

@@ -46,6 +46,7 @@
         public int? isapplied { get; set; }
         public int? isclosed { get; set; }
         public string? path { get; set; }
+        public string? avtarpath { get; set; }
 
         public string? defaultimg { get; set; } 
         public int? goalval { get; set; }
