@@ -1,5 +1,6 @@
 ﻿using CI_Entity.Models;
 
+
 namespace CI_PlatformWeb.Models
 {
     public class StoryShareViewModel
@@ -14,5 +15,7 @@ namespace CI_PlatformWeb.Models
         public string editor1 { get; set; }
 
         public DateTime date { get; set; }
+
+        public List<IFormFile> attachment { get; set; }
     }
 }

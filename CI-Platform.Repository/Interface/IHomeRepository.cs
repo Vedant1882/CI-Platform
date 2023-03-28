@@ -53,6 +53,7 @@ namespace CI_Platform.Repository.Interface
 
         public List<MissionTheme> alltheme();
         public List<Country> allcountry();
+        public List<MissionMedium> allmedia();
 
         public void savechanges();
 
@@ -61,7 +62,7 @@ namespace CI_Platform.Repository.Interface
         public Story StoryByStoryid(long storyid);
 
         public void apply(long missionid,long userid);
-        public void addstory(long MissionId,string title,DateTime date,string discription);
+        public void addstory(long MissionId,string title,DateTime date,string discription,long id);
 
 
 

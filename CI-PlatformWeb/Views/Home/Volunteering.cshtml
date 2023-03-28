@@ -111,7 +111,7 @@
                     }
                     <div class="row landing-page-box-border">
 
-                        <div class="col-6 col-md-6 d-flex align-items-center">
+                        <div class="col-6 col-md-6 d-flex align-items-center" id="availableseat">
                             <p class="lead me-2 pt-2">
                                 <img src="~/images/Seats-left.png" alt="">
                                 <div>
@@ -142,7 +142,7 @@
 
                                             <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="50"
                                              aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
-                                                <div class="progress-bar bg-success" style="width: 25%;"></div>
+                                                <div class="progress-bar bg-success" style="width:@Model.goalval%"></div>
                                             </div>
 
                                         </div>
@@ -416,7 +416,7 @@
                                 {
                                     <div id="comment"></div>
                                     <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
-                                        <img class="mr-3 rounded-circle" src="/Images/volunteer1.png" alt="Generic placeholder image" style="height:50px;width:50px">
+                                        <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
                                         <div class="media-body ms-2">
                                             <h5 class="mt-0 mb-1">@c.UserName</h5>
                                             @c.commenttext<br>
@@ -481,7 +481,7 @@
                     {
                         <div class="col-4  ">
                             <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
-                                <img src="~/Images/volunteer1.png" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
                                 <label id="" class="text-center">@item.UserName</label>
                             </div>
                         </div>
@@ -599,6 +599,8 @@
                     timer: 2500
                 })
                 $('#applydiv').html($(response).find('#applydiv').html());
+                $('#availableseat').html($(response).find('#availableseat').html());
+                $('.recentvol').html($(response).find('.recentvol').html());
             }
 
 

@@ -46,12 +46,17 @@
         
         public int ? avgrating { get; set; }
 
-        public string? available { get; set; }
+        public int? available { get; set; }
 
         public int? appMissionId { get; set; }
 
         public int? isapplied { get; set; }
         public int? isclosed { get; set; }
+
+        public string? path { get; set; }
+        public string? avtarpath { get; set; }
+        public string? cmtavtarpath { get; set; }
+        public int? goalval { get; set; }
 
     }
 }

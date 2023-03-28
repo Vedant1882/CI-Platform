@@ -4,7 +4,12 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
-
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #FF9800;
+    border-color: #FF9800;
+}
 .title-2 {
     overflow: hidden;
     display: -webkit-box;

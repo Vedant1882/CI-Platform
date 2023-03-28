@@ -41,9 +41,13 @@
 
         public string UserName { get; set; }
         public int? avgrating { get; set; }
-        public String? available { get; set; }
+        public int? available { get; set; }
 
         public int? isapplied { get; set; }
         public int? isclosed { get; set; }
+        public string? path { get; set; }
+
+        public string? defaultimg { get; set; } 
+        public int? goalval { get; set; }
     }
 }

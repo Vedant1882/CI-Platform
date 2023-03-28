@@ -1,5 +1,7 @@
 ﻿@{
     var firstname = Context.Session.GetString("UserID");
+    var avtarpath = Context.Session.GetString("avtarpath");
+
 }
 
 
@@ -50,8 +52,8 @@
                         <div class=" dropdown text-end ">
                             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                <img src="~/images/user-img.png" alt="mdo" width="40" height="40" class="rounded-circle">
-                                @{
+                                    <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                                    @{
                                     if (@firstname != null)
                                     {
                                         <span class="txt text-dark">@firstname</span>
@@ -112,7 +114,7 @@
                     <div class="dropdown text-end userprofile ">
                         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                            <img src="~/images/user-img.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                            <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
                             @{
                                 if (@firstname != null)
                                 {

@@ -12,12 +12,9 @@ using System.Diagnostics.Metrics;
 using System.Web;
 using NuGet.Packaging;
 using Microsoft.Data.SqlClient;
-using System.Linq;
-using NuGet.Common;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+
 using CI_Platform.Repository.Interface;
-using Newtonsoft.Json.Linq;
-using System.Reflection;
+
 
 namespace CI_PlatformWeb.Controllers
 {
@@ -30,14 +27,14 @@ namespace CI_PlatformWeb.Controllers
         int k = 0;
         int k1 = 0;
         private readonly ILogger<HomeController> _logger;
-
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
         private readonly CIDbContext _CIDbContext;
         private readonly IHomeRepository _IHome;
-        public HomeController(CIDbContext CIDbContext, IHomeRepository IHome)
+        public HomeController(CIDbContext CIDbContext, IHomeRepository IHome, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
         {
             _IHome = IHome;
             _CIDbContext = CIDbContext;
-
+            _hostingEnvironment = hostingEnvironment;
 
         }
 
@@ -98,6 +95,7 @@ namespace CI_PlatformWeb.Controllers
                     HttpContext.Session.SetString("UserID", user.FirstName);
                     HttpContext.Session.SetString("user", user.UserId.ToString());
                     HttpContext.Session.SetInt32("userIDforfavmission", userid);
+                    HttpContext.Session.SetString("avtarpath", user.Avatar);
                     TempData["Done"] = "logged in";
                     return RedirectToAction(nameof(HomeController.landingpage), "Home");
                 }
@@ -446,6 +444,8 @@ namespace CI_PlatformWeb.Controllers
                     FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                     var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
                     var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
+                    var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId).FirstOrDefault();
+                    int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
                     var close = "0";
                     if (DateTime.Now > missions.Deadline)
                     {
@@ -491,10 +491,13 @@ namespace CI_PlatformWeb.Controllers
                             addedtofavM = favoriteMissions.MissionId,
                             addedtofavU = (long)favoriteMissions.UserId,
                             avgrating=finalrating,
-                            available = missions.Availability,
-                            deadline=missions.Deadline,
+                            available = Convert.ToInt32(missions.Availability) - appliedseat,
+                            deadline =missions.Deadline,
                             isapplied= (applicationmission != null) ? 1:0,
                             isclosed= (close == "1") ? 0:1,
+                            path= missionmedia.MediaPath,
+                            defaultimg =missionmedia.Default,
+                            goalval= Convert.ToInt32(goalMission.GoalValue),
                         });
                     
                     
@@ -666,6 +669,7 @@ namespace CI_PlatformWeb.Controllers
             var applicationmission =_IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId==missionId);
             VolunteeringVM volunteeringMission = new();
             int finalrating = 0;
+            int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId).Count(); 
             var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
             var close = "0";
             if (DateTime.Now > mission.Deadline)
@@ -701,9 +705,10 @@ namespace CI_PlatformWeb.Controllers
                 isFavrouite = (useridforrating != null) ? _IHome.favmission().Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
                 UserId = useridforrating,
                 avgrating = finalrating,
-                available=mission.Availability,
+                available=Convert.ToInt32(mission.Availability) - appliedseat,
                 isapplied = (applicationmission != null) ? 1 : 0,
                 isclosed = (close == "1") ? 0 : 1,
+                goalval=Convert.ToInt32(goalMission.GoalValue),
             };
             ViewBag.fav = volunteeringMission.isFavrouite;
 
@@ -719,6 +724,7 @@ namespace CI_PlatformWeb.Controllers
                     UserName=user.FirstName,
                     LastName=user.LastName,
                     createdAt=comment.CreatedAt,
+                    cmtavtarpath=user.Avatar,
 
 
                 });
@@ -764,9 +770,11 @@ namespace CI_PlatformWeb.Controllers
                     recentvolunteredlist.Add(new VolunteeringVM
                     {
                         UserName = item.FirstName,
+                        avtarpath=item.Avatar,
                     });
 
                 }
+            
             int pageSize = 3; // Set the page size to 9
             var volunteers = recentvolunteredlist; // Retrieve all volunteers from data source
             int totalCount = volunteers.Count(); // Get the total number of volunteers
@@ -813,6 +821,7 @@ namespace CI_PlatformWeb.Controllers
                     UserName = user.FirstName,
                     LastName = user.LastName,
                     Theme= missiontheme.Title,
+                    avtarpath=user.Avatar,
 
                 });
                 
@@ -857,7 +866,7 @@ namespace CI_PlatformWeb.Controllers
                 storylist.Add(new storyListingViewModel
                 {
                     StoryTitle = item.Title,
-                    Description = item.Description,
+                    Description = HttpUtility.HtmlDecode(item.Description),
                     StoryId = item.StoryId,
                     MissionId = item.MissionId,
                     UserName = user.FirstName,
@@ -926,8 +935,11 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public IActionResult addstory(StoryShareViewModel model)
         {
-            _IHome.addstory(model.MissionId,model.title,model.date,model.editor1);
-           return RedirectToAction("storyShare","Home");
+            int? userid= HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            _IHome.addstory(model.MissionId,model.title,model.date, model.editor1, id);
+            foreach (var i in model.attachment)            {                if (i != null)                {                    string UploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images\\story");                    string FileName = i.FileName;                    string FilePath = Path.Combine(UploadsFolder, FileName);                    using (var FileStream = new FileStream(FilePath, FileMode.Create))                    {                        i.CopyTo(FileStream);                    }                    var type = i.ContentType;                }            }
+            return RedirectToAction("storyShare","Home");
             
           
         }

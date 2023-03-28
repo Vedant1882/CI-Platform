@@ -152,6 +152,10 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.Stories.ToList();
         }
+        public List<MissionMedium> allmedia()
+        {
+            return _CIDbContext.MissionMedia.ToList();
+        }
         public List<Story> StoryByStoryidList(long storyid)
         {
             return _CIDbContext.Stories.Where(s => s.StoryId == storyid).ToList(); ;
@@ -174,11 +178,11 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Add(missionapplication);
             _CIDbContext.SaveChanges();
         }
-        public void addstory(long MissionId, string title, DateTime date, string discription)
+        public void addstory(long MissionId, string title, DateTime date, string discription, long id)
         {
             var Stories = new Story();
                 Stories.MissionId = MissionId;
-            Stories.UserId = 9;
+            Stories.UserId = id;
             Stories.Title = title;
             Stories.Description = discription;
             Stories.Status = "1";   
