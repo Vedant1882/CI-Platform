@@ -145,7 +145,7 @@ namespace CI_PlatformWeb.Controllers
 
 
                 //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("officehl1881@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(model.Email);
                 var subject = "Password reset request";
                 var body = $"Hi,<br /><br />Please click on the following link to reset your password:<br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -158,12 +158,12 @@ namespace CI_PlatformWeb.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("officehl1881@gmail.com", "vrbxqqayjlbvoihx"),
+                    Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
                     //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                     EnableSsl = true
                 };
                 smtpClient.Send(message);
-
+                TempData["Done"] = "Reset Password Link has benn sent successfully";
                 return RedirectToAction("Login", "Home");
             }
 
@@ -250,7 +250,7 @@ namespace CI_PlatformWeb.Controllers
             List<Country> countryElements = _IHome.allcountry().ToList();
             List<City> Cities = _IHome.AllCity();
             List<MissionTheme> Themes = _IHome.alltheme().ToList();
-            List<Skill> skills = _CIDbContext.Skills.ToList();
+            List<Skill> skills = _IHome.AllSkills();
             List<City> cityname = new List<City>();
             List<City> cityname1 = new List<City>();
             ViewBag.countries = Countries;
@@ -429,8 +429,9 @@ namespace CI_PlatformWeb.Controllers
                     mission = mission.OrderByDescending(m => int.Parse(m.Availability)).ToList();
                     break;
                 case "Registration deadline":
-                    mission = mission.OrderBy(m => m.EndDate).ToList();
+                    mission = mission.OrderBy(m => m.Deadline).ToList();
                     break;
+
 
             }
 
@@ -577,9 +578,9 @@ namespace CI_PlatformWeb.Controllers
 
 
                 //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("officehl1881@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(user.Email);
-                var subject = "Password reset request";
+                var subject = "Mission Recommandation";
                 var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
                 var message = new MailMessage(fromAddress, toAddress)
                 {
@@ -590,7 +591,7 @@ namespace CI_PlatformWeb.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("officehl1881@gmail.com", "vrbxqqayjlbvoihx"),
+                    Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
                    
                     EnableSsl = true
                 };
@@ -817,7 +818,7 @@ namespace CI_PlatformWeb.Controllers
                 var user = _IHome.UserByUserid(item.UserId);
                 var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == item.MissionId);
                 var missiontheme= _IHome.missiontheme().FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
-                
+                var storymedia = _IHome.storymedia().Where(s => s.StoryId == item.StoryId).FirstOrDefault();
                 storylist.Add(new storyListingViewModel
                 {
                     UserId= user.UserId,
@@ -829,6 +830,7 @@ namespace CI_PlatformWeb.Controllers
                     LastName = user.LastName,
                     Theme= missiontheme.Title,
                     avtarpath=user.Avatar,
+                    storypath = storymedia!=null ?storymedia.StoryPath: null,
 
                 });
                 
@@ -866,19 +868,22 @@ namespace CI_PlatformWeb.Controllers
         {
             var user = _IHome.UserByUserid(id);
             var story=_IHome.StoryByStoryidList(storyid);
+            
             List<storyListingViewModel> storylist = new List<storyListingViewModel>();
             foreach (var item in story)
             {
+               
                 
                 storylist.Add(new storyListingViewModel
                 {
                     StoryTitle = item.Title,
-                    Description = HttpUtility.HtmlDecode(item.Description),
+                    Description = item.Description,
                     StoryId = item.StoryId,
                     MissionId = item.MissionId,
                     UserName = user.FirstName,
                     LastName = user.LastName,
                     UserId= user.UserId,
+                    
 
                 });
 
@@ -909,10 +914,10 @@ namespace CI_PlatformWeb.Controllers
 
 
                 //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("officehl1881@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(user.Email);
-                var subject = "Password reset request";
-                var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
+                var subject = "Story Recommandation";
+                var body = $"Hi,<br /><br /> <br /><br /><a href='{resetLink}'>{resetLink}</a>";
                 var message = new MailMessage(fromAddress, toAddress)
                 {
                     Subject = subject,
@@ -922,7 +927,7 @@ namespace CI_PlatformWeb.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("officehl1881@gmail.com", "vrbxqqayjlbvoihx"),
+                    Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
                     //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                     EnableSsl = true
                 };
@@ -945,7 +950,7 @@ namespace CI_PlatformWeb.Controllers
             int? userid= HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
             _IHome.addstory(model.MissionId,model.title,model.date, model.editor1, id);
-            foreach (var i in model.attachment)            {                if (i != null)                {                    string UploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images\\story");                    string FileName = i.FileName;                    string FilePath = Path.Combine(UploadsFolder, FileName);                    using (var FileStream = new FileStream(FilePath, FileMode.Create))                    {                        i.CopyTo(FileStream);                    }                    var type = i.ContentType;                }            }
+            foreach (var i in model.attachment)            {                if (i != null)                {                    string UploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images\\story");                    string FileName = i.FileName;                    string FilePath = Path.Combine(UploadsFolder, FileName);                    using (var FileStream = new FileStream(FilePath, FileMode.Create))                    {                        i.CopyTo(FileStream);                    }                    var type = i.ContentType;                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName,id);                }            }
             return RedirectToAction("storyShare","Home");
             
           

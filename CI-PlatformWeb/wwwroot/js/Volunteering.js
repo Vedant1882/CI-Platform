@@ -36,6 +36,7 @@ function sendmail(id) {
         icon: 'info',
         title: 'Sending',
         text: 'Sending Mail....',
+        showConfirmButton: false,
         
     })
     $.ajax({
@@ -52,7 +53,8 @@ function sendmail(id) {
                 icon: 'success',
                 title: 'Sent',
                 text: 'Recommandation sent succesfully',
-                
+                showConfirmButton: false,
+                timer: 2000
             })
         },
         error: function () {

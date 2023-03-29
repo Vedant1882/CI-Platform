@@ -66,7 +66,7 @@
                                         <li><a class="dropdown-item" asp-route-sortOrder="Oldest">Oldest  </a></li>
                                         <li><a class="dropdown-item" asp-route-sortOrder="Lowest seats">Lowest available seats  </a></li>
                                         <li><a class="dropdown-item" asp-route-sortOrder="Highest seats"> Highest available seats </a></li>
-                                        <li><a class="dropdown-item" asp-route-sortOrder="favourites"> My favourites </a></li>
+                                        <li><a class="dropdown-item" asp-route-sortOrder="My fav"> My favourites </a></li>
                                         <li><a class="dropdown-item" asp-route-sortOrder="Registration deadline"> Registration deadline  </a></li>
                                     </ul>
                                 </div>
@@ -453,6 +453,7 @@
                 icon: 'info',
                 title: 'Sending',
                 text: 'Sending Mail....',
+                showConfirmButton: false,
 
             })
                 $.ajax({
@@ -469,7 +470,8 @@
                         icon: 'success',
                         title: 'Sent',
                         text: 'Recommandation sent succesfully',
-
+                        showConfirmButton: false,
+                        timer: 2000
                     })
                     },
                     error: function () {

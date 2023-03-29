@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "_One-NavbarLayout";
     ViewData["Title"] = "Home Page";
 }
@@ -82,7 +81,7 @@
                         </div>*@
 
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -130,7 +129,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body overflow-y-auto " style="height:200px;">
-                                             @foreach (var user in ViewBag.alluser)
+                                            @foreach (var user in ViewBag.alluser)
                                             {
                                                 <div class=" userlistdiv align-items-center d-flex my-3">
                                                     <img src="~/images/volunteer1.png" class="aviluser ms-2 my-1">
@@ -155,56 +154,64 @@
             </div>
 
         </div>
-        
-        
+        <div>
+            @foreach (var story in Model)
+            {
+                <p>@Html.Raw(story.Description)</p>
+            }
+        </div>
+
     </div>
+
 
 
     <hr style="border:1px solid black" />
 
     @*-----------------------------------tab and volunteer----------------------------*@
 
-    </body>
-    <script src="~/js/Volunteering.js"></script>
-    <script>
+</body>
+<script src="~/js/Volunteering.js"></script>
+<script>
     function sendmail(id) {
-    const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
-    var send = document.getElementById("sendmail");
+        const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
+        var send = document.getElementById("sendmail");
         Swal.fire({
             icon: 'info',
             title: 'Sending',
             text: 'Sending Mail....',
+            showConfirmButton: false,
 
         })
-    $.ajax({
-        url: '/Home/SendmailForStory',
-        type: 'POST',
-        data: { userid: mail ,id:id},
-        success: function (result) {
-            
-            const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = false;
-            });
+        $.ajax({
+            url: '/Home/SendmailForStory',
+            type: 'POST',
+            data: { userid: mail, id: id },
+            success: function (result) {
+
+                const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = false;
+                });
                 Swal.fire({
                     icon: 'success',
                     title: 'Sent',
                     text: 'Recommandation sent succesfully',
-
+                    showConfirmButton: false,
+                    timer: 2000
                 })
-        },
-        error: function () {
+            },
+            error: function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Something went wrong!',
 
                 })
-        }
-    });
+            }
+        });
 
-}
-    </script>
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>
 

@@ -322,7 +322,7 @@
                             {
                                 <div class="text-center">
                                     <button class="btn mt-2 landing-page-apply-mission-btn" style="color:red" disabled>
-                                        Already Applied 
+                                        Already Applied
                                     </button>
                                 </div>
                             }
@@ -496,7 +496,14 @@
                     {
                         <div class="col-4  ">
                             <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
-                                <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                @if (item.avtarpath != "")
+                                {
+                                    <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                }
+                                else
+                                {
+                                    <img src="~/Images/user1.png" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                }
                                 <label id="" class="text-center">@item.UserName</label>
                             </div>
                         </div>

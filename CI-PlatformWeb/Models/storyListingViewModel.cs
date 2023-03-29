@@ -14,6 +14,7 @@ namespace CI_PlatformWeb.Models
         public string? avtarpath { get; set; }
         public string? LastName { get; set; }
         public string? Theme { get; set; }
+        public string? storypath { get; set; }
 
 
 

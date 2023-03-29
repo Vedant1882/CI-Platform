@@ -56,6 +56,10 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.Cities.ToList();
         }
+        public List<Skill> AllSkills()
+        {
+           return _CIDbContext.Skills.ToList();
+        }
         public List<MissionRating> missionRatings()
         {
             return _CIDbContext.MissionRatings.ToList();   
@@ -152,6 +156,10 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.Stories.ToList();
         }
+        public List<StoryMedium> storymedia()
+        {
+            return _CIDbContext.StoryMedia.ToList();
+        }
         public List<MissionMedium> allmedia()
         {
             return _CIDbContext.MissionMedia.ToList();
@@ -191,6 +199,16 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.SaveChanges();
                 
             
+        }
+        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id)
+        {
+            var story = _CIDbContext.Stories.OrderBy(s => s.CreatedAt).Where(s => s.MissionId == MissionId && s.UserId == id).FirstOrDefault();
+            StoryMedium st=new StoryMedium();
+            st.StoryId= story.StoryId;
+            st.StoryType = mediatype;
+            st.StoryPath= mediapath;
+            _CIDbContext.Add(st);
+            _CIDbContext.SaveChanges();
         }
 
     }

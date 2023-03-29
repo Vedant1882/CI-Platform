@@ -40,8 +40,8 @@
                     <div class="offcanvas-body navbar-nav me-auto mb-2 mb-lg-0 align-self-center">
                         @if (firstname == null)
                         {
-                            <a asp-action="Login" asp-controller="Home"> <button type="button" class="btn btn-outline-primary me-3 d-none d-md-block">Login</button> </a>
-                            <a asp-action="Register" asp-controller="User"><button type="button" class="btn btn-outline-success d-none d-md-block">Register</button></a>
+                            <a asp-action="Login" asp-controller="Home" class="btn btn-outline-primary me-3 d-none d-md-block">Login</a>
+                            <a asp-action="Register" asp-controller="User" class="btn btn-outline-success d-none d-md-block">Register</a>
                         }
                         else
                         {
@@ -110,8 +110,8 @@
                 </ul>
                 @if (firstname == null)
                 {
-                    <a asp-action="Login" asp-controller="Home"> <button type="button" class="btn btn-outline-primary me-3 d-none d-md-block" style="text-decoration:none">Login</button> </a>
-                    <a asp-action="Register" asp-controller="User"><button type="button" class="btn btn-outline-success d-none d-md-block">Register</button></a>
+                    <a asp-action="Login" asp-controller="Home" class="btn btn-outline-primary me-3 d-none d-md-block">Login</a>
+                            <a asp-action="Register" asp-controller="User" class="btn btn-outline-success d-none d-md-block">Register</a>
                 }
                 else
                 {

@@ -22,6 +22,7 @@ namespace CI_Platform.Repository.Interface
         public List<Mission> Allmissions();
 
         public List<City>  AllCity();
+        public List<Skill>  AllSkills();
 
         public List<MissionRating> missionRatings();
 
@@ -58,11 +59,13 @@ namespace CI_Platform.Repository.Interface
         public void savechanges();
 
         public List<Story> story();
+        public List<StoryMedium> storymedia();
         public List<Story> StoryByStoryidList(long storyid); 
         public Story StoryByStoryid(long storyid);
 
         public void apply(long missionid,long userid);
         public void addstory(long MissionId,string title,DateTime date,string discription,long id);
+        public void addstoryMedia(long MissionId,string mediatype,string mediapath,long id);
 
 
 
