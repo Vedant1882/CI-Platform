@@ -1,4 +1,5 @@
-﻿@model CI_Entity.Models.User
+﻿@*@model CI_Entity.Models.User*@
+@model CI_PlatformWeb.Models.RegistrationViewModel
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -79,31 +80,37 @@
             <div class="align-self-center col-lg-4 col-md-12 col-sm-12 col-xs-12 mt-2 side-div">
                 <div class="row justify-content-center">
                     <div class="col-lg-9 col-md-9 col-sm-9">
-                        <form asp-controller="User" asp-action="Register">
+                        <form asp-controller="User" asp-action="Register" method="post">
                             <div class="mt-4 input-div">
                                 <label asp-for="FirstName">First Name</label>
-                                <input asp-for="FirstName" type="text" class="form-control" placeholder="Enter first name" id="validationcustom01" required>
+                                <input asp-for="FirstName" type="text" class="form-control" placeholder="Enter first name" id="validationcustom01">
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
                             </div>
                             <div class="mt-3 input-div">
                                 <label asp-for="LastName">Last Name</label>
-                                <input asp-for="LastName" type="text" class="form-control" placeholder="Enter last name" required>
+                                <input asp-for="LastName" type="text" class="form-control" placeholder="Enter last name">
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                             </div>
                             <div class="mt-3 input-div">
                                 <label asp-for="PhoneNumber">Phone Number</label>
-                                <input asp-for="PhoneNumber" type="number" class="form-control" placeholder="Enter Phone number" value="" required>
+                                <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="Enter Phone number">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </div>
                             <div class="mt-3 input-div">
                                 <label asp-for="Email">Email Address</label>
-                                <input asp-for="Email" type="email" class="form-control" placeholder="Enter email adress" onkeyup="emailchange()" required>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="Enter email adress" onkeyup="emailchange()">
+                                <span asp-validation-for="Email" class="text-danger"></span>
                                 <div class="text-danger" id="viewbag">@ViewBag.RegEmail</div>
                             </div>
                             <div class="mt-3 input-div">
                                 <label asp-for="Password">Password</label>
-                                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" id="reg-pass" required>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" id="reg-pass">
+                                <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                             <div class="mt-3 input-div">
-                                <label asp-for="Password">Confirm Password</label>
-                                <input asp-for="Password" type="password" class="form-control" placeholder="confirm password" onfocusout="validatePassword()"  onkeyup="validatePassword1()" id="reg-con-pass" required />
+                                <label asp-for="ConfirmPassword">Confirm Password</label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="confirm password"    id="reg-con-pass" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
                             <span class="text-danger" style="display:none" id="pass-error">Password must be same</span>
                             <div class="mt-3 input-div">
@@ -126,6 +133,12 @@
         </div>
     </div>
 </body>
+ <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+            integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+
 <script
 src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
 integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
@@ -135,36 +148,6 @@ crossorigin="anonymous"
  function emailchange(){
         document.getElementById("viewbag").style.display = "none"
  }
- var form = document.querySelector('form');
-function validatePassword() {
-        var x = document.getElementById("reg-pass").value;
-        var y = document.getElementById("reg-con-pass").value;
-        var z=document.getElementById("pass-error");
-        if (x != y) {
-                var submitButton = document.getElementById("reg-btn");
-                submitButton.disabled = true;
-               
-        }
-        else {
-                var submitButton = document.getElementById("reg-btn");
-                submitButton.disabled = false;
-        }
-        
-}
 
- var form = document.querySelector('form');
-function validatePassword1() {
-        var x = document.getElementById("reg-pass").value;
-        var y = document.getElementById("reg-con-pass").value;
-        var z=document.getElementById("pass-error");
-        if (x != y) {
-                
-                z.style.display="block";
-        }
-        else {
-                z.style.display="none";
-        }
-        
-}             
 </script>
 </html>

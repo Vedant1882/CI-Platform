@@ -866,14 +866,14 @@ namespace CI_PlatformWeb.Controllers
 
         public IActionResult StoryDetail(int id,int storyid)
         {
-            var user = _IHome.UserByUserid(id);
+            //var user = _IHome.UserByUserid(id);
             var story=_IHome.StoryByStoryidList(storyid);
             
             List<storyListingViewModel> storylist = new List<storyListingViewModel>();
             foreach (var item in story)
             {
-               
-                
+
+                var user = _IHome.UserByUserid(item.UserId);
                 storylist.Add(new storyListingViewModel
                 {
                     StoryTitle = item.Title,
@@ -883,7 +883,7 @@ namespace CI_PlatformWeb.Controllers
                     UserName = user.FirstName,
                     LastName = user.LastName,
                     UserId= user.UserId,
-                    
+                    avtarpath = user.Avatar,
 
                 });
 

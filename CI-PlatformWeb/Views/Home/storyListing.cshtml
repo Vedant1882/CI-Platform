@@ -46,16 +46,16 @@
                     @foreach (var item in Model)
                     {
                         <div class="col">
-                            <div class="card shadow-sm">
+                            <div class="card shadow-sm" style="width:98%; height:100%;">
                                 <div class="img-event">
                                     @if (item.storypath != null)
                                     {
-                                        <img class="card-img-top storyimg"
+                                        <img class="card-img-top storyimg " id="cardBanner"
                                      src="~/Images/@item.storypath" alt="Card image cap">
                                     }
                                     else
                                     {
-                                        <img class="card-img-top storyimg"
+                                        <img class="card-img-top storyimg" id="cardBanner"
                                      src="~/images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" alt="Card image cap">
                                     }
 
@@ -86,7 +86,15 @@
                                     </div>
                                     <small class="text-muted">9 mins</small>*@
                                         <div class="d-flex me-auto mt-2 align-items-center ">
-                                            <img src="~/images/volunteer1.png" class="storyuserphoto" />
+                                            @if (item.avtarpath != "")
+                                            {
+                                                <img src="@item.avtarpath" class="storyuserphoto" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/user1.png" class="storyuserphoto" />
+                                            }
+
                                                 <lable class="ms-2" id="">@item.UserName</lable>
                                         </div>
                                     </div>

@@ -10,7 +10,7 @@ namespace CI_Platform.Repository.Interface
     public interface IUserRepository
     {
         
-        public bool UserExist(User user);
+        public bool UserExist(string FirstName, string LastName, string Email, long PhoneNumber, string ConfirmPassword);
         
        
        

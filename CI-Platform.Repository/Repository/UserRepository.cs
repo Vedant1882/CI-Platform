@@ -19,16 +19,24 @@ namespace CI_Platform.Repository.Repository
 
         }
         
-        public bool UserExist(User user)
+        public bool UserExist(string FirstName, string LastName, string Email, long PhoneNumber, string ConfirmPassword)
         {
-            var obj=_CIDbContext.Users.Where(u => u.Email == user.Email).FirstOrDefault();
+            var obj=_CIDbContext.Users.Where(u => u.Email == Email).FirstOrDefault();
+            var userData = new User
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                PhoneNumber = PhoneNumber,
+                Email = Email,
+                Password = ConfirmPassword,
+            };
             if (obj != null)
             {
                 return false;
             }
             else
             {
-                _CIDbContext.Users.Add(user);
+                _CIDbContext.Users.Add(userData);
                 _CIDbContext.SaveChanges();
                 return true;
             }

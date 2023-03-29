@@ -1,4 +1,5 @@
 ﻿using CI_Entity.Models;
+using CI_PlatformWeb.Models;
 using CI_Platform.Repository.Interface;
 using CI_PlatformWeb.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -27,28 +28,31 @@ namespace CI.Controllers
 
         public IActionResult Register()
         {
-            User user = new User();
-            return View(user);
+            //User user = new User();
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Register(User user)
+        public IActionResult Register(RegistrationViewModel user)
         {
             //var obj = _IUser.UserExist(user.Email);
 
 
 
-
-            if (_IUser.UserExist(user))
+            if(ModelState.IsValid)
             {
-                
-                return RedirectToAction("Login", "Home");
-                
-            }
-            else
-            {
-                ViewBag.RegEmail = "email exist";
+                if (_IUser.UserExist(user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.ConfirmPassword))
+                {
+                    TempData["reg"] = "Registration Done Successfully";
+                    return RedirectToAction("Login", "Home");
 
+                }
+                else
+                {
+                    ViewBag.RegEmail = "email exist";
+
+                }
+                
             }
             return View();
         }
