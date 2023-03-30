@@ -9,6 +9,7 @@ namespace CI_PlatformWeb.Models
         public List<MissionApplication> missionapplication { get; set; }
 
         public long MissionId { get; set; }
+        public long storyId { get; set; }
 
         public string title { get; set; }
 

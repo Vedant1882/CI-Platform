@@ -16,6 +16,8 @@ namespace CI_PlatformWeb.Models
         public string? Theme { get; set; }
         public string? storypath { get; set; }
 
+        public DateTime? Created { get; set; }
+
 
 
        

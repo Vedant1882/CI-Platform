@@ -186,19 +186,67 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Add(missionapplication);
             _CIDbContext.SaveChanges();
         }
-        public void addstory(long MissionId, string title, DateTime date, string discription, long id)
+        public void addstory(long MissionId, string title, DateTime date, string discription, long id,long storyId)
         {
-            var Stories = new Story();
+            if (storyId == null)
+            {
+                var Stories = new Story();
                 Stories.MissionId = MissionId;
-            Stories.UserId = id;
-            Stories.Title = title;
-            Stories.Description = discription;
-            Stories.Status = "1";   
-            Stories.CreatedAt= date;
-            _CIDbContext.Add(Stories);
-            _CIDbContext.SaveChanges();
+                Stories.UserId = id;
+                Stories.Title = title;
+                Stories.Description = discription;
+                Stories.Status = "1";
+                Stories.CreatedAt = date;
+                _CIDbContext.Add(Stories);
+                _CIDbContext.SaveChanges();
+            }
+            else
+            {
+                var story=_CIDbContext.Stories.Where(s=>s.StoryId==storyId).FirstOrDefault();
+                
+                story.MissionId = MissionId;
+                story.UserId = id;
+                story.Title = title;
+                story.Description = discription;
+                story.Status = "1";
+                story.UpdatedAt =DateTime.Now;
+                _CIDbContext.Update(story);
+                _CIDbContext.SaveChanges();
+            }
+            
                 
             
+        }
+        public void addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId)
+        {
+            if (storyId == 0)
+            {
+                var Stories = new Story();
+                Stories.MissionId = MissionId;
+                Stories.UserId = id;
+                Stories.Title = title;
+                Stories.Description = discription;
+                Stories.Status = "draft";
+                Stories.CreatedAt = date;
+                _CIDbContext.Add(Stories);
+                _CIDbContext.SaveChanges();
+            }
+            else
+            {
+                var story = _CIDbContext.Stories.Where(s => s.StoryId == storyId).FirstOrDefault();
+                story.MissionId = MissionId;
+                story.UserId = id;
+                story.Title = title;
+                story.Description = discription;
+                story.Status = "draft";
+                story.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(story);
+                _CIDbContext.SaveChanges();
+
+            }
+           
+
+
         }
         public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id)
         {

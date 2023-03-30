@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
 
-    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
@@ -22,6 +22,19 @@
 
 <body>
     <div>
+        @if (TempData["logout"] != null)
+        {
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+            <script type="text/javascript">
+
+
+                toastr.warning('@TempData["logout"]');
+
+
+            </script>
+        }
         @if (TempData["Done"] != null)
         {
             <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
@@ -280,41 +293,41 @@
                                     <hr>
                                     @if (item.isclosed == 0)
                                     {
-                                        
-                                            <div class="d-flex justify-content-center">
-                                                <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
-                                                        Mission Closed <img src="~/images/right-arrow.png" alt="">
-                                                    </a>
-                                                </div>
+
+                                        <div class="d-flex justify-content-center">
+                                            <div class="">
+                                                <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                    Mission Closed <img src="~/images/right-arrow.png" alt="">
+                                                </a>
                                             </div>
-                                        
+                                        </div>
+
                                     }
                                     else
                                     {
                                         @if (item.isapplied == 1)
                                         {
-                                            
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="">
-                                                        <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
-                                                            View Details <img src="~/images/right-arrow.png" alt="">
-                                                        </a>
-                                                    </div>
+
+                                            <div class="d-flex justify-content-center">
+                                                <div class="">
+                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                        View Details <img src="~/images/right-arrow.png" alt="">
+                                                    </a>
                                                 </div>
-                                            
+                                            </div>
+
                                         }
                                         else
                                         {
-                                           
-                                                <div class="d-flex justify-content-center">
-                                                    <div class="">
-                                                        <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
-                                                            Apply <img src="~/images/right-arrow.png" alt="">
-                                                        </a>
-                                                    </div>
+
+                                            <div class="d-flex justify-content-center">
+                                                <div class="">
+                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                        Apply <img src="~/images/right-arrow.png" alt="">
+                                                    </a>
                                                 </div>
-                                            
+                                            </div>
+
                                         }
                                     }
 
@@ -408,7 +421,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Login Or Register First',
-                
+
 
             })
         }
@@ -456,16 +469,16 @@
                 showConfirmButton: false,
 
             })
-                $.ajax({
-                    url: '/Home/Sendmail',
-                    type: 'POST',
-                    data: { userid: mail, id: id },
-                    success: function (result) {
-                        
-                        const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
-                        checkboxes.forEach((checkbox) => {
-                            checkbox.checked = false;
-                        });
+            $.ajax({
+                url: '/Home/Sendmail',
+                type: 'POST',
+                data: { userid: mail, id: id },
+                success: function (result) {
+
+                    const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = false;
+                    });
                     Swal.fire({
                         icon: 'success',
                         title: 'Sent',
@@ -473,18 +486,18 @@
                         showConfirmButton: false,
                         timer: 2000
                     })
-                    },
-                    error: function () {
+                },
+                error: function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Something went wrong!',
 
                     })
-                    }
-                });
+                }
+            });
 
-            }
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

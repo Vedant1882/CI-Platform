@@ -66,7 +66,7 @@
                                 </a>
                                 <ul class="dropdown-menu text-small">
                                     <li><a class="dropdown-item" asp-action="landingpage" asp-controller="Home">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                    <li><a class="dropdown-item" asp-action="storyDraft" asp-controller="Home">Show Draft</a></li>
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -79,7 +79,7 @@
 
 
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="storyListing">Story</a>
+                            <a class="nav-link active" aria-current="page" asp-action="storyListing" asp-controller="Home">Story</a>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -96,7 +96,7 @@
                 <h2 class="nav-brand ms-3 me-auto">CI-PLATFORM</h2>
                 <ul class="navbar-nav  navbar1  me-auto mb-2 mb-lg-0 ">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="storyListing">Story</a>
+                        <a class="nav-link active" aria-current="page" asp-action="storyListing" asp-controller="Home">Story</a>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -135,7 +135,7 @@
                         </a>
                         <ul class="dropdown-menu text-small">
                             <li><a class="dropdown-item" asp-action="landingpage" asp-controller="Home">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" asp-action="storyDraft" asp-controller="Home">Show Draft</a></li>
                             <li><a class="dropdown-item" href="#">Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">

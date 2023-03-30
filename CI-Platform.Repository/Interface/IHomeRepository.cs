@@ -64,10 +64,10 @@ namespace CI_Platform.Repository.Interface
         public Story StoryByStoryid(long storyid);
 
         public void apply(long missionid,long userid);
-        public void addstory(long MissionId,string title,DateTime date,string discription,long id);
+        public void addstory(long MissionId,string title,DateTime date,string discription,long id, long storyId);
         public void addstoryMedia(long MissionId,string mediatype,string mediapath,long id);
 
-
+        public void addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId);
 
 
     }
