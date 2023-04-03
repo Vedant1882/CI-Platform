@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -186,9 +187,9 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Add(missionapplication);
             _CIDbContext.SaveChanges();
         }
-        public void addstory(long MissionId, string title, DateTime date, string discription, long id,long storyId)
+        public long addstory(long MissionId, string title, DateTime date, string discription, long id,long storyId)
         {
-            if (storyId == null)
+            if (storyId == 0)
             {
                 var Stories = new Story();
                 Stories.MissionId = MissionId;
@@ -199,6 +200,7 @@ namespace CI_Platform.Repository.Repository
                 Stories.CreatedAt = date;
                 _CIDbContext.Add(Stories);
                 _CIDbContext.SaveChanges();
+                return Stories.StoryId;
             }
             else
             {
@@ -212,12 +214,13 @@ namespace CI_Platform.Repository.Repository
                 story.UpdatedAt =DateTime.Now;
                 _CIDbContext.Update(story);
                 _CIDbContext.SaveChanges();
+                return story.StoryId;
             }
             
                 
             
         }
-        public void addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId)
+        public long addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId)
         {
             if (storyId == 0)
             {
@@ -230,6 +233,7 @@ namespace CI_Platform.Repository.Repository
                 Stories.CreatedAt = date;
                 _CIDbContext.Add(Stories);
                 _CIDbContext.SaveChanges();
+                return Stories.StoryId;
             }
             else
             {
@@ -242,20 +246,83 @@ namespace CI_Platform.Repository.Repository
                 story.UpdatedAt = DateTime.Now;
                 _CIDbContext.Update(story);
                 _CIDbContext.SaveChanges();
+                return story.StoryId;
 
             }
            
 
 
         }
-        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id)
+        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id,long storyId, long sId)
         {
-            var story = _CIDbContext.Stories.OrderBy(s => s.CreatedAt).Where(s => s.MissionId == MissionId && s.UserId == id).FirstOrDefault();
-            StoryMedium st=new StoryMedium();
-            st.StoryId= story.StoryId;
-            st.StoryType = mediatype;
-            st.StoryPath= mediapath;
-            _CIDbContext.Add(st);
+            
+
+                
+                StoryMedium st = new StoryMedium();
+                st.StoryId = sId;
+                st.StoryType = mediatype;
+                st.StoryPath = mediapath;
+                _CIDbContext.Add(st);
+                _CIDbContext.SaveChanges();
+            
+            
+            
+        }
+        public void removemedia(long storyId)
+        {
+            var storyMedia = _CIDbContext.StoryMedia.Where(s => s.StoryId == storyId).ToList();
+            foreach (var s in storyMedia)
+            {
+                _CIDbContext.StoryMedia.Remove(s);
+                _CIDbContext.SaveChanges();
+            }
+        }
+        public void addtimesheet(long MissionId, long id, int? hour, int? minute, DateTime date, string message, int? action)
+        {
+            if(hour!=null && minute != null)
+            {
+                var timesheet = new Timesheet();
+                timesheet.MissionId = MissionId;
+                timesheet.UserId = id;
+                timesheet.TimesheetTime = hour + ":" + minute;
+                timesheet.DateVolunteered = date;
+                timesheet.Notes = message;
+                timesheet.Status = "1";
+                timesheet.CreatedAt = DateTime.Now;
+                _CIDbContext.Add(timesheet);
+                _CIDbContext.SaveChanges();
+            }
+            else
+            {
+                var timesheet = new Timesheet();
+                timesheet.MissionId = MissionId;
+                timesheet.UserId = id;
+                timesheet.DateVolunteered = date;
+                timesheet.Action = action;
+                timesheet.Notes = message;
+                timesheet.Status = "1";
+                timesheet.CreatedAt = DateTime.Now;
+                _CIDbContext.Add(timesheet);
+                _CIDbContext.SaveChanges();
+            }
+            
+           
+
+
+
+
+
+        }
+        public List<Timesheet> alltimesheet()
+        {
+            return _CIDbContext.Timesheets.Where(e => e.DeletedAt == null).ToList();
+        }
+        public void deletetimesheet(long timesheetid)
+        {
+            var time = _CIDbContext.Timesheets.FirstOrDefault(t => t.TimesheetId == timesheetid);
+            time.DeletedAt= DateTime.Now;
+            time.Status= "deleted";
+            _CIDbContext.Update(time);
             _CIDbContext.SaveChanges();
         }
 

@@ -69,6 +69,8 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
+        
+
         public IActionResult ResetPassword()
         {
             return View();
@@ -844,6 +846,31 @@ namespace CI_PlatformWeb.Controllers
 
             ViewBag.storydraft = storylist;
 
+
+            //int pageSize = 3;
+            //int skip = (pageIndex ?? 0) * pageSize;
+            //var Missions = storylist.Skip(skip).Take(pageSize).ToList();
+            //int totalMissions = storylist.Count();
+            //ViewBag.TotalMission = totalMissions;
+            //ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
+            //ViewBag.CurrentPage = pageIndex ?? 0;
+
+
+
+            //// Get the current URL
+            //UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
+            //if (Request.Host.Port.HasValue)
+            //{
+            //    uriBuilder.Port = Request.Host.Port.Value;
+            //}
+            //uriBuilder.Path = Request.Path;
+
+            //// Remove the query parameter you want to exclude
+            //var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+            //query.Remove("pageIndex");
+            //uriBuilder.Query = query.ToString();
+            //ViewBag.currentUrl = uriBuilder.ToString();
+
             return View(storylist);
 
         }
@@ -990,9 +1017,13 @@ namespace CI_PlatformWeb.Controllers
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
             //long storyid = model.storyId;
-            _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+            var sId=_IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
             if (model.attachment != null)
             {
+                if (model.storyId != 0)
+                {
+                    _IHome.removemedia(model.storyId);
+                }
                 foreach (var i in model.attachment)
                 {
                     var FileName = "";
@@ -1005,7 +1036,8 @@ namespace CI_PlatformWeb.Controllers
                         var base64String = Convert.ToBase64String(imageBytes);
                         FileName = "data:image/png;base64," + base64String;
                     }
-                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id);
+                    
+                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id,model.storyId,sId);
                 }
 
             }
@@ -1023,9 +1055,13 @@ namespace CI_PlatformWeb.Controllers
         {
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
-            _IHome.addstorydraft(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+            var sId=_IHome.addstorydraft(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
             if (model.attachment != null)
             {
+                if (model.storyId != 0)
+                {
+                    _IHome.removemedia(model.storyId);
+                }
                 foreach (var i in model.attachment)
                 {
 
@@ -1040,7 +1076,8 @@ namespace CI_PlatformWeb.Controllers
                         var base64String = Convert.ToBase64String(imageBytes);
                         FileName = "data:image/png;base64," + base64String;
                     }
-                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id);                }            }
+                    
+                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);                }            }
             TempData["draft"] = "Your Story has been saved as a draft";
             return RedirectToAction("storyShare", "Home");
 
@@ -1071,6 +1108,53 @@ namespace CI_PlatformWeb.Controllers
 
 
             return View(storyVm);
+        }
+        public IActionResult VolunteeringTimeSheet()
+        {
+            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+            TimesheetViewModel timeVm = new TimesheetViewModel();
+            
+            timeVm.missions = _IHome.Allmissions();
+            timeVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == useridforrating).ToList();
+            timeVm.timesheet = _IHome.alltimesheet().Where(t=>t.UserId==useridforrating).ToList();
+           
+            
+
+            return View(timeVm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> addTimesheet(TimesheetViewModel model)
+        {
+
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            //long storyid = model.storyId;
+            _IHome.addtimesheet(model.missionId, id, model.hour,model.minute, model.date, model.message,model.action);
+                
+           
+
+
+
+            return RedirectToAction("VolunteeringTimeSheet","Home");
+
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> deletetimesheet(long timesheetid)
+        {
+
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            //long storyid = model.storyId;
+            _IHome.deletetimesheet(timesheetid);
+
+
+
+
+
+            return RedirectToAction("VolunteeringTimeSheet", "Home");
+
+
         }
     }
 
