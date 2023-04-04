@@ -1,6 +1,10 @@
 ﻿.dropdown a {
     text-decoration: none;
 }
+.form-control:focus, .btn:focus, .form-select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
 .nav-link:focus {
     color: black !important;
 }

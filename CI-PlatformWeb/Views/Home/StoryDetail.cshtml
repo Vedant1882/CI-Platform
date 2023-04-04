@@ -92,7 +92,7 @@
                         <div class="row mt-4 mt-md-2">
                             <div class="col-3 me-auto  ">
                                 <div class=" d-flex justify-content-center">
-                                    @if (story.avtarpath!="")
+                                    @if (story.avtarpath != "")
                                     {
                                         <img src="@story.avtarpath" class="storyuserimg rounded-circle">
                                     }
@@ -146,8 +146,17 @@
                                             }
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" id="sendmail" onclick="sendmail(@story.StoryId)">Send Mission</button>
+                                            
+                                            <div class="text-center">
+                                                <a class="btn mt-2 landing-page-apply-mission-btn" data-bs-dismiss="modal">
+                                                    Close
+                                                </a>
+                                            </div>
+                                            <div class="text-center">
+                                                <a class="btn mt-2 landing-page-apply-mission-btn" id="sendmail" onclick="sendmail(@story.StoryId)">
+                                                    Send Mission
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

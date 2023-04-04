@@ -1,5 +1,5 @@
 ﻿using CI_Entity.Models;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace CI_PlatformWeb.Models
 {
@@ -11,8 +11,10 @@ namespace CI_PlatformWeb.Models
         public long MissionId { get; set; }
         public long storyId { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please Enter Title")]
         public string title { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please Enter Discription")]
         public string editor1 { get; set; }
 
         public DateTime date { get; set; }

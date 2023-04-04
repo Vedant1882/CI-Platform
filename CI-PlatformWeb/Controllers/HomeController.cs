@@ -69,7 +69,27 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        
+        public IActionResult UserProfile()
+        {
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            var user = _IHome.UserByUserid(id);
+            UserProfileViewModel userVM = new UserProfileViewModel();
+
+            userVM.employeeid = user.EmployeeId;
+            userVM.firstname = user.FirstName;
+            userVM.lastname = user.LastName;
+            userVM.email = user.Email;
+            userVM.whyivolunteered = user.WhyIVolunteer;
+            userVM.title = user.Title;
+            userVM.cityid = user.CityId;
+            userVM.countryid = user.CountryId;
+            //userVM.availability = user.
+            userVM.myprofile = user.ProfileText;
+            userVM.linkedinurl = user.LinkedInUrl;
+            userVM.avatar = user.Avatar;
+            return View(userVM);
+        }
 
         public IActionResult ResetPassword()
         {
@@ -1017,7 +1037,7 @@ namespace CI_PlatformWeb.Controllers
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
             //long storyid = model.storyId;
-            var sId=_IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+            var sId = _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
             if (model.attachment != null)
             {
                 if (model.storyId != 0)
@@ -1036,8 +1056,8 @@ namespace CI_PlatformWeb.Controllers
                         var base64String = Convert.ToBase64String(imageBytes);
                         FileName = "data:image/png;base64," + base64String;
                     }
-                    
-                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id,model.storyId,sId);
+
+                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                 }
 
             }
@@ -1055,7 +1075,7 @@ namespace CI_PlatformWeb.Controllers
         {
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
-            var sId=_IHome.addstorydraft(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+            var sId = _IHome.addstorydraft(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
             if (model.attachment != null)
             {
                 if (model.storyId != 0)
@@ -1076,7 +1096,7 @@ namespace CI_PlatformWeb.Controllers
                         var base64String = Convert.ToBase64String(imageBytes);
                         FileName = "data:image/png;base64," + base64String;
                     }
-                    
+
                     _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);                }            }
             TempData["draft"] = "Your Story has been saved as a draft";
             return RedirectToAction("storyShare", "Home");
@@ -1113,12 +1133,12 @@ namespace CI_PlatformWeb.Controllers
         {
             int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
             TimesheetViewModel timeVm = new TimesheetViewModel();
-            
+
             timeVm.missions = _IHome.Allmissions();
             timeVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == useridforrating).ToList();
-            timeVm.timesheet = _IHome.alltimesheet().Where(t=>t.UserId==useridforrating).ToList();
-           
-            
+            var timelist = _IHome.alltimesheet().Where(t => t.UserId == useridforrating).ToList();
+            timeVm.timesheet = timelist.OrderByDescending(c => c.CreatedAt).ToList();
+
 
             return View(timeVm);
         }
@@ -1129,13 +1149,13 @@ namespace CI_PlatformWeb.Controllers
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
             //long storyid = model.storyId;
-            _IHome.addtimesheet(model.missionId, id, model.hour,model.minute, model.date, model.message,model.action);
-                
-           
+            _IHome.addtimesheet(model.missionId, id, model.hour, model.minute, model.date, model.message, model.action, model.hiddenInput);
 
 
 
-            return RedirectToAction("VolunteeringTimeSheet","Home");
+
+
+            return RedirectToAction("VolunteeringTimeSheet", "Home");
 
 
         }
@@ -1154,6 +1174,65 @@ namespace CI_PlatformWeb.Controllers
 
             return RedirectToAction("VolunteeringTimeSheet", "Home");
 
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> editsheet(long timesheetid)
+        {
+
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            //long storyid = model.storyId;
+            var timesheet = _IHome.alltimesheet().Where(t => t.TimesheetId == timesheetid).FirstOrDefault();
+
+            return Json(new { success = true, timesheet = timesheet });
+
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> changepass(string? pass1, string? pass2, string? pass3)
+        {
+
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            //long storyid = model.storyId;
+            var userdetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
+            if (userdetail.Password == pass1)
+            {
+                if (pass2 == pass3)
+                {
+                    _IHome.changepass(id, pass2);
+                }
+                else
+                {
+                    ViewBag.samePass = "Password and Confirm password must be same!!";
+                }
+            }
+            return RedirectToAction("UserProfile", "Home");
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> UserProfile(UserProfileViewModel model)
+        {
+
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            //long storyid = model.storyId;
+            var userdetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
+            userdetail.FirstName = model.firstname;
+            userdetail.LastName = model.lastname;
+            userdetail.WhyIVolunteer = model.whyivolunteered;
+            userdetail.Title = model.title;
+            userdetail.EmployeeId = model.employeeid;
+            userdetail.ProfileText = model.myprofile;
+            userdetail.LinkedInUrl = model.linkedinurl;
+            userdetail.UpdatedAt = DateTime.Now;
+
+            _IHome.updateuser(userdetail);
+
+
+            return View(model);
 
         }
     }

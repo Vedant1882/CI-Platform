@@ -99,11 +99,9 @@
 }
 .theme-btn {
     border-radius: 22px;
-    background-color: white;
-    border: white;
-   
-;
-    
+    background-color: #fff;
+    border: light;
+    padding: 7px;
 }
 .img-event:hover .btn-view{
     display:block;

@@ -277,34 +277,67 @@ namespace CI_Platform.Repository.Repository
                 _CIDbContext.SaveChanges();
             }
         }
-        public void addtimesheet(long MissionId, long id, int? hour, int? minute, DateTime date, string message, int? action)
+        public void addtimesheet(long MissionId, long id, int? hour, int? minute, DateTime date, string message, int? action,long? timesheetid)
         {
-            if(hour!=null && minute != null)
+            if(timesheetid== 0)
             {
-                var timesheet = new Timesheet();
-                timesheet.MissionId = MissionId;
-                timesheet.UserId = id;
-                timesheet.TimesheetTime = hour + ":" + minute;
-                timesheet.DateVolunteered = date;
-                timesheet.Notes = message;
-                timesheet.Status = "1";
-                timesheet.CreatedAt = DateTime.Now;
-                _CIDbContext.Add(timesheet);
-                _CIDbContext.SaveChanges();
+                if (hour != null && minute != null)
+                {
+                    var timesheet = new Timesheet();
+                    timesheet.MissionId = MissionId;
+                    timesheet.UserId = id;
+                    timesheet.TimesheetTime = hour + ":" + minute;
+                    timesheet.DateVolunteered = date;
+                    timesheet.Notes = message;
+                    timesheet.Status = "1";
+                    timesheet.CreatedAt = DateTime.Now;
+                    _CIDbContext.Add(timesheet);
+                    _CIDbContext.SaveChanges();
+                }
+                else
+                {
+                    var timesheet = new Timesheet();
+                    timesheet.MissionId = MissionId;
+                    timesheet.UserId = id;
+                    timesheet.DateVolunteered = date;
+                    timesheet.Action = action;
+                    timesheet.Notes = message;
+                    timesheet.Status = "1";
+                    timesheet.CreatedAt = DateTime.Now;
+                    _CIDbContext.Add(timesheet);
+                    _CIDbContext.SaveChanges();
+                }
             }
             else
             {
-                var timesheet = new Timesheet();
-                timesheet.MissionId = MissionId;
-                timesheet.UserId = id;
-                timesheet.DateVolunteered = date;
-                timesheet.Action = action;
-                timesheet.Notes = message;
-                timesheet.Status = "1";
-                timesheet.CreatedAt = DateTime.Now;
-                _CIDbContext.Add(timesheet);
-                _CIDbContext.SaveChanges();
+                if (hour != null && minute != null)
+                {
+                    var timesheet = _CIDbContext.Timesheets.FirstOrDefault(t => t.TimesheetId == timesheetid);
+                    timesheet.MissionId = MissionId;
+                    timesheet.UserId = id;
+                    timesheet.TimesheetTime = hour + ":" + minute;
+                    timesheet.DateVolunteered = date;
+                    timesheet.Notes = message;
+                    timesheet.Status = "1";
+                    timesheet.UpdatedAt = DateTime.Now;
+                    _CIDbContext.Update(timesheet);
+                    _CIDbContext.SaveChanges();
+                }
+                else
+                {
+                    var timesheet = _CIDbContext.Timesheets.FirstOrDefault(t => t.TimesheetId == timesheetid);
+                    timesheet.MissionId = MissionId;
+                    timesheet.UserId = id;
+                    timesheet.DateVolunteered = date;
+                    timesheet.Action = action;
+                    timesheet.Notes = message;
+                    timesheet.Status = "1";
+                    timesheet.UpdatedAt = DateTime.Now;
+                    _CIDbContext.Update(timesheet);
+                    _CIDbContext.SaveChanges();
+                }
             }
+            
             
            
 
@@ -323,6 +356,20 @@ namespace CI_Platform.Repository.Repository
             time.DeletedAt= DateTime.Now;
             time.Status= "deleted";
             _CIDbContext.Update(time);
+            _CIDbContext.SaveChanges();
+        }
+
+        public void changepass(long? id, string? password)
+        {
+            var user = _CIDbContext.Users.FirstOrDefault(t => t.UserId == id);
+            
+            user.Password = password;
+            _CIDbContext.Update(user);
+            _CIDbContext.SaveChanges();
+        }
+        public void updateuser(User user)
+        {
+            _CIDbContext.Update(user);
             _CIDbContext.SaveChanges();
         }
 

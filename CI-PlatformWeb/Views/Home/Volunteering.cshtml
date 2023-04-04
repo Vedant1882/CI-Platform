@@ -224,8 +224,17 @@
                                         }
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" id="sendmail" onclick="sendmail(@Model.MissionId)">Send Mission</button>
+                                        
+                                        <div class="text-center">
+                                            <a class="btn mt-2 landing-page-apply-mission-btn" data-bs-dismiss="modal">
+                                                Close
+                                            </a>
+                                        </div>
+                                        <div class="text-center">
+                                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="sendmail(@Model.MissionId)">
+                                                Send Mission
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -349,7 +358,7 @@
 
     @*-----------------------------------tab and volunteer----------------------------*@
 
-    <div class="row mt-5" style="margin-right:0">
+    <div class="row mt-5 container" style="margin-right:0">
         <div class="col-12 col-lg-8">
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">

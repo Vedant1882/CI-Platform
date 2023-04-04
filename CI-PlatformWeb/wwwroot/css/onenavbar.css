@@ -2,7 +2,10 @@
     padding: 10px 0 10px 15px;
     margin: 0 0 10px 0;
 }
-
+.form-control:focus, .btn:focus, .form-select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
 .dropdown-checkbox {
     font-size: 15px;
     font-weight: 100;

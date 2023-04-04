@@ -67,13 +67,16 @@ namespace CI_Platform.Repository.Interface
 
         public void apply(long missionid,long userid);
         public long addstory(long MissionId,string title,DateTime date,string discription,long id, long storyId);
-        public void addtimesheet(long MissionId,long id, int? hour,int? minute, DateTime date,string message,int? action);
+        public void addtimesheet(long MissionId,long id, int? hour,int? minute, DateTime date,string message,int? action,long? timesheetid);
         public void addstoryMedia(long MissionId,string mediatype,string mediapath,long id,long storyId, long sId);
 
         public long addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId);
 
         public void removemedia(long storyId);
 
+        public void changepass(long? id, string? password);
+
+        public void updateuser(User user);
 
     }
 }
