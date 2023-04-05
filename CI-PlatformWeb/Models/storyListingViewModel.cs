@@ -18,6 +18,8 @@ namespace CI_PlatformWeb.Models
 
         public DateTime? Created { get; set; }
 
+        public long? viewcount { get; set; }
+
 
 
        

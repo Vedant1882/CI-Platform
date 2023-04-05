@@ -78,5 +78,9 @@ namespace CI_Platform.Repository.Interface
 
         public void updateuser(User user);
 
+        public List<UserSkill> UserSkills(long userid);
+
+        public void AddUserSkills(long skillid,long userId);
+
     }
 }

@@ -26,6 +26,8 @@ namespace CI_PlatformWeb.Models
         public long? cityid { get; set; }
         public long? countryid { get; set; }
 
+        public List<Skill> allskills { get; set; }  
+
 
     }
 }

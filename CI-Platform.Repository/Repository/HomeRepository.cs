@@ -372,6 +372,18 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Update(user);
             _CIDbContext.SaveChanges();
         }
+        public List<UserSkill> UserSkills(long userid)
+        {
+            return _CIDbContext.UserSkills.ToList();
+        }
+        public void AddUserSkills(long skillid, long userId)
+        {
+            var userskills = new UserSkill();
+            userskills.UserId = userId;
+            userskills.SkillId = skillid;
+            _CIDbContext.Add(userskills);
+            _CIDbContext.SaveChanges();
+        }
 
     }
 }

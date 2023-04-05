@@ -716,6 +716,9 @@ public partial class CIDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Viewcount)
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("viewcount");
 
             entity.HasOne(d => d.Mission).WithMany(p => p.Stories)
                 .HasForeignKey(d => d.MissionId)
@@ -849,6 +852,10 @@ public partial class CIDbContext : DbContext
             entity.ToTable("users");
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Availability)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("availability");
             entity.Property(e => e.Avatar)
                 .HasMaxLength(2048)
                 .IsUnicode(false)

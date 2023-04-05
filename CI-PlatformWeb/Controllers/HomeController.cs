@@ -69,27 +69,7 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-        public IActionResult UserProfile()
-        {
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            var user = _IHome.UserByUserid(id);
-            UserProfileViewModel userVM = new UserProfileViewModel();
 
-            userVM.employeeid = user.EmployeeId;
-            userVM.firstname = user.FirstName;
-            userVM.lastname = user.LastName;
-            userVM.email = user.Email;
-            userVM.whyivolunteered = user.WhyIVolunteer;
-            userVM.title = user.Title;
-            userVM.cityid = user.CityId;
-            userVM.countryid = user.CountryId;
-            //userVM.availability = user.
-            userVM.myprofile = user.ProfileText;
-            userVM.linkedinurl = user.LinkedInUrl;
-            userVM.avatar = user.Avatar;
-            return View(userVM);
-        }
 
         public IActionResult ResetPassword()
         {
@@ -958,7 +938,9 @@ namespace CI_PlatformWeb.Controllers
             List<storyListingViewModel> storylist = new List<storyListingViewModel>();
             foreach (var item in story)
             {
-
+                item.Viewcount = item.Viewcount + 1;
+                _CIDbContext.Update(item);
+                _CIDbContext.SaveChanges();
                 var user = _IHome.UserByUserid(item.UserId);
                 storylist.Add(new storyListingViewModel
                 {
@@ -970,6 +952,7 @@ namespace CI_PlatformWeb.Controllers
                     LastName = user.LastName,
                     UserId = user.UserId,
                     avtarpath = user.Avatar,
+                    viewcount = item.Viewcount
 
                 });
 
@@ -1212,6 +1195,39 @@ namespace CI_PlatformWeb.Controllers
             return RedirectToAction("UserProfile", "Home");
 
         }
+        public IActionResult UserProfile()
+        {
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            var user = _IHome.UserByUserid(id);
+            UserProfileViewModel userVM = new UserProfileViewModel();
+
+            userVM.employeeid = user.EmployeeId;
+            userVM.firstname = user.FirstName;
+            userVM.lastname = user.LastName;
+            userVM.email = user.Email;
+            userVM.whyivolunteered = user.WhyIVolunteer;
+            userVM.title = user.Title;
+            userVM.cityid = user.CityId;
+            userVM.countryid = user.CountryId;
+            //userVM.availability = user.
+            userVM.myprofile = user.ProfileText;
+            userVM.linkedinurl = user.LinkedInUrl;
+            userVM.avatar = user.Avatar;
+            userVM.department = user.Department;
+            userVM.cityid = user.CityId;
+            userVM.countryid = user.CountryId;
+            userVM.availability = user.Availability;
+            ViewBag.allskills = _IHome.AllSkills();
+            var skills = from US in _CIDbContext.UserSkills
+                         join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
+                         select new { US.SkillId, S.SkillName, US.UserId };
+            ViewBag.userskills = skills.Where(e => e.UserId == id).ToList();
+            ViewBag.allcities=_IHome.AllCity();
+            ViewBag.allcountry = _IHome.allcountry();
+            return View(userVM);
+        }
+
         [HttpPost]
         public async Task<IActionResult> UserProfile(UserProfileViewModel model)
         {
@@ -1228,11 +1244,42 @@ namespace CI_PlatformWeb.Controllers
             userdetail.ProfileText = model.myprofile;
             userdetail.LinkedInUrl = model.linkedinurl;
             userdetail.UpdatedAt = DateTime.Now;
-
+            userdetail.Department = model.department;
+            userdetail.CountryId = model.countryid;
+            userdetail.CityId = model.cityid;
+            userdetail.Availability= model.availability;
+            ViewBag.allskills = _IHome.AllSkills();
+            var skills = from US in _CIDbContext.UserSkills
+                         join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
+                         select new { US.SkillId, S.SkillName, US.UserId };
+            ViewBag.userskills = skills.Where(e => e.UserId == id).ToList();
             _IHome.updateuser(userdetail);
+            ViewBag.allcities = _IHome.AllCity();
+            ViewBag.allcountry = _IHome.allcountry();
 
 
             return View(model);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveUserSkills(long[] selectedSkills)
+        {
+
+            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userid);
+            var abc = _CIDbContext.UserSkills.Where(e => e.UserId == id).ToList();
+            _CIDbContext.RemoveRange(abc);
+            _CIDbContext.SaveChanges();
+            foreach (var skills in selectedSkills)
+            {
+
+               
+                _IHome.AddUserSkills(skills, id);
+
+
+            }
+
+            return RedirectToAction("UserProfile", "Home");
 
         }
     }
