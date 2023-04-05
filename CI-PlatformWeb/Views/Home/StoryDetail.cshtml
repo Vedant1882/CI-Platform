@@ -94,7 +94,7 @@
                                 <div class=" d-flex justify-content-center">
                                     @if (story.avtarpath != "")
                                     {
-                                        <img src="@story.avtarpath" class="storyuserimg rounded-circle">
+                                        <img src="@story.avtarpath" class="storyuserimg rounded-circle" style="height:70px;width:70px">
                                     }
                                     else
                                     {
@@ -112,7 +112,7 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-12 ">
-                                @story.StoryTitle
+                                @story.whyivolunteer
 
                             </div>
                         </div>
@@ -173,6 +173,7 @@
         <div>
             @foreach (var story in Model)
             {
+                <h1>@story.StoryTitle</h1>
                 <p>@Html.Raw(story.Description)</p>
             }
         </div>

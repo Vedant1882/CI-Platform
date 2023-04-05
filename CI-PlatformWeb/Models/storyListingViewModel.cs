@@ -20,6 +20,7 @@ namespace CI_PlatformWeb.Models
 
         public long? viewcount { get; set; }
 
+        public string? whyivolunteer { get; set; }
 
 
        

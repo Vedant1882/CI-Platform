@@ -952,7 +952,8 @@ namespace CI_PlatformWeb.Controllers
                     LastName = user.LastName,
                     UserId = user.UserId,
                     avtarpath = user.Avatar,
-                    viewcount = item.Viewcount
+                    viewcount = item.Viewcount,
+                    whyivolunteer=user.WhyIVolunteer,
 
                 });
 
@@ -1218,11 +1219,19 @@ namespace CI_PlatformWeb.Controllers
             userVM.cityid = user.CityId;
             userVM.countryid = user.CountryId;
             userVM.availability = user.Availability;
-            ViewBag.allskills = _IHome.AllSkills();
+            var allskills = _IHome.AllSkills();
+            ViewBag.allskills = allskills;
             var skills = from US in _CIDbContext.UserSkills
                          join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
                          select new { US.SkillId, S.SkillName, US.UserId };
-            ViewBag.userskills = skills.Where(e => e.UserId == id).ToList();
+            var uskills = skills.Where(e => e.UserId == id).ToList();
+            ViewBag.userskills = uskills;
+            foreach(var skill in uskills)
+            {
+                var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
+                allskills.Remove(rskill);
+            }
+            ViewBag.remainingSkills = allskills;
             ViewBag.allcities=_IHome.AllCity();
             ViewBag.allcountry = _IHome.allcountry();
             return View(userVM);
@@ -1248,15 +1257,23 @@ namespace CI_PlatformWeb.Controllers
             userdetail.CountryId = model.countryid;
             userdetail.CityId = model.cityid;
             userdetail.Availability= model.availability;
-            ViewBag.allskills = _IHome.AllSkills();
+            userdetail.Avatar=model.avatar;
+            var allskills = _IHome.AllSkills();
+            ViewBag.allskills = allskills;
             var skills = from US in _CIDbContext.UserSkills
                          join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
                          select new { US.SkillId, S.SkillName, US.UserId };
-            ViewBag.userskills = skills.Where(e => e.UserId == id).ToList();
-            _IHome.updateuser(userdetail);
+            var uskills = skills.Where(e => e.UserId == id).ToList();
+            ViewBag.userskills = uskills;
+            foreach (var skill in uskills)
+            {
+                var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
+                allskills.Remove(rskill);
+            }
+            ViewBag.remainingSkills = allskills;
             ViewBag.allcities = _IHome.AllCity();
             ViewBag.allcountry = _IHome.allcountry();
-
+            _IHome.updateuser(userdetail);
 
             return View(model);
 
