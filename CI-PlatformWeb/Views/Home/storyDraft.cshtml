@@ -32,7 +32,7 @@
         <h1>Stories Draft For @firstname</h1>
         @*-----------------------------------------------------------------------------*@
         <div class="album py-5 bg-light mt-3">
-            <div class="container">
+            <div class="container" id="storydraftdiv">
 
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     @if (ViewBag.storydraft.Count != 0)
@@ -109,27 +109,67 @@
 
 
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function viewdetails() {
         location.replace("Login.cshtml");
     }
     function deletedraft(storyId, userId) {
-        $.ajax({
-            url: '/Home/deleteDraft',
-            type: 'POST',
-            data: { storyId: storyId, userId: userId },
 
-            success: function (response) {
-
-
-
-
-
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
             },
-            error: function () {
-                alert("could not comment");
+            buttonsStyling: true
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this draft!",
+            icon: 'warning',
+            width: '300',
+            height: '100',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Home/deleteDraft',
+                    type: 'POST',
+                    data: { storyId: storyId, userId: userId },
+
+                    success: function (response) {
+
+                        swalWithBootstrapButtons.fire(
+                            'Deleted!',
+                            'Your draft has been deleted.',
+                            'success'
+                        )
+                        $('#storydraftdiv').html($(response).find('#storydraftdiv').html());
+
+
+                    },
+                    error: function () {
+                        alert("could not comment");
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    
+                )
             }
-        });
+        })
+
+
     }
 </script>
 <script src="~/js/filter.js"></script>

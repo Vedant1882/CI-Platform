@@ -32,7 +32,7 @@
 
 
                 <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
-                     aria-labelledby="offcanvasWithBothOptionsLabel">
+                     aria-labelledby="offcanvasWithBothOptionsLabel" style="width:max-content">
                     <div class="offcanvas-header">
                         <h2 class="mt-2 me-2">CI-PLATFORM</h2>
                         <button type="button" class="btn-close " data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -65,10 +65,10 @@
 
                                 </a>
                                 <ul class="dropdown-menu text-small">
+                                    <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Home">Profile</a></li>
+                                    <li><a class="dropdown-item" asp-action="VolunteeringTimeSheet" asp-controller="Home">Timesheet</a></li>
                                     <li><a class="dropdown-item" asp-action="landingpage" asp-controller="Home">Dashboard</a></li>
                                     <li><a class="dropdown-item" asp-action="storyDraft" asp-controller="Home">Show Draft</a></li>
-                                    <li><a class="dropdown-item" asp-action="VolunteeringTimeSheet" asp-controller="Home">Timesheet</a></li>
-                                    <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Home">Profile</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
@@ -135,10 +135,10 @@
                             }
                         </a>
                         <ul class="dropdown-menu text-small">
+                            <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Home">Profile</a></li>
+                            <li><a class="dropdown-item" asp-action="VolunteeringTimeSheet" asp-controller="Home">Timesheet</a></li>
                             <li><a class="dropdown-item" asp-action="landingpage" asp-controller="Home">Dashboard</a></li>
                             <li><a class="dropdown-item" asp-action="storyDraft" asp-controller="Home">Show Draft</a></li>
-                            <li><a class="dropdown-item" asp-action="VolunteeringTimeSheet" asp-controller="Home">Timesheet</a></li>
-                            <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Home">Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

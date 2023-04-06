@@ -24,28 +24,33 @@
     <div>
         @if (TempData["logout"] != null)
         {
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-            <script type="text/javascript">
-
-
-                toastr.warning('@TempData["logout"]');
-
-
-            </script>
+          
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+            Swal.fire({
+                    position: 'top-center',
+                    icon: 'warning',
+                    height: '100',
+                    width: '300',
+                    title: 'Loggedout successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                </script>
         }
         @if (TempData["Done"] != null)
         {
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-            <script type="text/javascript">
-
-
-                toastr.success('@TempData["Done"]');
-
-
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'success',
+                    height:'100',
+                    width:'300',
+                    title: 'Loggedin Successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             </script>
         }
     </div>

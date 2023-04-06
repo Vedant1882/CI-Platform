@@ -49,10 +49,6 @@ namespace CI_PlatformWeb.Controllers
             return View();
         }
 
-        //public IActionResult storyListing()
-        //{
-        //    return View();
-        //}
         public IActionResult Login()
         {
             HttpContext.Session.Clear();
@@ -82,9 +78,9 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
+        private List<MissionViewModel> missionsVMList = new List<MissionViewModel>();
 
-
-
+        #region Login Post
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -100,6 +96,8 @@ namespace CI_PlatformWeb.Controllers
                 {
                     int userid = ((int)user.UserId);
                     HttpContext.Session.SetString("UserID", user.FirstName);
+                    HttpContext.Session.SetString("lastname", user.LastName);
+
                     HttpContext.Session.SetString("user", user.UserId.ToString());
                     HttpContext.Session.SetInt32("userIDforfavmission", userid);
                     if (user.Avatar != null)
@@ -120,7 +118,9 @@ namespace CI_PlatformWeb.Controllers
             return View();
         }
 
+        #endregion
 
+        #region ForgetPass Post
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -176,12 +176,11 @@ namespace CI_PlatformWeb.Controllers
 
             return View();
         }
+        #endregion
 
+        #region ResetPassword get
         [HttpGet]
         [AllowAnonymous]
-
-
-
 
         [HttpGet]
 
@@ -200,7 +199,9 @@ namespace CI_PlatformWeb.Controllers
             };
             return View(model);
         }
+        #endregion
 
+        #region ResetPassword Post
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -233,9 +234,9 @@ namespace CI_PlatformWeb.Controllers
 
             return View(resetPasswordView);
         }
+        #endregion
 
-
-        private List<MissionViewModel> missionsVMList = new List<MissionViewModel>();
+        #region landingpage get
         public ActionResult landingpage(int? pageIndex, string searchQuery, long[] ACountries, long[] ACities, long[] ATheme, string sortOrder)
         {
 
@@ -576,6 +577,9 @@ namespace CI_PlatformWeb.Controllers
 
             return View(Missions);
         }
+        #endregion
+
+        #region Sendmail Post
         [HttpPost]
         public async Task<IActionResult> Sendmail(long[] userid, int id)
         {
@@ -608,6 +612,9 @@ namespace CI_PlatformWeb.Controllers
             }
             return Json(new { success = true });
         }
+        #endregion
+
+        #region Addreting Post
         [HttpPost]
         public IActionResult Addrating(int rating, long Id, long missionId)
         {
@@ -624,7 +631,9 @@ namespace CI_PlatformWeb.Controllers
             }
             return RedirectToAction("Volunteering", new { id = Id, missionId = missionId });
         }
+        #endregion
 
+        #region comment Post
         [HttpPost]
         public IActionResult comment(long MissionId, long UserId, String comment)
         {
@@ -641,7 +650,9 @@ namespace CI_PlatformWeb.Controllers
 
 
         }
+        #endregion
 
+        #region Asstofav post
         [HttpPost]
         public async Task<IActionResult> AddToFav(long MissionId, long UserId)
         {
@@ -660,8 +671,9 @@ namespace CI_PlatformWeb.Controllers
                 return Json(new { success = true, favoriteMissionadd, isRated = true });
             }
         }
+        #endregion
 
-
+        #region Volunteering Get
         public IActionResult Volunteering(long id, int missionId, int pageIndex = 1)
         {
             int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
@@ -815,7 +827,9 @@ namespace CI_PlatformWeb.Controllers
 
             return View(volunteeringMission);
         }
+        #endregion
 
+        #region storydraft get
         public IActionResult storyDraft(int? pageIndex)
         {
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
@@ -855,6 +869,9 @@ namespace CI_PlatformWeb.Controllers
             return View(storylist);
 
         }
+        #endregion
+
+        #region deleteDraft
         [HttpPost]
         public IActionResult deleteDraft(long? storyId,long? userId)
         {
@@ -865,6 +882,9 @@ namespace CI_PlatformWeb.Controllers
             _CIDbContext.SaveChanges();
             return RedirectToAction("storyDraft","Home");
         }
+        #endregion
+
+        #region storyListing
         public IActionResult storyListing(int? pageIndex)
         {
             List<Story> story = _IHome.story().Where(s => s.Status == "1").ToList();
@@ -920,7 +940,7 @@ namespace CI_PlatformWeb.Controllers
             return View(Missions);
 
         }
-
+        #endregion
         public IActionResult StoryDetail(int id, int storyid)
         {
             //var user = _IHome.UserByUserid(id);
@@ -1238,6 +1258,8 @@ namespace CI_PlatformWeb.Controllers
             var userdetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
             userdetail.FirstName = model.firstname;
             userdetail.LastName = model.lastname;
+            HttpContext.Session.SetString("UserID", model.firstname);
+            HttpContext.Session.SetString("lastname", model.lastname);
             userdetail.WhyIVolunteer = model.whyivolunteered;
             userdetail.Title = model.title;
             userdetail.EmployeeId = model.employeeid;
@@ -1287,7 +1309,7 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.allcities = _IHome.AllCity();
             ViewBag.allcountry = _IHome.allcountry();
             _IHome.updateuser(userdetail);
-
+            TempData["saveuser"] = "saved";
             return View(model);
 
         }

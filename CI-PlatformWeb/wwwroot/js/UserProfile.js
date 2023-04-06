@@ -57,8 +57,14 @@ function changepass() {
 
 			success: function (response) {
 
-				$('.goalsheetdiv').html($(response).find('.goalsheetdiv').html());
-
+				Swal.fire({
+					position: 'top-center',
+					icon: 'success',
+					title: 'Password changed successfully',
+					showConfirmButton: false,
+					timer: 2500
+				})
+				$('#close1').click();
 
 			},
 			error: function () {

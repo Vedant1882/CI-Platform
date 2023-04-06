@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="D:\TatvaSoft\CI-Platform\CI-PlatformWeb\wwwroot\css\bootstrap.min.css">
     <link rel="stylesheet" href=" ~ /css/login-page.css">
 
+
 </head>
 <body>
     @if (TempData["reg"] != null)
@@ -149,7 +150,7 @@
                                 </div>
                             </div>
                             <div class="text-center mt-3 align-bottom">
-                                <span>Privacy Policy</span>
+                                <span><a asp-action="PrivacyPolicy" asp-controller="Home">Privacy Policy</a></span>
                             </div>
                         </form>
                     </div>

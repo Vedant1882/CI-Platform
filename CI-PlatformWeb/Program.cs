@@ -10,7 +10,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<CIDbContext>((y => y.UseSqlServer("Server=VEDANT;Database=CI-Platform;Trusted_Connection=True;TrustServerCertificate=True;", optionsBuilder => optionsBuilder.CommandTimeout(100)).EnableSensitiveDataLogging()));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHomeRepository, HomeRepository>();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout= TimeSpan.FromDays(1);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

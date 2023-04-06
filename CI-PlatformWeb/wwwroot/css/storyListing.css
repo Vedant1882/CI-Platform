@@ -156,12 +156,11 @@
 .page-link {
     color: #757575;
 }
+.btn-success {
+    background-color: #F88634 !important;
+}
 
 @media screen and (max-width:991px) {
-    
-
-    
-
     .centeredbtn {
         width: 100%;
     }
