@@ -69,7 +69,10 @@ namespace CI_PlatformWeb.Controllers
         {
             return View();
         }
-
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
 
         public IActionResult ResetPassword()
         {
@@ -847,32 +850,20 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.storydraft = storylist;
 
 
-            //int pageSize = 3;
-            //int skip = (pageIndex ?? 0) * pageSize;
-            //var Missions = storylist.Skip(skip).Take(pageSize).ToList();
-            //int totalMissions = storylist.Count();
-            //ViewBag.TotalMission = totalMissions;
-            //ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
-            //ViewBag.CurrentPage = pageIndex ?? 0;
-
-
-
-            //// Get the current URL
-            //UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
-            //if (Request.Host.Port.HasValue)
-            //{
-            //    uriBuilder.Port = Request.Host.Port.Value;
-            //}
-            //uriBuilder.Path = Request.Path;
-
-            //// Remove the query parameter you want to exclude
-            //var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-            //query.Remove("pageIndex");
-            //uriBuilder.Query = query.ToString();
-            //ViewBag.currentUrl = uriBuilder.ToString();
+           
 
             return View(storylist);
 
+        }
+        [HttpPost]
+        public IActionResult deleteDraft(long? storyId,long? userId)
+        {
+            var draftStory=_IHome.story().FirstOrDefault(s=>s.StoryId== storyId && s.UserId==userId);
+            var draftmedia = _IHome.storymedia().Where(s => s.StoryId == storyId);
+            _CIDbContext.RemoveRange(draftmedia);
+            _CIDbContext.Remove(draftStory);
+            _CIDbContext.SaveChanges();
+            return RedirectToAction("storyDraft","Home");
         }
         public IActionResult storyListing(int? pageIndex)
         {
@@ -1238,7 +1229,7 @@ namespace CI_PlatformWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserProfile(UserProfileViewModel model)
+        public async Task<IActionResult> UserProfile(UserProfileViewModel model, IFormFileCollection files)
         {
 
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
@@ -1257,7 +1248,29 @@ namespace CI_PlatformWeb.Controllers
             userdetail.CountryId = model.countryid;
             userdetail.CityId = model.cityid;
             userdetail.Availability= model.availability;
-            userdetail.Avatar=model.avatar;
+
+            if (model.avatar == null)
+            {
+                model.avatar = userdetail.Avatar;
+            }
+            else
+            {
+                userdetail.Avatar = model.avatar;
+            }
+            foreach (var file in files)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    await file.CopyToAsync(ms);
+                    var imageBytes = ms.ToArray();
+                    var base64String = Convert.ToBase64String(imageBytes);
+                    userdetail.Avatar = "data:image/png;base64," + base64String;
+                    model.avatar = "data:image/png;base64," + base64String;
+                    HttpContext.Session.SetString("avtarpath", "data:image/png;base64," + base64String);
+                }
+            }
+
+
             var allskills = _IHome.AllSkills();
             ViewBag.allskills = allskills;
             var skills = from US in _CIDbContext.UserSkills

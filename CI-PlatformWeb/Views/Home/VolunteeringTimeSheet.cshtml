@@ -160,7 +160,7 @@
 
 
                 </div>
-                <div class="row overflow-y-auto timesheetdiv" style="height:300px;">
+                <div class="row overflow-auto timesheetdiv" style="height:300px;">
                     <table class="table table-borderless">
                         <thead>
                             <tr>
@@ -181,7 +181,7 @@
                                     <tr>
 
                                         <td>@t.Mission.Title</td>
-                                        <td>@t.DateVolunteered.ToString().Split(" ")[0]</td>
+                                        <td style="width:20%">@t.DateVolunteered.ToString().Split(" ")[0]</td>
                                         <td>@t.TimesheetTime.Split(":")[0]</td>
                                         <td>@t.TimesheetTime.Split(":")[1]</td>
                                         <td class="d-flex align-items-center mt-1"> <i class="bi bi-pencil-square editimg" data-bs-toggle="modal" data-bs-target="#TimeADDbtn1" id="@t.TimesheetId" onclick="edittimesheet(this.id)"></i></td>
@@ -337,7 +337,7 @@
                                     <tr>
 
                                         <td>@t.Mission.Title</td>
-                                        <td>@t.DateVolunteered.ToString().Split(" ")[0]</td>
+                                        <td style="width:20%">@t.DateVolunteered.ToString().Split(" ")[0]</td>
                                         <td>@t.Action</td>
 
                                         <td class="d-flex align-items-center mt-1"> <i class="bi bi-pencil-square editimg" data-bs-toggle="modal" data-bs-target="#GoalADDbtn1" id="@t.TimesheetId" onclick="editgoalsheet(this.id)"></i></td>

@@ -68,6 +68,13 @@ function changepass() {
 	}
     
 }
+document.getElementById('imgInput').addEventListener("change", e => {
+	const reader = new FileReader(); // Create a new FileReader object
+	reader.onload = function () {
+		document.getElementById('user-profile-img').src = reader.result; // Set the source of the image tag to the selected image
+	}
+	reader.readAsDataURL(e.target.files[0]); // Read the selected file as a data URL
+});
 
 document.getElementById('imgDiv').addEventListener("click", e => {
     document.getElementById('imgInput').click();
