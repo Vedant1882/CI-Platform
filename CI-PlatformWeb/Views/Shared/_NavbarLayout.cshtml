@@ -22,6 +22,7 @@
 
 </head>
 <body>
+    <div id="preloader"></div>
     <div class=" mainheader fixed-top">
 
         <nav class="navbar navbar-expand-md navbar-light  header  pb-1" aria-label="Eighth navbar example">
@@ -52,13 +53,14 @@
                             <div class=" dropdown text-end ">
                                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                    @if (avtarpath != "")
+                                    @if (avtarpath == "" || avtarpath == null)
                                     {
-                                        <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                                        <img src="~/Images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                                        
                                     }
                                     else
                                     {
-                                        <img src="~/Images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                                        <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
                                     }
                                     @{
                                         if (@firstname != null)
@@ -122,13 +124,14 @@
                     <div class="dropdown text-end userprofile ">
                         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                            @if (avtarpath != "")
+                            @if (avtarpath == "" || avtarpath==null)
                             {
-                                <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                                <img src="~/Images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle">
                             }
                             else
                             {
-                                <img src="~/Images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                                <img src="@avtarpath" alt="mdo" width="40" height="40" class="rounded-circle">
+                                
                             }
                             @{
                                 if (@firstname != null)
@@ -434,6 +437,12 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+
+        var loader = document.getElementById('preloader');
+        window.addEventListener("load", function () {
+            loader.style.display = "none";
+        })
+
         function countryBtn(id) {
             //var c=document.getElementById("co");
             //   var co = document.getElementById("cityinput");

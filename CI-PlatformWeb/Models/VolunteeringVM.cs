@@ -58,5 +58,8 @@
         public string? cmtavtarpath { get; set; }
         public int? goalval { get; set; }
 
+        public long? userIdForComment { get; set; }
+        public long? commentId { get; set; }
+
     }
 }

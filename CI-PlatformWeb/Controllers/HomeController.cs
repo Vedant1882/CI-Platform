@@ -652,6 +652,23 @@ namespace CI_PlatformWeb.Controllers
         }
         #endregion
 
+        [HttpPost]
+        public async Task<IActionResult> CommentDelete(long? userId,long? commentId)
+        {
+
+            
+           
+            _IHome.commentdelete(userId, commentId);
+
+
+
+
+
+            return RedirectToAction("VolunteeringTimeSheet", "Home");
+
+
+        }
+
         #region Asstofav post
         [HttpPost]
         public async Task<IActionResult> AddToFav(long MissionId, long UserId)
@@ -752,6 +769,8 @@ namespace CI_PlatformWeb.Controllers
                     LastName = user.LastName,
                     createdAt = comment.CreatedAt,
                     cmtavtarpath = user.Avatar,
+                    commentId=comment.CommentId,
+                    userIdForComment=comment.UserId,
 
 
                 });

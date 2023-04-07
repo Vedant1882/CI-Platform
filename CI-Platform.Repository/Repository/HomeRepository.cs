@@ -358,7 +358,10 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Update(time);
             _CIDbContext.SaveChanges();
         }
-
+        public void commentdelete(long? userId, long? commentId)
+        {
+            var comment=_CIDbContext.Comments.FirstOrDefault(c => c.CommentId == commentId);
+        }
         public void changepass(long? id, string? password)
         {
             var user = _CIDbContext.Users.FirstOrDefault(t => t.UserId == id);

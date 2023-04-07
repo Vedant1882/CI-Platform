@@ -26,6 +26,7 @@
     @{
         var useridforrating = Context.Session.GetInt32("userIDforfavmission");
     }
+   @* <div id="preloader"></div>*@
     <div class="container" style="margin-top:150px">
         <div class="filters-section d-flex align-items-center flex-wrap justify-content-center">
         </div>
@@ -358,7 +359,7 @@
 
     @*-----------------------------------tab and volunteer----------------------------*@
 
-    <div class="row mt-5 container" style="margin-right:0">
+    <div class="row mt-5 container" style="margin-left:50px">
         <div class="col-12 col-lg-8">
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -432,13 +433,13 @@
                                 {
                                     <div id="comment"></div>
                                     <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
-                                        @if (c.cmtavtarpath != "")
+                                        @if (c.cmtavtarpath == "" || c.cmtavtarpath == null)
                                         {
-                                            <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
+                                            <img class="mr-3 rounded-circle" src="~/Images/user1.png" alt="Generic placeholder image" style="height:50px;width:50px">
                                         }
                                         else
                                         {
-                                            <img class="mr-3 rounded-circle" src="~/Images/user1.png" alt="Generic placeholder image" style="height:50px;width:50px">
+                                            <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">                                           
                                         }
 
                                         <div class="media-body ms-2">
@@ -446,6 +447,11 @@
                                             @c.commenttext<br>
                                             @c.createdAt
                                         </div>
+                                        @if (useridforrating == c.userIdForComment)
+                                        {
+                                            <div><i class="bi bi-trash bin" onclick="deletecomment(@c.userIdForComment,@c.commentId)"></i></div>
+                                        }
+                                        
                                     </li>
                                 }
                             }
@@ -503,15 +509,16 @@
 
                     @foreach (var item in ViewBag.recentvolunteered)
                     {
+
                         <div class="col-4  ">
                             <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
-                                @if (item.avtarpath != "")
+                                @if (item.avtarpath == "" || item.avtarpath == null)
                                 {
-                                    <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                    <img src="~/Images/user1.png" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
                                 }
                                 else
                                 {
-                                    <img src="~/Images/user1.png" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                    <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />                                  
                                 }
                                 <label id="" class="text-center">@item.UserName</label>
                             </div>
@@ -660,6 +667,25 @@
             }
         });
     }
+    function deletecomment(uId,cId) {
+        var text = document.getElementById("commenttext").value;
+
+        $.ajax({
+            url: '/Home/CommentDelete',
+            type: 'POST',
+            data: { userId:uId,commentId:cId },
+            success: function (response) {
+                console.log(response);
+                $('.abcs').html($(response).find('.abcs').html());
+                //$('.comment_div').html($(response).find('.comment_div').html());
+
+            },
+            error: function () {
+                alert("could not comment");
+            }
+        });
+    }
+
 </script>
 </html>
 

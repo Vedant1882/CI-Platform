@@ -56,6 +56,7 @@ namespace CI_Platform.Repository.Interface
         public List<Country> allcountry();
         public List<Timesheet> alltimesheet();
         public void deletetimesheet(long timesheetid);
+        public void commentdelete(long? userId,long? commentId);
         public List<MissionMedium> allmedia();
 
         public void savechanges();
