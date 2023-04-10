@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<CIDbContext>((y => y.UseSqlServer("Server=VEDANT;Database=CI-Platform;Trusted_Connection=True;TrustServerCertificate=True;", optionsBuilder => optionsBuilder.CommandTimeout(100)).EnableSensitiveDataLogging()));
+builder.Services.AddDbContext<CIDbContext>((y => y.UseSqlServer("Server=VEDANT;Database=CI-Platform;Trusted_Connection=True;TrustServerCertificate=True;", optionsBuilder => optionsBuilder.CommandTimeout(10000)).EnableSensitiveDataLogging()));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHomeRepository, HomeRepository>();
 builder.Services.AddSession(options =>

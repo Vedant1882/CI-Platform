@@ -20,5 +20,6 @@ namespace CI_PlatformWeb.Models
         public DateTime date { get; set; }
 
         public List<IFormFile> attachment { get; set; }
+        public List<StoryMedium> storyMedia { get; set; }
     }
 }

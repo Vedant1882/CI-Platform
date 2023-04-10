@@ -26,7 +26,7 @@
     @{
         var useridforrating = Context.Session.GetInt32("userIDforfavmission");
     }
-   @* <div id="preloader"></div>*@
+    @* <div id="preloader"></div>*@
     <div class="container" style="margin-top:150px">
         <div class="filters-section d-flex align-items-center flex-wrap justify-content-center">
         </div>
@@ -117,7 +117,15 @@
                                 <img src="~/images/Seats-left.png" alt="">
                                 <div>
                                     <div>@Model.available</div>
+                                    @if (Model.isapplied == 1)
+                                    {
+                                        <div class="landing-page-card-vol-small">Already Valunteered</div>
+                                    }
+                                    else
+                                    {
+                                        
                                     <div class="landing-page-card-vol-small">Seats Left</div>
+                                    }
                                 </div>
                             </p>
                         </div>
@@ -225,7 +233,7 @@
                                         }
                                     </div>
                                     <div class="modal-footer">
-                                        
+
                                         <div class="text-center">
                                             <a class="btn mt-2 landing-page-apply-mission-btn" data-bs-dismiss="modal">
                                                 Close
@@ -409,15 +417,15 @@
                     {
                         <div>
                             <a class="btn mt-2 landing-page-apply-mission-btn" onclick="comment(@Model.MissionId,@Model.UserId)">
-                                Post comments
+                                <span id="post1">Post comments</span>
                             </a>
                         </div>
                     }
                     else
                     {
                         <div>
-                            <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforlogin()">
-                                Post comments
+                            <a class="btn mt-2 landing-page-apply-mission-btn" id="post" onclick="alertforlogin()">
+                                <span id="post1">Post comments</span>
                             </a>
                         </div>
                     }
@@ -439,7 +447,7 @@
                                         }
                                         else
                                         {
-                                            <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">                                           
+                                            <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
                                         }
 
                                         <div class="media-body ms-2">
@@ -449,9 +457,9 @@
                                         </div>
                                         @if (useridforrating == c.userIdForComment)
                                         {
-                                            <div><i class="bi bi-trash bin" onclick="deletecomment(@c.userIdForComment,@c.commentId)"></i></div>
+                                            <div><i class="bi bi-trash bin" onclick="deletecomment(@c.userIdForComment,@c.commentId,@Model.MissionId)"></i></div>
                                         }
-                                        
+
                                     </li>
                                 }
                             }
@@ -518,7 +526,7 @@
                                 }
                                 else
                                 {
-                                    <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />                                  
+                                    <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
                                 }
                                 <label id="" class="text-center">@item.UserName</label>
                             </div>
@@ -651,34 +659,41 @@
     }
     function comment(mid, uid) {
         var text = document.getElementById("commenttext").value;
+        var post=document.getElementById("post1");
 
-        $.ajax({
-            url: '/Home/comment',
-            type: 'POST',
-            data: { MissionId: mid, UserId: uid, comment: text },
-            success: function (response) {
-                console.log(response);
-                $('.abcs').html($(response).find('.abcs').html());
-                //$('.comment_div').html($(response).find('.comment_div').html());
+        if(text!=""){
+            post.innerHTML="Posting";
+            $.ajax({
+                url: '/Home/comment',
+                type: 'POST',
+                data: { MissionId: mid, UserId: uid, comment: text },
+                success: function (response) {
+                    console.log(response);
+                    $('.abcs').html($(response).find('.abcs').html());
+                    post.innerHTML="Posted";
+                    //$('.comment_div').html($(response).find('.comment_div').html());
 
-            },
-            error: function () {
-                alert("could not comment");
-            }
-        });
+                },
+                error: function () {
+                    alert("could not comment");
+                }
+            });
+        }
+        else{
+            alert("Please write something in comment box!");
+        }
+        
     }
-    function deletecomment(uId,cId) {
-        var text = document.getElementById("commenttext").value;
-
+    function deletecomment(uId, cId , mId) {
+       
         $.ajax({
             url: '/Home/CommentDelete',
             type: 'POST',
-            data: { userId:uId,commentId:cId },
-            success: function (response) {
-                console.log(response);
-                $('.abcs').html($(response).find('.abcs').html());
-                //$('.comment_div').html($(response).find('.comment_div').html());
-
+            data: { userId: uId, commentId: cId ,missionId:mId},
+            success: function (result) {
+                console.log(result);
+                $('#contact').html($(result).find('#contact').html());
+            
             },
             error: function () {
                 alert("could not comment");

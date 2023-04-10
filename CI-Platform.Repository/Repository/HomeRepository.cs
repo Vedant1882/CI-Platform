@@ -361,6 +361,8 @@ namespace CI_Platform.Repository.Repository
         public void commentdelete(long? userId, long? commentId)
         {
             var comment=_CIDbContext.Comments.FirstOrDefault(c => c.CommentId == commentId);
+            _CIDbContext.Comments.Remove(comment);
+            _CIDbContext.SaveChanges();
         }
         public void changepass(long? id, string? password)
         {

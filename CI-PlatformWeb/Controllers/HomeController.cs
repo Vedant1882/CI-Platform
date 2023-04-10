@@ -243,7 +243,7 @@ namespace CI_PlatformWeb.Controllers
             var userId = HttpContext.Session.GetString("user");
             int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
             int? user = HttpContext.Session.GetInt32("userIDforfavmission");
-            int? useridfavmission = HttpContext.Session.GetInt32("userIDforfavmission");
+           int? useridfavmission = HttpContext.Session.GetInt32("userIDforfavmission");
             if (userId != null || user != null)
             {
                 ViewBag.UserId = int.Parse(userId);
@@ -421,28 +421,7 @@ namespace CI_PlatformWeb.Controllers
 
 
             }
-            switch (sortOrder)
-            {
-                case "Newest":
-                    mission = mission.OrderByDescending(m => m.StartDate).ToList();
-                    ViewBag.sortby = "Newest";
-                    break;
-                case "Oldest":
-                    mission = mission.OrderBy(m => m.StartDate).ToList();
-                    ViewBag.sortby = "Oldest";
-                    break;
-                case "Lowest seats":
-                    mission = mission.OrderBy(m => int.Parse(m.Availability)).ToList();
-                    break;
-                case "Highest seats":
-                    mission = mission.OrderByDescending(m => int.Parse(m.Availability)).ToList();
-                    break;
-                case "Registration deadline":
-                    mission = mission.OrderBy(m => m.Deadline).ToList();
-                    break;
-
-
-            }
+            
 
             //---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -529,7 +508,30 @@ namespace CI_PlatformWeb.Controllers
 
 
             }
+            switch (sortOrder)
+            {
+                case "Newest":
+                    missionsVMList = missionsVMList.OrderByDescending(m => m.StartDate).ToList();
+                    ViewBag.sortby = "Newest";
+                    break;
+                case "Oldest":
+                    missionsVMList = missionsVMList.OrderBy(m => m.StartDate).ToList();
+                    ViewBag.sortby = "Oldest";
+                    break;
+                case "Lowest seats":
+                    missionsVMList = missionsVMList.OrderBy(m => (m.available)).ToList();
+                    break;
+                case "Highest seats":
+                    missionsVMList = missionsVMList.OrderByDescending(m => (m.available)).ToList();
+                    break;
+                case "Registration deadline":
+                    missionsVMList = missionsVMList.OrderBy(m => m.Deadline).ToList();
+                    break;
+                case "Myfav":
+                    missionsVMList = missionsVMList.Where(m => m.isFavrouite==true).ToList();
+                    break;
 
+            }
 
             //------------------------------------------------------------------------------------------------------------------------------
             List<User> Alluser = _IHome.alluser().ToList();
@@ -653,7 +655,7 @@ namespace CI_PlatformWeb.Controllers
         #endregion
 
         [HttpPost]
-        public async Task<IActionResult> CommentDelete(long? userId,long? commentId)
+        public async Task<IActionResult> CommentDelete(long? userId,long? commentId,long? missionId)
         {
 
             
@@ -664,7 +666,7 @@ namespace CI_PlatformWeb.Controllers
 
 
 
-            return RedirectToAction("VolunteeringTimeSheet", "Home");
+            return RedirectToAction("Volunteering", "Home", new {missionId=missionId});
 
 
         }
@@ -1048,36 +1050,42 @@ namespace CI_PlatformWeb.Controllers
         public async Task<IActionResult> addstory(StoryShareViewModel model)
         {
 
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            //long storyid = model.storyId;
-            var sId = _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
-            if (model.attachment != null)
+            if (ModelState.IsValid)
             {
-                if (model.storyId != 0)
+                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userid);
+                //long storyid = model.storyId;
+                var sId = _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+                if (model.attachment != null)
                 {
-                    _IHome.removemedia(model.storyId);
-                }
-                foreach (var i in model.attachment)
-                {
-                    var FileName = "";
-
-
-                    using (var ms = new MemoryStream())
+                    if (model.storyId != 0)
                     {
-                        await i.CopyToAsync(ms);
-                        var imageBytes = ms.ToArray();
-                        var base64String = Convert.ToBase64String(imageBytes);
-                        FileName = "data:image/png;base64," + base64String;
+                        _IHome.removemedia(model.storyId);
+                    }
+                    foreach (var i in model.attachment)
+                    {
+                        var FileName = "";
+
+
+                        using (var ms = new MemoryStream())
+                        {
+                            await i.CopyToAsync(ms);
+                            var imageBytes = ms.ToArray();
+                            var base64String = Convert.ToBase64String(imageBytes);
+                            FileName = "data:image/png;base64," + base64String;
+                        }
+
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                     }
 
-                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                 }
-
+                TempData["saved"] = "Your Story has been saved";
+                return RedirectToAction("storyShare", "Home");
             }
-            TempData["saved"] = "Your Story has been saved";
-            return RedirectToAction("storyShare", "Home");
-
+            else
+            {
+                return RedirectToAction("storyShare", "Home",model);
+            }
 
 
             //return RedirectToAction("storyShare","Home");
@@ -1131,6 +1139,7 @@ namespace CI_PlatformWeb.Controllers
                 storyVm.date = story.CreatedAt;
                 storyVm.MissionId = story.MissionId;
                 storyVm.storyId = story.StoryId;
+                storyVm.storyMedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId).ToList();
             }
             else
             {

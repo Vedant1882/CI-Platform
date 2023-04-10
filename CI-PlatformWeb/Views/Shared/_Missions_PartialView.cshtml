@@ -85,7 +85,7 @@
                                         <li><a class="dropdown-item" asp-route-sortOrder="Oldest">Oldest  </a></li>
                                         <li><a class="dropdown-item" asp-route-sortOrder="Lowest seats">Lowest available seats  </a></li>
                                         <li><a class="dropdown-item" asp-route-sortOrder="Highest seats"> Highest available seats </a></li>
-                                        <li><a class="dropdown-item" asp-route-sortOrder="My fav"> My favourites </a></li>
+                                        <li><a class="dropdown-item" asp-route-sortOrder="Myfav"> My favourites </a></li>
                                         <li><a class="dropdown-item" asp-route-sortOrder="Registration deadline"> Registration deadline  </a></li>
                                     </ul>
                                 </div>
@@ -266,7 +266,14 @@
                                                 <img src="~/images/Seats-left.png" alt="">
                                                 <div>
                                                     <div>@item.available</div>
-                                                    <div class="landing-page-card-vol-small">Seats Left</div>
+                                                    @if (item.isapplied == 1)
+                                                    {
+                                                        <div class="landing-page-card-vol-small">Already Valunteered</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="landing-page-card-vol-small">Seats Left</div>
+                                                    }
                                                 </div>
                                             </p>
                                         </div>
@@ -427,7 +434,7 @@
     </div>
 
     <script>
-        
+
         if (localStorage.getItem("viewtype") === "list") {
             listview();
         }
