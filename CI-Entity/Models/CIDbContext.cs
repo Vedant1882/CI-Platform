@@ -209,8 +209,7 @@ public partial class CIDbContext : DbContext
                 .HasDefaultValueSql("('pending')")
                 .HasColumnName("approval_status");
             entity.Property(e => e.CommentText)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasColumnType("text")
                 .HasColumnName("comment_text");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")

@@ -823,7 +823,7 @@ namespace CI_PlatformWeb.Controllers
 
             }
 
-            int pageSize = 3; // Set the page size to 9
+            int pageSize = 9; // Set the page size to 9
             var volunteers = recentvolunteredlist; // Retrieve all volunteers from data source
             int totalCount = volunteers.Count(); // Get the total number of volunteers
             int skip = (pageIndex - 1) * pageSize;            var volunteersOnPage = volunteers.Skip(skip).Take(pageSize).ToList(); // Get the volunteers for the current page

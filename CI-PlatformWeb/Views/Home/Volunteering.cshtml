@@ -12,8 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="~/css/Volunteering.css" />
-    <link rel="stylesheet" href="~/css/landing.css" />
+    <link rel="stylesheet" href="~/css/Volunteering.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
 
 
 
@@ -123,8 +123,8 @@
                                     }
                                     else
                                     {
-                                        
-                                    <div class="landing-page-card-vol-small">Seats Left</div>
+
+                                        <div class="landing-page-card-vol-small">Seats Left</div>
                                     }
                                 </div>
                             </p>
@@ -433,39 +433,47 @@
                     @*--------Comments------------*@
 
                     @*<partial name="_Comment_PartialView"></partial>*@
-                    <div style="width:100%;background-color:lightgrey;overflow:auto;height:500px;" class="pt-5 pb-5 mt-3">
-                        <ul class="list-unstyled mt-2">
-                            @if (ViewBag.missioncomment != null)
+
+
+                    <div class=" col-12 bg-light overflow-y-auto border-1 border-black" style="height:500px;">
+                        @if (ViewBag.missioncomment == null)
+                        {
+                            <div> No Comment Found</div>
+
+                        }
+                        else
+                        {
+
+                            @foreach (var c in ViewBag.missioncomment)
                             {
-                                @foreach (var c in ViewBag.missioncomment)
-                                {
-                                    <div id="comment"></div>
-                                    <li class="media d-flex ms-2 me-2 ps-1 pt-1 bg-white mb-3">
-                                        @if (c.cmtavtarpath == "" || c.cmtavtarpath == null)
-                                        {
-                                            <img class="mr-3 rounded-circle" src="~/Images/user1.png" alt="Generic placeholder image" style="height:50px;width:50px">
-                                        }
-                                        else
-                                        {
-                                            <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
-                                        }
+                                <div class="col-12 d-flex bg-white mt-3  align-items-center">
+                                    @if (c.cmtavtarpath == "" || c.cmtavtarpath == null)
+                                    {
+                                        <img class="mr-3 rounded-circle col-2" src="~/Images/user1.png" alt="Generic placeholder image" style="height:50px;width:50px">
+                                    }
+                                    else
+                                    {
+                                        <img class="mr-3 rounded-circle" src="@c.cmtavtarpath" alt="Generic placeholder image" style="height:50px;width:50px">
+                                    }
 
-                                        <div class="media-body ms-2">
-                                            <h5 class="mt-0 mb-1">@c.UserName</h5>
-                                            @c.commenttext<br>
-                                            @c.createdAt
-                                        </div>
-                                        @if (useridforrating == c.userIdForComment)
-                                        {
-                                            <div><i class="bi bi-trash bin" onclick="deletecomment(@c.userIdForComment,@c.commentId,@Model.MissionId)"></i></div>
-                                        }
+                                    <div class=" col-9 ms-1 ms-sm-2 ms-ms-4 ms-xl-4  ">
+                                        <label class="mx-1 fs-6">@c.UserName</label><br>
+                                        <label class="mx-1 fs-6"> @c.createdAt</label>
+                                        <div class=" fs-5  text-break "> @c.commenttext</div>
+                                    </div>
 
-                                    </li>
-                                }
+
+                                    @if (useridforrating == c.userIdForComment)
+                                    {
+
+                                        <div class="col-1 ms-auto"><i class="bi bi-trash bin ms-auto" onclick="deletecomment(@c.userIdForComment,@c.commentId,@Model.MissionId)"></i></div>
+                                    }
+                                </div>
                             }
+                        }
 
-                        </ul>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -522,11 +530,11 @@
                             <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
                                 @if (item.avtarpath == "" || item.avtarpath == null)
                                 {
-                                    <img src="~/Images/user1.png" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                    <img src="~/Images/user1.png" class="involveduserprofile rounded-circle" style="height:80px;width:80px" />
                                 }
                                 else
                                 {
-                                    <img src="@item.avtarpath" class="involveduserprofile rounded-5" style="height:80px;width:80px" />
+                                    <img src="@item.avtarpath" class="involveduserprofile rounded-circle" style="height:80px;width:80px" />
                                 }
                                 <label id="" class="text-center">@item.UserName</label>
                             </div>
@@ -542,22 +550,20 @@
                 </div>
                 <hr>
                 <div class="row text-center">
-                    <div class="col-2">
+                    
+
+                    <div class="d-flex display-volunteers mt-5" style="text-align:center;">
                         @if (ViewBag.PageIndex > 1)
                         {
-
-                            <button class="page-link" onclick="recent(@ViewBag.PageIndex - 1,@Model.MissionId)"><img src="~/Images/left.png" alt=""></button>
-
+                            <button type="button" class="border-0" onclick="recent(@ViewBag.PageIndex - 1,@Model.MissionId)"><img src="~/Images/previous.png" /></button>
                         }
-                    </div>
-                    <div class="col-8">@ViewBag.TotalVol Recent Volunteers</div>
-                    <div class="col-2">
+                        <div class="d-flex justify-content-center" style="width:100%;">@ViewBag.TotalVol Recent Volunteers</div>
                         @if (ViewBag.PageIndex < ViewBag.TotalPages)
                         {
-                            <button class="page-link" onclick="recent(@ViewBag.PageIndex + 1,@Model.MissionId)"><img src="~/Images/right-arrow1.png" alt=""></button>
-
+                            <button type="button" onclick="recent(@ViewBag.PageIndex + 1,@Model.MissionId)" class="previous-btn ms-auto border-0"><img src="~/Images/next.png" /></button>
                         }
                     </div>
+
                 </div>
             </div>
         </div>
@@ -659,10 +665,10 @@
     }
     function comment(mid, uid) {
         var text = document.getElementById("commenttext").value;
-        var post=document.getElementById("post1");
+        var post = document.getElementById("post1");
 
-        if(text!=""){
-            post.innerHTML="Posting";
+        if (text != "") {
+            post.innerHTML = "Posting";
             $.ajax({
                 url: '/Home/comment',
                 type: 'POST',
@@ -670,7 +676,7 @@
                 success: function (response) {
                     console.log(response);
                     $('.abcs').html($(response).find('.abcs').html());
-                    post.innerHTML="Posted";
+                    post.innerHTML = "Posted";
                     //$('.comment_div').html($(response).find('.comment_div').html());
 
                 },
@@ -679,21 +685,21 @@
                 }
             });
         }
-        else{
+        else {
             alert("Please write something in comment box!");
         }
-        
+
     }
-    function deletecomment(uId, cId , mId) {
-       
+    function deletecomment(uId, cId, mId) {
+
         $.ajax({
             url: '/Home/CommentDelete',
             type: 'POST',
-            data: { userId: uId, commentId: cId ,missionId:mId},
+            data: { userId: uId, commentId: cId, missionId: mId },
             success: function (result) {
                 console.log(result);
                 $('#contact').html($(result).find('#contact').html());
-            
+
             },
             error: function () {
                 alert("could not comment");
