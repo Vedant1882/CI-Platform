@@ -165,17 +165,21 @@
 
                     }
                     <div class="row">
-                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " id="favmissiondiv" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
+                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " id="favmissiondiv1" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
 
 
                             <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
                             @if (ViewBag.fav == true)
                             {
                                 <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">Remove From Favourite</label>
+
+                                <i class="spinner-border spinner-border-sm mt-1 ms-2" role="status" id="spinner" style="display:none;color:orange"></i>
                             }
                             else
                             {
                                 <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
+
+                                <i class="spinner-border spinner-border-sm mt-1 ms-2" role="status" id="spinner" style="display:none"></i>
                             }
 
 
@@ -256,6 +260,7 @@
 
                         @if (useridforrating != null)
                         {
+                            <div id="ratingstar" class="mt-1">
                             @if (@Model.Rating != null)
                             {
 
@@ -263,15 +268,16 @@
 
                                 @for (var i = 1; i <= @Model.Rating; i++)
                                 {
-                                    <i class="bi bi-star-fill" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                    <i class="bi bi-star-fill mt-1" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
                                     count++;
                                 }
                                 @for (var k = count + 1; k <= 5; k++)
                                 {
-                                    <i class="bi bi-star-fill" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                    <i class="bi bi-star-fill mt-1" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
                                 }
 
                             }
+                            </div>
                         }
                         else
                         {
@@ -283,9 +289,10 @@
                         }
 
 
-
+                        <i class="spinner-border spinner-border-sm mt-2 ms-2 me-2" role="status" id="spinner1" style="display:none"></i>
                         <hr style="border:1px solid black">
                     </div>
+                    
                     <div class="row d-flex mt-3 d-lg-none d-xl-flex">
                         <div class="card col-md-3  col-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill mt-2 mb-auto" viewBox="0 0 16 16">
@@ -521,12 +528,12 @@
             <div class="volunteering-sec-2-right-down mt-3 recentvol">
                 <div class="vol-sec-2-right-2nd-header">Recent Volunteers</div>
                 <hr>
-                <div class="row">
+                <div class="row" id="recent">
 
                     @foreach (var item in ViewBag.recentvolunteered)
                     {
 
-                        <div class="col-4  ">
+                        <div class="col-4">
                             <div class=" ms-4 me-2 text-decoration-none text-black justify-content-center ">
                                 @if (item.avtarpath == "" || item.avtarpath == null)
                                 {
@@ -542,12 +549,13 @@
                     }
 
 
-
+                    
 
 
 
 
                 </div>
+                <i class="spinner-border spinner-border-sm mt-1 ms-4" role="status" id="spinner2" style="height:100px;width:100px;display:none"></i>
                 <hr>
                 <div class="row text-center">
                     
@@ -571,7 +579,10 @@
 </body>
 <script>
     function recent(index, missionid) {
-
+        var spinner = document.getElementById('spinner2');
+        var recent = document.getElementById('recent');
+        recent.style.display = 'none';
+        spinner.style.display = 'block';
 
         $.ajax({
             url: '/Home/Volunteering',
@@ -581,7 +592,8 @@
 
                 $('.recentvol').html($(response).find('.recentvol').html());
                 $('#avgrating').html($(response).find('#avgrating').html());
-
+                spinner.style.display = 'none';
+                recent.style.display = 'none';
             },
             error: function () {
                 alert("could not like mission");
@@ -589,7 +601,10 @@
         });
     }
     function addRating(starId, missionId, Id) {
-
+        var spinner = document.getElementById('spinner1');
+        var rating = document.getElementById('ratingstar');
+        rating.style.display = 'none';
+        spinner.style.display = 'block';
 
         $.ajax({
             url: '/Home/Addrating',
@@ -599,6 +614,7 @@
 
                 $('#starsr').html($(response).find('#starsr').html());
                 $('#avgrating').html($(response).find('#avgrating').html());
+                spinner.style.display = 'none';
 
             },
             error: function () {
@@ -607,28 +623,16 @@
         });
     }
     function addtofav(missionId, Id) {
+        var spinner=document.getElementById('spinner');
+        spinner.style.display='block';
         $.ajax({
             url: '/Home/AddToFav',
             type: 'POST',
             data: { MissionId: missionId, UserId: Id },
-            success: function (result) {
-                if (result.favmission == "0") {
-                    location.reload();
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart-" + missionId.toString());
-                    heartbtn.style.color = "#F88634";
-                    favbtn.style.color = "orange"
-
-                }
-                else {
-                    location.reload();
-                    var favbtn = document.getElementById("favmissiondiv");
-                    var heartbtn = document.getElementById("heart-" + missionId.toString());
-                    heartbtn.style.color = "white";
-                    favbtn.style.color = "white"
-
-                }
-
+            success: function (response) {
+               
+                $('#favmissiondiv1').html($(response).find('#favmissiondiv1').html());
+                spinner.style.display = 'none';
             }
         });
     }

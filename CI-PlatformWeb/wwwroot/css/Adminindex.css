@@ -1,0 +1,50 @@
+﻿body {
+    margin: 0;
+    paddinng: 0;
+}
+
+.navigationbar {
+    height: 100vh;
+    background-color: #F88634;
+}
+
+a:hover {
+    color: none;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #F88634;
+    background-color: white;
+    z-index: 2;
+    border-color: white;
+}
+
+.sidebarcontent {
+    font-size: 18px;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center
+}
+
+.sidebar-img {
+    width: 18px;
+    height: 23px;
+}
+
+.adminofcanvasdiv {
+    background-color: #F88634;
+    width: max-content !important;
+}
+
+.form-control:focus, .btn:focus, .form-select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.nav-link:hover, .nav-link:has(:hover) {
+    color: white !important;
+}

@@ -197,7 +197,6 @@
                                             <i class="bi bi-heart-fill" style="@(@item.isFavrouite ? "color:#F88634;" : "color:white;")" id="heart-@item.MissionId"></i>
 
                                         </button>
-
                                     </div>
 
                                     <button class="landing-page-bottom-center">@item.Theme</button>
@@ -463,22 +462,8 @@
                 type: 'POST',
                 data: { missionId: missionId, UserId: Id },
                 success: function (result) {
-                    if (result) {
-                        location.reload();
-                        var favbtn = document.getElementById("favmissiondiv");
-                        var heartbtn = document.getElementById("heart-" + missionId.toString());
-                        heartbtn.style.color = "#F88634";
-                        favbtn.style.color = "orange"
-
-                    }
-                    else {
-                        location.reload();
-                        var favbtn = document.getElementById("favmissiondiv");
-                        var heartbtn = document.getElementById("heart-" + missionId.toString());
-                        heartbtn.style.color = "white";
-                        favbtn.style.color = "white"
-
-                    }
+                   
+                    location.reload();
 
                 }
             });

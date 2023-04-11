@@ -43,7 +43,7 @@ namespace CI_PlatformWeb.Controllers
             return View();
         }
 
-
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]        public IActionResult Error()        {            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });        }
         public IActionResult NoMissionFound()
         {
             return View();
@@ -207,377 +207,390 @@ namespace CI_PlatformWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ResetPassword(ResetPasswordModel resetPasswordView)
         {
-            if (ModelState.IsValid)
+            try
             {
-                // Find the user by email
-                var user = _IHome.UserByEmail(resetPasswordView.Email);
-                if (user == null)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction("Login", "Home");
+                    // Find the user by email
+                    var user = _IHome.UserByEmail(resetPasswordView.Email);
+                    if (user == null)
+                    {
+                        return RedirectToAction("Login", "Home");
+                    }
+
+                    // Find the password reset record by email and token
+                    var passwordReset = _IHome.UserBymail_token(resetPasswordView.Email, resetPasswordView.Token);
+                    if (passwordReset == null)
+                    {
+                        return RedirectToAction("Login", "Home");
+                    }
+
+                    // Update the user's password
+                    user.Password = resetPasswordView.Password;
+                    _IHome.savechanges();
+
+
+
+
                 }
 
-                // Find the password reset record by email and token
-                var passwordReset = _IHome.UserBymail_token(resetPasswordView.Email, resetPasswordView.Token);
-                if (passwordReset == null)
-                {
-                    return RedirectToAction("Login", "Home");
-                }
-
-                // Update the user's password
-                user.Password = resetPasswordView.Password;
-                _IHome.savechanges();
-
-
-
-
+                return View(resetPasswordView);
             }
-
-            return View(resetPasswordView);
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         #endregion
 
         #region landingpage get
         public ActionResult landingpage(int? pageIndex, string searchQuery, long[] ACountries, long[] ACities, long[] ATheme, string sortOrder)
         {
-
-            var userId = HttpContext.Session.GetString("user");
-            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
-            int? user = HttpContext.Session.GetInt32("userIDforfavmission");
-           int? useridfavmission = HttpContext.Session.GetInt32("userIDforfavmission");
-            if (userId != null || user != null)
+            try
             {
-                ViewBag.UserId = int.Parse(userId);
-            }
-
-            List<Mission> mission = _IHome.Allmissions();
-            List<Mission> finalmission = _IHome.Allmissions();
-            List<Mission> newmission = _IHome.Allmissions();
-            List<GoalMission> goalMissions = _IHome.goalmission();
-            List<Country> Countries = _IHome.allcountry().ToList();
-            List<FavoriteMission> addfav = _IHome.favmission();
-            List<Country> countryElements = _IHome.allcountry().ToList();
-            List<City> Cities = _IHome.AllCity();
-            List<MissionTheme> Themes = _IHome.alltheme().ToList();
-            List<Skill> skills = _IHome.AllSkills();
-            List<City> cityname = new List<City>();
-            List<City> cityname1 = new List<City>();
-            ViewBag.countries = Countries;
-            ViewBag.themes = Themes;
-            ViewBag.cities = Cities;
-            ViewBag.skills = skills;
-            long[] missionempty;
-
-
-            foreach (var item in mission)
-            {
-
-                var City = _IHome.AllCity().FirstOrDefault(u => u.CityId == item.CityId);
-                var Theme = _IHome.alltheme().FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
-
-
-
-
-            }
-
-            //mission = _CIDbContext.Missions.ToList();
-
-
-
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                mission = newmission.Where(m => m.Title.ToUpper().Contains(searchQuery.ToUpper())).ToList();
-                ViewBag.searchQuery = Request.Query["searchQuery"];
-                if (mission.Count() == 0)
+                var userId = HttpContext.Session.GetString("user");
+                int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+                int? user = HttpContext.Session.GetInt32("userIDforfavmission");
+                int? useridfavmission = HttpContext.Session.GetInt32("userIDforfavmission");
+                if (userId != null || user != null)
                 {
-                    return RedirectToAction("NoMissionFound", "Home");
+                    ViewBag.UserId = int.Parse(userId);
                 }
-            }
-            missionempty = ACountries;
-            if (ACountries != null && ACountries.Length > 0)
-            {
 
-                foreach (var country in ACountries)
+                List<Mission> mission = _IHome.Allmissions();
+                List<Mission> finalmission = _IHome.Allmissions();
+                List<Mission> newmission = _IHome.Allmissions();
+                List<GoalMission> goalMissions = _IHome.goalmission();
+                List<Country> Countries = _IHome.allcountry().ToList();
+                List<FavoriteMission> addfav = _IHome.favmission();
+                List<Country> countryElements = _IHome.allcountry().ToList();
+                List<City> Cities = _IHome.AllCity();
+                List<MissionTheme> Themes = _IHome.alltheme().ToList();
+                List<Skill> skills = _IHome.AllSkills();
+                List<City> cityname = new List<City>();
+                List<City> cityname1 = new List<City>();
+                ViewBag.countries = Countries;
+                ViewBag.themes = Themes;
+                ViewBag.cities = Cities;
+                ViewBag.skills = skills;
+                long[] missionempty;
+
+
+                foreach (var item in mission)
                 {
-                    //mission = mission.Where(m => m.CountryId == country).ToList();
-                    if (i == 0)
-                    {
-                        mission = mission.Where(m => m.CountryId == country + 500).ToList();
-                        i++;
-                    }
 
-                    finalmission = newmission.Where(m => m.CountryId == country).ToList();
+                    var City = _IHome.AllCity().FirstOrDefault(u => u.CityId == item.CityId);
+                    var Theme = _IHome.alltheme().FirstOrDefault(u => u.MissionThemeId == item.ThemeId);
 
-                    mission.AddRange(finalmission);
+
+
+
+                }
+
+                //mission = _CIDbContext.Missions.ToList();
+
+
+
+                if (!string.IsNullOrEmpty(searchQuery))
+                {
+                    mission = newmission.Where(m => m.Title.ToUpper().Contains(searchQuery.ToUpper())).ToList();
+                    ViewBag.searchQuery = Request.Query["searchQuery"];
                     if (mission.Count() == 0)
                     {
                         return RedirectToAction("NoMissionFound", "Home");
                     }
-                    ViewBag.countryId = country;
-                    if (ViewBag.countryId != null)
+                }
+                missionempty = ACountries;
+                if (ACountries != null && ACountries.Length > 0)
+                {
+
+                    foreach (var country in ACountries)
                     {
-                        var countryElement = _IHome.allcountry().Where(m => m.CountryId == country).ToList();
-                        if (i1 == 0)
+                        //mission = mission.Where(m => m.CountryId == country).ToList();
+                        if (i == 0)
                         {
-                            countryElements = _IHome.allcountry().Where(m => m.CountryId == country + 50000).ToList();
-                            i1++;
+                            mission = mission.Where(m => m.CountryId == country + 500).ToList();
+                            i++;
                         }
-                        countryElements.AddRange(countryElement);
 
+                        finalmission = newmission.Where(m => m.CountryId == country).ToList();
+
+                        mission.AddRange(finalmission);
+                        if (mission.Count() == 0)
+                        {
+                            return RedirectToAction("NoMissionFound", "Home");
+                        }
+                        ViewBag.countryId = country;
+                        if (ViewBag.countryId != null)
+                        {
+                            var countryElement = _IHome.allcountry().Where(m => m.CountryId == country).ToList();
+                            if (i1 == 0)
+                            {
+                                countryElements = _IHome.allcountry().Where(m => m.CountryId == country + 50000).ToList();
+                                i1++;
+                            }
+                            countryElements.AddRange(countryElement);
+
+                        }
                     }
+                    ViewBag.country = countryElements;
+
+
+
+
+
+
                 }
-                ViewBag.country = countryElements;
-
-
-
-
-
-
-            }
-            if (missionempty.Count() != 0)
-            {
-
-
-                foreach (var a in missionempty)
+                if (missionempty.Count() != 0)
                 {
-                    cityname1 = _IHome.AllCity().Where(m => m.CountryId == a).ToList();
-                    cityname.AddRange(cityname1);
-                }
 
 
-
-                ViewBag.cities = cityname;
-            }
-            if (ACities != null && ACities.Length > 0)
-            {
-                foreach (var city in ACities)
-                {
-                    //mission = mission.Where(m => m.CityId == city).ToList();
-                    if (j == 0)
+                    foreach (var a in missionempty)
                     {
-                        mission = mission.Where(m => m.CityId == city + 500).ToList();
-                        j++;
+                        cityname1 = _IHome.AllCity().Where(m => m.CountryId == a).ToList();
+                        cityname.AddRange(cityname1);
                     }
 
-                    finalmission = newmission.Where(m => m.CityId == city).ToList();
 
-                    mission.AddRange(finalmission);
+
+                    ViewBag.cities = cityname;
+                }
+                if (ACities != null && ACities.Length > 0)
+                {
+                    foreach (var city in ACities)
+                    {
+                        //mission = mission.Where(m => m.CityId == city).ToList();
+                        if (j == 0)
+                        {
+                            mission = mission.Where(m => m.CityId == city + 500).ToList();
+                            j++;
+                        }
+
+                        finalmission = newmission.Where(m => m.CityId == city).ToList();
+
+                        mission.AddRange(finalmission);
+                        if (mission.Count() == 0)
+                        {
+                            return RedirectToAction("NoMissionFound", "Home");
+                        }
+                        ViewBag.city = city;
+                        if (ViewBag.city != null)
+                        {
+                            var city1 = _IHome.AllCity().Where(m => m.CityId == city).ToList();
+                            if (j1 == 0)
+                            {
+                                Cities = _IHome.AllCity().Where(m => m.CityId == city + 50000).ToList();
+                                j1++;
+                            }
+                            Cities.AddRange(city1);
+                        }
+                    }
+
+                    ViewBag.city = Cities;
+                    Cities = _IHome.AllCity();
+
+
+
+                }
+                if (ATheme != null && ATheme.Length > 0)
+                {
+                    foreach (var theme in ATheme)
+                    {
+
+                        if (k == 0)
+                        {
+                            mission = mission.Where(m => m.ThemeId == theme + 500).ToList();
+                            k++;
+                        }
+
+                        finalmission = newmission.Where(m => m.ThemeId == theme).ToList();
+
+                        mission.AddRange(finalmission);
+
+                        if (mission.Count() == 0)
+                        {
+                            return RedirectToAction("NoMissionFound", "Home");
+                        }
+                        ViewBag.theme = theme;
+                        if (ViewBag.theme != null)
+                        {
+                            var theme1 = _IHome.alltheme().Where(m => m.MissionThemeId == theme).ToList();
+                            if (k1 == 0)
+                            {
+                                Themes = _IHome.alltheme().Where(m => m.MissionThemeId == theme + 50000).ToList();
+                                k1++;
+                            }
+                            Themes.AddRange(theme1);
+                        }
+                    }
+                    ViewBag.theme = Themes;
+                    Themes = _IHome.alltheme();
+
+
+
+                }
+
+
+                //---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                if (mission.Count() != 0)
+                {
+
+                    foreach (var missions in mission)
+                    {
+                        int finalrating = 0;
+                        City city = _IHome.AllCity().Where(e => e.CityId == missions.CityId).FirstOrDefault();
+                        MissionTheme theme = _IHome.alltheme().Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
+                        GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
+                        FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
+                        var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
+                        var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
+                        var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId).FirstOrDefault();
+                        int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
+
+                        var close = "0";
+                        if (DateTime.Now > missions.Deadline)
+                        {
+                            close = "1";
+                        }
+                        if (ratinglist.Count() > 0)
+                        {
+                            int rat = 0;
+                            foreach (var m in ratinglist)
+                            {
+                                rat = rat + (m.Rating);
+
+
+                            }
+                            finalrating = rat / ratinglist.Count();
+                        }
+
+                        string[] startDateNtime = missions.StartDate.ToString().Split(' ');
+                        string[] endDateNtime = missions.EndDate.ToString().Split(' ');
+                        var ratings = _IHome.missionRatings().Where(e => e.MissionId == missions.MissionId).ToList();
+
+
+                        missionsVMList.Add(new MissionViewModel
+                        {
+                            MissionId = missions.MissionId,
+                            Title = missions.Title,
+                            Description = missions.ShortDescription,
+                            City = city.Name,
+                            Organization = missions.OrganizationName,
+                            Theme = theme.Title,
+                            //Rating = rating,
+                            StartDate = (DateTime)missions.StartDate,
+                            EndDate = (DateTime)missions.EndDate,
+                            missionType = missions.MissionType,
+                            isFavrouite = (user != null) ? _IHome.favmission().Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
+                            ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
+                            StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
+                            NoOfSeatsLeft = 10,
+                            Deadline = endDateNtime[0],
+                            createdAt = (DateTime)missions.CreatedAt,
+                            GoalText = goalMission.GoalObjectiveText,
+                            UserId = useridfavmission,
+                            addedtofavM = favoriteMissions.MissionId,
+                            addedtofavU = (long)favoriteMissions.UserId,
+                            avgrating = finalrating,
+                            available = Convert.ToInt32(missions.Availability) - appliedseat,
+                            deadline = missions.Deadline,
+                            isapplied = (applicationmission != null) ? 1 : 0,
+                            isclosed = (close == "1") ? 0 : 1,
+                            path = missionmedia.MediaPath,
+                            defaultimg = missionmedia.Default,
+                            goalval = Convert.ToInt32(goalMission.GoalValue),
+
+                        });
+
+
+
+
+
+                    }
+
                     if (mission.Count() == 0)
                     {
-                        return RedirectToAction("NoMissionFound", "Home");
+                        return RedirectToAction("Nomission", "Home");
                     }
-                    ViewBag.city = city;
-                    if (ViewBag.city != null)
-                    {
-                        var city1 = _IHome.AllCity().Where(m => m.CityId == city).ToList();
-                        if (j1 == 0)
-                        {
-                            Cities = _IHome.AllCity().Where(m => m.CityId == city + 50000).ToList();
-                            j1++;
-                        }
-                        Cities.AddRange(city1);
-                    }
+
+
+                }
+                switch (sortOrder)
+                {
+                    case "Newest":
+                        missionsVMList = missionsVMList.OrderByDescending(m => m.StartDate).ToList();
+                        ViewBag.sortby = "Newest";
+                        break;
+                    case "Oldest":
+                        missionsVMList = missionsVMList.OrderBy(m => m.StartDate).ToList();
+                        ViewBag.sortby = "Oldest";
+                        break;
+                    case "Lowest seats":
+                        missionsVMList = missionsVMList.OrderBy(m => (m.available)).ToList();
+                        break;
+                    case "Highest seats":
+                        missionsVMList = missionsVMList.OrderByDescending(m => (m.available)).ToList();
+                        break;
+                    case "Registration deadline":
+                        missionsVMList = missionsVMList.OrderBy(m => m.Deadline).ToList();
+                        break;
+                    case "Myfav":
+                        missionsVMList = missionsVMList.Where(m => m.isFavrouite == true).ToList();
+                        break;
+
                 }
 
-                ViewBag.city = Cities;
-                Cities = _IHome.AllCity();
-
-
-
-            }
-            if (ATheme != null && ATheme.Length > 0)
-            {
-                foreach (var theme in ATheme)
+                //------------------------------------------------------------------------------------------------------------------------------
+                List<User> Alluser = _IHome.alluser().ToList();
+                List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+                foreach (var i in Alluser)
                 {
-
-                    if (k == 0)
+                    usernamelist.Add(new VolunteeringVM
                     {
-                        mission = mission.Where(m => m.ThemeId == theme + 500).ToList();
-                        k++;
-                    }
-
-                    finalmission = newmission.Where(m => m.ThemeId == theme).ToList();
-
-                    mission.AddRange(finalmission);
-
-                    if (mission.Count() == 0)
-                    {
-                        return RedirectToAction("NoMissionFound", "Home");
-                    }
-                    ViewBag.theme = theme;
-                    if (ViewBag.theme != null)
-                    {
-                        var theme1 = _IHome.alltheme().Where(m => m.MissionThemeId == theme).ToList();
-                        if (k1 == 0)
-                        {
-                            Themes = _IHome.alltheme().Where(m => m.MissionThemeId == theme + 50000).ToList();
-                            k1++;
-                        }
-                        Themes.AddRange(theme1);
-                    }
-                }
-                ViewBag.theme = Themes;
-                Themes = _IHome.alltheme();
-
-
-
-            }
-            
-
-            //---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-            if (mission.Count() != 0)
-            {
-
-                foreach (var missions in mission)
-                {
-                    int finalrating = 0;
-                    City city = _IHome.AllCity().Where(e => e.CityId == missions.CityId).FirstOrDefault();
-                    MissionTheme theme = _IHome.alltheme().Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
-                    GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
-                    FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
-                    var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
-                    var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
-                    var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId).FirstOrDefault();
-                    int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
-
-                    var close = "0";
-                    if (DateTime.Now > missions.Deadline)
-                    {
-                        close = "1";
-                    }
-                    if (ratinglist.Count() > 0)
-                    {
-                        int rat = 0;
-                        foreach (var m in ratinglist)
-                        {
-                            rat = rat + (m.Rating);
-
-
-                        }
-                        finalrating = rat / ratinglist.Count();
-                    }
-
-                    string[] startDateNtime = missions.StartDate.ToString().Split(' ');
-                    string[] endDateNtime = missions.EndDate.ToString().Split(' ');
-                    var ratings = _IHome.missionRatings().Where(e => e.MissionId == missions.MissionId).ToList();
-
-
-                    missionsVMList.Add(new MissionViewModel
-                    {
-                        MissionId = missions.MissionId,
-                        Title = missions.Title,
-                        Description = missions.ShortDescription,
-                        City = city.Name,
-                        Organization = missions.OrganizationName,
-                        Theme = theme.Title,
-                        //Rating = rating,
-                        StartDate = (DateTime)missions.StartDate,
-                        EndDate = (DateTime)missions.EndDate,
-                        missionType = missions.MissionType,
-                        isFavrouite = (user != null) ? _IHome.favmission().Any(e => e.MissionId == missions.MissionId && e.UserId == user) : false,
-                        ImgUrl = "~/images/Grow-Trees-On-the-path-to-environment-sustainability-3.png",
-                        StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                        NoOfSeatsLeft = 10,
-                        Deadline = endDateNtime[0],
-                        createdAt = (DateTime)missions.CreatedAt,
-                        GoalText = goalMission.GoalObjectiveText,
-                        UserId = useridfavmission,
-                        addedtofavM = favoriteMissions.MissionId,
-                        addedtofavU = (long)favoriteMissions.UserId,
-                        avgrating = finalrating,
-                        available = Convert.ToInt32(missions.Availability) - appliedseat,
-                        deadline = missions.Deadline,
-                        isapplied = (applicationmission != null) ? 1 : 0,
-                        isclosed = (close == "1") ? 0 : 1,
-                        path = missionmedia.MediaPath,
-                        defaultimg = missionmedia.Default,
-                        goalval = Convert.ToInt32(goalMission.GoalValue),
-
+                        UserName = i.FirstName,
+                        LastName = i.LastName,
+                        UserIdForMail = i.UserId,
+                        avtarpath = i.Avatar,
                     });
-
-
-
-
-
                 }
+                ViewBag.alluser = usernamelist;
 
-                if (mission.Count() == 0)
+                int pageSize = 3;
+                int skip = (pageIndex ?? 0) * pageSize;
+                var Missions = missionsVMList.Skip(skip).Take(pageSize).ToList();
+                int totalMissions = missionsVMList.Count();
+                ViewBag.TotalMission = totalMissions;
+                ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
+                ViewBag.CurrentPage = pageIndex ?? 0;
+
+
+
+                // Get the current URL
+                UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
+                if (Request.Host.Port.HasValue)
                 {
-                    return RedirectToAction("Nomission", "Home");
+                    uriBuilder.Port = Request.Host.Port.Value;
                 }
+                uriBuilder.Path = Request.Path;
+
+                // Remove the query parameter you want to exclude
+                var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                query.Remove("pageIndex");
+                uriBuilder.Query = query.ToString();
 
 
+                ViewBag.missions = Missions;
+                ViewBag.currentUrl = uriBuilder.ToString();
+                ViewBag.goal = goalMissions;
+
+
+                return View(Missions);
             }
-            switch (sortOrder)
+            catch (Exception ex)
             {
-                case "Newest":
-                    missionsVMList = missionsVMList.OrderByDescending(m => m.StartDate).ToList();
-                    ViewBag.sortby = "Newest";
-                    break;
-                case "Oldest":
-                    missionsVMList = missionsVMList.OrderBy(m => m.StartDate).ToList();
-                    ViewBag.sortby = "Oldest";
-                    break;
-                case "Lowest seats":
-                    missionsVMList = missionsVMList.OrderBy(m => (m.available)).ToList();
-                    break;
-                case "Highest seats":
-                    missionsVMList = missionsVMList.OrderByDescending(m => (m.available)).ToList();
-                    break;
-                case "Registration deadline":
-                    missionsVMList = missionsVMList.OrderBy(m => m.Deadline).ToList();
-                    break;
-                case "Myfav":
-                    missionsVMList = missionsVMList.Where(m => m.isFavrouite==true).ToList();
-                    break;
-
+                return View("Error");
             }
-
-            //------------------------------------------------------------------------------------------------------------------------------
-            List<User> Alluser = _IHome.alluser().ToList();
-            List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
-            foreach (var i in Alluser)
-            {
-                usernamelist.Add(new VolunteeringVM
-                {
-                    UserName = i.FirstName,
-                    LastName = i.LastName,
-                    UserIdForMail = i.UserId,
-                    avtarpath = i.Avatar,
-                });
-            }
-            ViewBag.alluser = usernamelist;
-
-            int pageSize = 3;
-            int skip = (pageIndex ?? 0) * pageSize;
-            var Missions = missionsVMList.Skip(skip).Take(pageSize).ToList();
-            int totalMissions = missionsVMList.Count();
-            ViewBag.TotalMission = totalMissions;
-            ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
-            ViewBag.CurrentPage = pageIndex ?? 0;
-
-
-
-            // Get the current URL
-            UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
-            if (Request.Host.Port.HasValue)
-            {
-                uriBuilder.Port = Request.Host.Port.Value;
-            }
-            uriBuilder.Path = Request.Path;
-
-            // Remove the query parameter you want to exclude
-            var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-            query.Remove("pageIndex");
-            uriBuilder.Query = query.ToString();
-
-
-            ViewBag.missions = Missions;
-            ViewBag.currentUrl = uriBuilder.ToString();
-            ViewBag.goal = goalMissions;
-
-
-            return View(Missions);
         }
         #endregion
 
@@ -585,34 +598,43 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Sendmail(long[] userid, int id)
         {
-            foreach (var item in userid)
+            try
             {
-                var user = _IHome.UserByUserid(item);
-                var resetLink = Url.Action("Volunteering", "Home", new { user = user.UserId, missionId = id }, Request.Scheme);
 
 
-                //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
-                var toAddress = new MailAddress(user.Email);
-                var subject = "Mission Recommandation";
-                var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
-                var message = new MailMessage(fromAddress, toAddress)
+                foreach (var item in userid)
                 {
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-                var smtpClient = new SmtpClient("smtp.gmail.com", 587)
-                {
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
+                    var user = _IHome.UserByUserid(item);
+                    var resetLink = Url.Action("Volunteering", "Home", new { user = user.UserId, missionId = id }, Request.Scheme);
 
-                    EnableSsl = true
-                };
-                smtpClient.Send(message);
 
+                    //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
+                    var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
+                    var toAddress = new MailAddress(user.Email);
+                    var subject = "Mission Recommandation";
+                    var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
+                    var message = new MailMessage(fromAddress, toAddress)
+                    {
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = true
+                    };
+                    var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+                    {
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
+
+                        EnableSsl = true
+                    };
+                    smtpClient.Send(message);
+
+                }
+                return Json(new { success = true });
             }
-            return Json(new { success = true });
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         #endregion
 
@@ -620,18 +642,25 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public IActionResult Addrating(int rating, long Id, long missionId)
         {
-            MissionRating ratingExists = _IHome.MissionratingByUserid_Missionid(Id, missionId);
-            if (ratingExists != null)
+            try
             {
-                _IHome.updaterating(ratingExists, rating);
-                // return Json(new { success = true, ratingExists, isRated = true });
+                MissionRating ratingExists = _IHome.MissionratingByUserid_Missionid(Id, missionId);
+                if (ratingExists != null)
+                {
+                    _IHome.updaterating(ratingExists, rating);
+                    // return Json(new { success = true, ratingExists, isRated = true });
+                }
+                else
+                {
+                    _IHome.addratings(rating, Id, missionId);
+                    //return Json(new { success = true, ratingele, isRated = true });
+                }
+                return RedirectToAction("Volunteering", new { id = Id, missionId = missionId });
             }
-            else
+            catch (Exception ex)
             {
-                _IHome.addratings(rating, Id, missionId);
-                //return Json(new { success = true, ratingele, isRated = true });
+                return RedirectToAction("Error", "Home");
             }
-            return RedirectToAction("Volunteering", new { id = Id, missionId = missionId });
         }
         #endregion
 
@@ -639,55 +668,74 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public IActionResult comment(long MissionId, long UserId, String comment)
         {
+            try
+            {
+                var newcomment = _IHome.addcomment(MissionId, UserId, comment);
 
-            var newcomment = _IHome.addcomment(MissionId, UserId, comment);
 
 
 
+                return RedirectToAction("Volunteering", new { id = UserId, missionId = MissionId });
 
-            return RedirectToAction("Volunteering", new { id = UserId, missionId = MissionId });
-
-            //return Json(new { success = true, newcomment });
-
+                //return Json(new { success = true, newcomment });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
 
         }
         #endregion
 
         [HttpPost]
-        public async Task<IActionResult> CommentDelete(long? userId,long? commentId,long? missionId)
+        public async Task<IActionResult> CommentDelete(long? userId, long? commentId, long? missionId)
         {
 
-            
-           
-            _IHome.commentdelete(userId, commentId);
+
+            try
+            {
+                _IHome.commentdelete(userId, commentId);
 
 
 
 
 
-            return RedirectToAction("Volunteering", "Home", new {missionId=missionId});
-
+                return RedirectToAction("Volunteering", "Home", new { missionId = missionId });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
         }
 
-        #region Asstofav post
+        #region Addtofav post
         [HttpPost]
         public async Task<IActionResult> AddToFav(long MissionId, long UserId)
         {
-            FavoriteMission favoriteMission = _IHome.FavmissionByMissionid_Userid(MissionId, UserId);
-
-            if (favoriteMission != null)
+            try
             {
-                FavoriteMission favoriteMissiondel = _IHome.FavmissionByMissionid_Userid(MissionId, UserId);
-                var favoriteMissionde = _IHome.removefav(favoriteMission);
-                return Json(new { success = true, favoriteMissiondel, isRated = false });
+                FavoriteMission favoriteMission = _IHome.FavmissionByMissionid_Userid(MissionId, UserId);
+
+                if (favoriteMission != null)
+                {
+                    FavoriteMission favoriteMissiondel = _IHome.FavmissionByMissionid_Userid(MissionId, UserId);
+                    var favoriteMissionde = _IHome.removefav(favoriteMission);
+                    return RedirectToAction("Volunteering", new { id = UserId, missionId = MissionId });
+                    //return Json(new { success = true, favoriteMissiondel, isRated = false });
+                }
+                else
+                {
+
+                    var favoriteMissionadd = _IHome.addfav(MissionId, UserId);
+                    return RedirectToAction("Volunteering", new { id = UserId, missionId = MissionId });
+                    //return Json(new { success = true, favoriteMissionadd, isRated = true });
+                }
             }
-            else
+            catch (Exception ex)
             {
-
-                var favoriteMissionadd = _IHome.addfav(MissionId, UserId);
-                return Json(new { success = true, favoriteMissionadd, isRated = true });
+                return RedirectToAction("Error", "Home");
             }
         }
         #endregion
@@ -695,158 +743,171 @@ namespace CI_PlatformWeb.Controllers
         #region Volunteering Get
         public IActionResult Volunteering(long id, int missionId, int pageIndex = 1)
         {
-            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
-            ViewBag.userid = useridforrating;
+            try
+            {
+                int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+                ViewBag.userid = useridforrating;
 
 
-            List<Mission> missionlist = _IHome.Allmissions();
-            List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
-            var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == missionId);
-            var favmission = _IHome.FavmissionByMissionid(missionId);
-            var theme = _IHome.MissionThemeByThemeid(mission.ThemeId);
-            var city = _IHome.AllCity().FirstOrDefault(s => s.CityId == mission.CityId);
-            var ratings = _IHome.missionRatings().FirstOrDefault(MR => MR.MissionId == missionId && MR.UserId == useridforrating);
-            var recvoldet = from U in _IHome.alluser() join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
-            GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
-            var goaltxt = _IHome.goalmission().FirstOrDefault(g => g.MissionId == mission.MissionId);
-            missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
-            string[] startDateNtime = mission.StartDate.ToString().Split(' ');
-            string[] endDateNtime = mission.EndDate.ToString().Split(' ');
-            var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId);
-            VolunteeringVM volunteeringMission = new();
-            int finalrating = 0;
-            int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId).Count();
-            var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
-            var close = "0";
-            if (DateTime.Now > mission.Deadline)
-            {
-                close = "1";
-            }
-            if (ratinglist.Count() > 0)
-            {
-                int rat = 0;
-                foreach (var m in ratinglist)
+                List<Mission> missionlist = _IHome.Allmissions();
+                List<VolunteeringVM> relatedlist = new List<VolunteeringVM>();
+                var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == missionId);
+                var favmission = _IHome.FavmissionByMissionid(missionId);
+                var theme = _IHome.MissionThemeByThemeid(mission.ThemeId);
+                var city = _IHome.AllCity().FirstOrDefault(s => s.CityId == mission.CityId);
+                var ratings = _IHome.missionRatings().FirstOrDefault(MR => MR.MissionId == missionId && MR.UserId == useridforrating);
+                var recvoldet = from U in _IHome.alluser() join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == mission.MissionId).FirstOrDefault();
+                var goaltxt = _IHome.goalmission().FirstOrDefault(g => g.MissionId == mission.MissionId);
+                missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
+                string[] startDateNtime = mission.StartDate.ToString().Split(' ');
+                string[] endDateNtime = mission.EndDate.ToString().Split(' ');
+                var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId);
+                VolunteeringVM volunteeringMission = new();
+                int finalrating = 0;
+                int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId).Count();
+                var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
+                var close = "0";
+                if (DateTime.Now > mission.Deadline)
                 {
-                    rat = rat + (m.Rating);
+                    close = "1";
+                }
+                if (ratinglist.Count() > 0)
+                {
+                    int rat = 0;
+                    foreach (var m in ratinglist)
+                    {
+                        rat = rat + (m.Rating);
+
+
+                    }
+                    finalrating = rat / ratinglist.Count();
+                }
+                ViewBag.totalvol = ratinglist.Count();
+                volunteeringMission = new()
+                {
+                    SingleTitle = mission.Title,
+                    Description = mission.Description,
+                    GoalText = goalMission != null ? goalMission.GoalObjectiveText : "null",
+                    StartDate = (DateTime)mission.StartDate,
+                    EndDate = (DateTime)mission.EndDate,
+                    StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
+                    missionType = mission.MissionType,
+                    MissionId = mission.MissionId,
+                    City = city.Name,
+                    Theme = theme.Title,
+                    Organization = mission.OrganizationName,
+                    Rating = ratings != null ? ratings.Rating : 0,
+                    isFavrouite = (useridforrating != null) ? _IHome.favmission().Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
+                    UserId = useridforrating,
+                    avgrating = finalrating,
+                    available = Convert.ToInt32(mission.Availability) - appliedseat,
+                    isapplied = (applicationmission != null) ? 1 : 0,
+                    isclosed = (close == "1") ? 0 : 1,
+                    goalval = Convert.ToInt32(goalMission.GoalValue),
+                };
+                ViewBag.fav = volunteeringMission.isFavrouite;
+
+
+                List<VolunteeringVM> missioncomment = new List<VolunteeringVM>();
+                var commentlist = _IHome.comment().Where(m => m.MissionId == missionId).ToList();
+                foreach (var comment in commentlist)
+                {
+                    var user = _IHome.alluser().FirstOrDefault(m => m.UserId == comment.UserId);
+                    missioncomment.Add(new VolunteeringVM
+                    {
+                        commenttext = comment.CommentText,
+                        UserName = user.FirstName,
+                        LastName = user.LastName,
+                        createdAt = comment.CreatedAt,
+                        cmtavtarpath = user.Avatar,
+                        commentId = comment.CommentId,
+                        userIdForComment = comment.UserId,
+
+
+                    });
 
 
                 }
-                finalrating = rat / ratinglist.Count();
-            }
-            ViewBag.totalvol = ratinglist.Count();
-            volunteeringMission = new()
-            {
-                SingleTitle = mission.Title,
-                Description = mission.Description,
-                GoalText = goalMission != null ? goalMission.GoalObjectiveText : "null",
-                StartDate = (DateTime)mission.StartDate,
-                EndDate = (DateTime)mission.EndDate,
-                StartDateEndDate = "From " + startDateNtime[0] + " until " + endDateNtime[0],
-                missionType = mission.MissionType,
-                MissionId = mission.MissionId,
-                City = city.Name,
-                Theme = theme.Title,
-                Organization = mission.OrganizationName,
-                Rating = ratings != null ? ratings.Rating : 0,
-                isFavrouite = (useridforrating != null) ? _IHome.favmission().Any(e => e.MissionId == mission.MissionId && e.UserId == useridforrating) : false,
-                UserId = useridforrating,
-                avgrating = finalrating,
-                available = Convert.ToInt32(mission.Availability) - appliedseat,
-                isapplied = (applicationmission != null) ? 1 : 0,
-                isclosed = (close == "1") ? 0 : 1,
-                goalval = Convert.ToInt32(goalMission.GoalValue),
-            };
-            ViewBag.fav = volunteeringMission.isFavrouite;
+                ViewBag.missioncomment = missioncomment.OrderByDescending(m => m.createdAt).ToList();
 
 
-            List<VolunteeringVM> missioncomment = new List<VolunteeringVM>();
-            var commentlist = _IHome.comment().Where(m => m.MissionId == missionId).ToList();
-            foreach (var comment in commentlist)
-            {
-                var user = _IHome.alluser().FirstOrDefault(m => m.UserId == comment.UserId);
-                missioncomment.Add(new VolunteeringVM
+
+                var relatedmission = _IHome.Allmissions().Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
+                foreach (var item in relatedmission.Take(3))
                 {
-                    commenttext = comment.CommentText,
-                    UserName = user.FirstName,
-                    LastName = user.LastName,
-                    createdAt = comment.CreatedAt,
-                    cmtavtarpath = user.Avatar,
-                    commentId=comment.CommentId,
-                    userIdForComment=comment.UserId,
+                    var relcity = _IHome.AllCity().FirstOrDefault(m => m.CityId == item.CityId);
+                    var reltheme = _IHome.MissionThemeByThemeid(item.ThemeId);
+                    var relgoalobj = _IHome.goalmission().FirstOrDefault(m => m.MissionId == item.MissionId);
+                    var Startdate1 = item.StartDate;
+                    var Enddate2 = item.EndDate;
+
+                    relatedlist.Add(new VolunteeringVM
+                    {
+                        MissionId = item.MissionId,
+                        City = relcity.Name,
+                        Theme = reltheme.Title,
+                        SingleTitle = item.Title,
+                        Description = item.ShortDescription,
+                        StartDate = Startdate1,
+                        EndDate = Enddate2,
+
+                        Organization = item.OrganizationName,
+                        GoalText = relgoalobj.GoalObjectiveText,
+                        missionType = item.MissionType,
 
 
-                });
+                    });
+                }
 
-
-            }
-            ViewBag.missioncomment = missioncomment.OrderByDescending(m => m.createdAt).ToList();
-
-
-
-            var relatedmission = _IHome.Allmissions().Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
-            foreach (var item in relatedmission.Take(3))
-            {
-                var relcity = _IHome.AllCity().FirstOrDefault(m => m.CityId == item.CityId);
-                var reltheme = _IHome.MissionThemeByThemeid(item.ThemeId);
-                var relgoalobj = _IHome.goalmission().FirstOrDefault(m => m.MissionId == item.MissionId);
-                var Startdate1 = item.StartDate;
-                var Enddate2 = item.EndDate;
-
-                relatedlist.Add(new VolunteeringVM
+                ViewBag.relatedmission = relatedlist.Take(3);
+                List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
+                var recentvoluntered = from U in _IHome.alluser().Where(u=>u.UserId!= useridforrating) join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
+                foreach (var item in recentvoluntered)
                 {
-                    MissionId = item.MissionId,
-                    City = relcity.Name,
-                    Theme = reltheme.Title,
-                    SingleTitle = item.Title,
-                    Description = item.ShortDescription,
-                    StartDate = Startdate1,
-                    EndDate = Enddate2,
+                    recentvolunteredlist.Add(new VolunteeringVM
+                    {
+                        UserName = item.FirstName,
+                        avtarpath = item.Avatar,
+                    });
 
-                    Organization = item.OrganizationName,
-                    GoalText = relgoalobj.GoalObjectiveText,
-                    missionType = item.MissionType,
+                }
+
+                int pageSize = 9; // Set the page size to 9
+                var volunteers = recentvolunteredlist; // Retrieve all volunteers from data source
+                int totalCount = volunteers.Count(); // Get the total number of volunteers
+                int skip = (pageIndex - 1) * pageSize;
+                var volunteersOnPage = volunteers.Skip(skip).Take(pageSize).ToList(); // Get the volunteers for the current page
+
+                ViewBag.TotalCount = totalCount;
+                ViewBag.PageSize = pageSize;
+                ViewBag.PageIndex = pageIndex;
+                ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+                ViewBag.TotalVol = recentvolunteredlist.Count();
+                ViewBag.recentvolunteered = volunteersOnPage;
 
 
-                });
-            }
-
-            ViewBag.relatedmission = relatedlist.Take(3);
-            List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
-            var recentvoluntered = from U in _IHome.alluser() join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
-            foreach (var item in recentvoluntered)
-            {
-                recentvolunteredlist.Add(new VolunteeringVM
+                List<User> Alluser = _IHome.alluser();
+                List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+                foreach (var i in Alluser)
                 {
-                    UserName = item.FirstName,
-                    avtarpath = item.Avatar,
-                });
+                    usernamelist.Add(new VolunteeringVM
+                    {
+                        UserName = i.FirstName,
+                        LastName = i.LastName,
+                        UserIdForMail = i.UserId,
+                        avtarpath = i.Avatar,
 
+                    });
+                }
+                ViewBag.alluser = usernamelist;
+
+                return View(volunteeringMission);
             }
-
-            int pageSize = 9; // Set the page size to 9
-            var volunteers = recentvolunteredlist; // Retrieve all volunteers from data source
-            int totalCount = volunteers.Count(); // Get the total number of volunteers
-            int skip = (pageIndex - 1) * pageSize;            var volunteersOnPage = volunteers.Skip(skip).Take(pageSize).ToList(); // Get the volunteers for the current page
-
-            ViewBag.TotalCount = totalCount;            ViewBag.PageSize = pageSize;            ViewBag.PageIndex = pageIndex;            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);            ViewBag.TotalVol = recentvolunteredlist.Count();            ViewBag.recentvolunteered = volunteersOnPage;
-
-
-            List<User> Alluser = _IHome.alluser();
-            List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
-            foreach (var i in Alluser)
+            catch
             {
-                usernamelist.Add(new VolunteeringVM
-                {
-                    UserName = i.FirstName,
-                    LastName = i.LastName,
-                    UserIdForMail = i.UserId,
-                    avtarpath = i.Avatar,
-
-                });
+                return RedirectToAction("Error", "Home");
             }
-            ViewBag.alluser = usernamelist;
-
-            return View(volunteeringMission);
         }
         #endregion
 
@@ -885,7 +946,7 @@ namespace CI_PlatformWeb.Controllers
             ViewBag.storydraft = storylist;
 
 
-           
+
 
             return View(storylist);
 
@@ -894,151 +955,181 @@ namespace CI_PlatformWeb.Controllers
 
         #region deleteDraft
         [HttpPost]
-        public IActionResult deleteDraft(long? storyId,long? userId)
+        public IActionResult deleteDraft(long? storyId, long? userId)
         {
-            var draftStory=_IHome.story().FirstOrDefault(s=>s.StoryId== storyId && s.UserId==userId);
-            var draftmedia = _IHome.storymedia().Where(s => s.StoryId == storyId);
-            _CIDbContext.RemoveRange(draftmedia);
-            _CIDbContext.Remove(draftStory);
-            _CIDbContext.SaveChanges();
-            return RedirectToAction("storyDraft","Home");
+            try
+            {
+                var draftStory = _IHome.story().FirstOrDefault(s => s.StoryId == storyId && s.UserId == userId);
+                var draftmedia = _IHome.storymedia().Where(s => s.StoryId == storyId);
+                _CIDbContext.RemoveRange(draftmedia);
+                _CIDbContext.Remove(draftStory);
+                _CIDbContext.SaveChanges();
+                return RedirectToAction("storyDraft", "Home");
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         #endregion
 
         #region storyListing
         public IActionResult storyListing(int? pageIndex)
         {
-            List<Story> story = _IHome.story().Where(s => s.Status == "1").ToList();
-
-            List<storyListingViewModel> storylist = new List<storyListingViewModel>();
-            foreach (var item in story)
+            try
             {
-                var user = _IHome.UserByUserid(item.UserId);
-                var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == item.MissionId);
-                var missiontheme = _IHome.missiontheme().FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
-                var storymedia = _IHome.storymedia().Where(s => s.StoryId == item.StoryId).FirstOrDefault();
-                storylist.Add(new storyListingViewModel
+
+                List<Story> story = _IHome.story().Where(s => s.Status == "1").ToList();
+
+                List<storyListingViewModel> storylist = new List<storyListingViewModel>();
+                foreach (var item in story)
                 {
-                    UserId = user.UserId,
-                    StoryTitle = item.Title,
-                    Description = item.Description,
-                    StoryId = item.StoryId,
-                    MissionId = item.MissionId,
-                    UserName = user.FirstName,
-                    LastName = user.LastName,
-                    Theme = missiontheme.Title,
-                    avtarpath = user.Avatar,
-                    storypath = storymedia != null ? storymedia.StoryPath : null,
+                    var user = _IHome.UserByUserid(item.UserId);
+                    var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == item.MissionId);
+                    var missiontheme = _IHome.missiontheme().FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
+                    var storymedia = _IHome.storymedia().Where(s => s.StoryId == item.StoryId).FirstOrDefault();
+                    storylist.Add(new storyListingViewModel
+                    {
+                        UserId = user.UserId,
+                        StoryTitle = item.Title,
+                        Description = item.Description,
+                        StoryId = item.StoryId,
+                        MissionId = item.MissionId,
+                        UserName = user.FirstName,
+                        LastName = user.LastName,
+                        Theme = missiontheme.Title,
+                        avtarpath = user.Avatar,
+                        storypath = storymedia != null ? storymedia.StoryPath : null,
 
-                });
+                    });
 
+                }
+
+                ViewBag.story = storylist;
+                int pageSize = 3;
+                int skip = (pageIndex ?? 0) * pageSize;
+                var Missions = storylist.Skip(skip).Take(pageSize).ToList();
+                int totalMissions = storylist.Count();
+                ViewBag.TotalMission = totalMissions;
+                ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
+                ViewBag.CurrentPage = pageIndex ?? 0;
+
+
+
+                // Get the current URL
+                UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
+                if (Request.Host.Port.HasValue)
+                {
+                    uriBuilder.Port = Request.Host.Port.Value;
+                }
+                uriBuilder.Path = Request.Path;
+
+                // Remove the query parameter you want to exclude
+                var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                query.Remove("pageIndex");
+                uriBuilder.Query = query.ToString();
+                ViewBag.currentUrl = uriBuilder.ToString();
+                return View(Missions);
             }
-
-            ViewBag.story = storylist;
-            int pageSize = 3;
-            int skip = (pageIndex ?? 0) * pageSize;
-            var Missions = storylist.Skip(skip).Take(pageSize).ToList();
-            int totalMissions = storylist.Count();
-            ViewBag.TotalMission = totalMissions;
-            ViewBag.TotalPages = (int)Math.Ceiling(totalMissions / (double)pageSize);
-            ViewBag.CurrentPage = pageIndex ?? 0;
-
-
-
-            // Get the current URL
-            UriBuilder uriBuilder = new UriBuilder(Request.Scheme, Request.Host.Host);
-            if (Request.Host.Port.HasValue)
+            catch (Exception ex)
             {
-                uriBuilder.Port = Request.Host.Port.Value;
+                return RedirectToAction("Error", "Home");
             }
-            uriBuilder.Path = Request.Path;
-
-            // Remove the query parameter you want to exclude
-            var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-            query.Remove("pageIndex");
-            uriBuilder.Query = query.ToString();
-            ViewBag.currentUrl = uriBuilder.ToString();
-            return View(Missions);
-
         }
         #endregion
         public IActionResult StoryDetail(int id, int storyid)
         {
-            //var user = _IHome.UserByUserid(id);
-            var story = _IHome.StoryByStoryidList(storyid);
-
-            List<storyListingViewModel> storylist = new List<storyListingViewModel>();
-            foreach (var item in story)
+            try
             {
-                item.Viewcount = item.Viewcount + 1;
-                _CIDbContext.Update(item);
-                _CIDbContext.SaveChanges();
-                var user = _IHome.UserByUserid(item.UserId);
-                storylist.Add(new storyListingViewModel
+
+                //var user = _IHome.UserByUserid(id);
+                var story = _IHome.StoryByStoryidList(storyid);
+
+                List<storyListingViewModel> storylist = new List<storyListingViewModel>();
+                foreach (var item in story)
                 {
-                    StoryTitle = item.Title,
-                    Description = item.Description,
-                    StoryId = item.StoryId,
-                    MissionId = item.MissionId,
-                    UserName = user.FirstName,
-                    LastName = user.LastName,
-                    UserId = user.UserId,
-                    avtarpath = user.Avatar,
-                    viewcount = item.Viewcount,
-                    whyivolunteer=user.WhyIVolunteer,
+                    item.Viewcount = item.Viewcount + 1;
+                    _CIDbContext.Update(item);
+                    _CIDbContext.SaveChanges();
+                    var user = _IHome.UserByUserid(item.UserId);
+                    storylist.Add(new storyListingViewModel
+                    {
+                        StoryTitle = item.Title,
+                        Description = item.Description,
+                        StoryId = item.StoryId,
+                        MissionId = item.MissionId,
+                        UserName = user.FirstName,
+                        LastName = user.LastName,
+                        UserId = user.UserId,
+                        avtarpath = user.Avatar,
+                        viewcount = item.Viewcount,
+                        whyivolunteer = user.WhyIVolunteer,
 
-                });
+                    });
 
+                }
+                List<User> Alluser = _IHome.alluser();
+                List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
+                foreach (var i in Alluser)
+                {
+                    usernamelist.Add(new VolunteeringVM
+                    {
+                        UserName = i.FirstName,
+                        LastName = i.LastName,
+                        UserIdForMail = i.UserId,
+
+                    });
+                }
+                ViewBag.alluser = usernamelist;
+                return View(storylist);
             }
-            List<User> Alluser = _IHome.alluser();
-            List<VolunteeringVM> usernamelist = new List<VolunteeringVM>();
-            foreach (var i in Alluser)
+            catch (Exception ex)
             {
-                usernamelist.Add(new VolunteeringVM
-                {
-                    UserName = i.FirstName,
-                    LastName = i.LastName,
-                    UserIdForMail = i.UserId,
-
-                });
+                return RedirectToAction("Error", "Home");
             }
-            ViewBag.alluser = usernamelist;
-            return View(storylist);
         }
         [HttpPost]
         public async Task<IActionResult> SendmailForStory(long[] userid, int id)
         {
-            foreach (var item in userid)
+            try
             {
-                var user = _IHome.UserByUserid(item);
-                var story = _IHome.StoryByStoryid(id);
-                var resetLink = Url.Action("StoryDetail", "Home", new { id = story.UserId, storyid = id }, Request.Scheme);
+                foreach (var item in userid)
+                {
+                    var user = _IHome.UserByUserid(item);
+                    var story = _IHome.StoryByStoryid(id);
+                    var resetLink = Url.Action("StoryDetail", "Home", new { id = story.UserId, storyid = id }, Request.Scheme);
 
 
-                //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
-                var toAddress = new MailAddress(user.Email);
-                var subject = "Story Recommandation";
-                var body = $"Hi,<br /><br /> <br /><br /><a href='{resetLink}'>{resetLink}</a>";
-                var message = new MailMessage(fromAddress, toAddress)
-                {
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-                var smtpClient = new SmtpClient("smtp.gmail.com", 587)
-                {
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
-                    //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
-                    EnableSsl = true
-                };
-                smtpClient.Send(message);
+                    //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
+                    var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
+                    var toAddress = new MailAddress(user.Email);
+                    var subject = "Story Recommandation";
+                    var body = $"Hi,<br /><br /> <br /><br /><a href='{resetLink}'>{resetLink}</a>";
+                    var message = new MailMessage(fromAddress, toAddress)
+                    {
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = true
+                    };
+                    var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+                    {
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
+                        //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
+                        EnableSsl = true
+                    };
+                    smtpClient.Send(message);
+
+                }
+                return Json(new { success = true });
 
             }
-            return Json(new { success = true });
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
-
         [HttpPost]
         public async Task<IActionResult> applymission(int MissionId, int UserId)
         {
@@ -1052,8 +1143,8 @@ namespace CI_PlatformWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-                long id = Convert.ToInt64(userid);
+                int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userId);
                 //long storyid = model.storyId;
                 var sId = _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
                 if (model.attachment != null)
@@ -1084,7 +1175,7 @@ namespace CI_PlatformWeb.Controllers
             }
             else
             {
-                return RedirectToAction("storyShare", "Home",model);
+                return RedirectToAction("storyShare", "Home", model);
             }
 
 
@@ -1095,44 +1186,53 @@ namespace CI_PlatformWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> addstorydraft(StoryShareViewModel model)
         {
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            var sId = _IHome.addstorydraft(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
-            if (model.attachment != null)
+            try
             {
-                if (model.storyId != 0)
+                int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userId);
+                var sId = _IHome.addstorydraft(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+                if (model.attachment != null)
                 {
-                    _IHome.removemedia(model.storyId);
-                }
-                foreach (var i in model.attachment)
-                {
-
-
-                    var FileName = "";
-
-
-                    using (var ms = new MemoryStream())
+                    if (model.storyId != 0)
                     {
-                        await i.CopyToAsync(ms);
-                        var imageBytes = ms.ToArray();
-                        var base64String = Convert.ToBase64String(imageBytes);
-                        FileName = "data:image/png;base64," + base64String;
+                        _IHome.removemedia(model.storyId);
+                    }
+                    foreach (var i in model.attachment)
+                    {
+
+
+                        var FileName = "";
+
+
+                        using (var ms = new MemoryStream())
+                        {
+                            await i.CopyToAsync(ms);
+                            var imageBytes = ms.ToArray();
+                            var base64String = Convert.ToBase64String(imageBytes);
+                            FileName = "data:image/png;base64," + base64String;
+                        }
+
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                     }
 
-                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);                }            }
-            TempData["draft"] = "Your Story has been saved as a draft";
-            return RedirectToAction("storyShare", "Home");
-
+                }
+                TempData["draft"] = "Your Story has been saved as a draft";
+                return RedirectToAction("storyShare", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
         }
         public IActionResult storyShare(int? storyId)
         {
-            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+            int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
             StoryShareViewModel storyVm = new StoryShareViewModel();
             if (storyId != null)
             {
                 storyVm.missions = _IHome.Allmissions();
-                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == useridforrating).ToList();
+                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
                 var story = _IHome.story().Where(story => story.StoryId == storyId).FirstOrDefault();
                 storyVm.title = story.Title;
                 storyVm.editor1 = story.Description;
@@ -1144,7 +1244,7 @@ namespace CI_PlatformWeb.Controllers
             else
             {
                 storyVm.missions = _IHome.Allmissions();
-                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == useridforrating).ToList();
+                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
             }
 
 
@@ -1154,12 +1254,12 @@ namespace CI_PlatformWeb.Controllers
         }
         public IActionResult VolunteeringTimeSheet()
         {
-            int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
+            int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
             TimesheetViewModel timeVm = new TimesheetViewModel();
 
             timeVm.missions = _IHome.Allmissions();
-            timeVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == useridforrating).ToList();
-            var timelist = _IHome.alltimesheet().Where(t => t.UserId == useridforrating).ToList();
+            timeVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
+            var timelist = _IHome.alltimesheet().Where(t => t.UserId == userIdForRating).ToList();
             timeVm.timesheet = timelist.OrderByDescending(c => c.CreatedAt).ToList();
 
 
@@ -1169,8 +1269,8 @@ namespace CI_PlatformWeb.Controllers
         public async Task<IActionResult> addTimesheet(TimesheetViewModel model)
         {
 
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
+            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userId);
             //long storyid = model.storyId;
             _IHome.addtimesheet(model.missionId, id, model.hour, model.minute, model.date, model.message, model.action, model.hiddenInput);
 
@@ -1186,8 +1286,8 @@ namespace CI_PlatformWeb.Controllers
         public async Task<IActionResult> deletetimesheet(long timesheetid)
         {
 
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
+            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userId);
             //long storyid = model.storyId;
             _IHome.deletetimesheet(timesheetid);
 
@@ -1204,8 +1304,8 @@ namespace CI_PlatformWeb.Controllers
         public async Task<IActionResult> editsheet(long timesheetid)
         {
 
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
+            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+            long id = Convert.ToInt64(userId);
             //long storyid = model.storyId;
             var timesheet = _IHome.alltimesheet().Where(t => t.TimesheetId == timesheetid).FirstOrDefault();
 
@@ -1220,8 +1320,8 @@ namespace CI_PlatformWeb.Controllers
             int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
             long id = Convert.ToInt64(userid);
             //long storyid = model.storyId;
-            var userdetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
-            if (userdetail.Password == pass1)
+            var userDetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
+            if (userDetail.Password == pass1)
             {
                 if (pass2 == pass3)
                 {
@@ -1265,13 +1365,13 @@ namespace CI_PlatformWeb.Controllers
                          select new { US.SkillId, S.SkillName, US.UserId };
             var uskills = skills.Where(e => e.UserId == id).ToList();
             ViewBag.userskills = uskills;
-            foreach(var skill in uskills)
+            foreach (var skill in uskills)
             {
                 var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
                 allskills.Remove(rskill);
             }
             ViewBag.remainingSkills = allskills;
-            ViewBag.allcities=_IHome.AllCity();
+            ViewBag.allcities = _IHome.AllCity();
             ViewBag.allcountry = _IHome.allcountry();
             return View(userVM);
         }
@@ -1297,7 +1397,7 @@ namespace CI_PlatformWeb.Controllers
             userdetail.Department = model.department;
             userdetail.CountryId = model.countryid;
             userdetail.CityId = model.cityid;
-            userdetail.Availability= model.availability;
+            userdetail.Availability = model.availability;
 
             if (model.avatar == null)
             {
@@ -1353,7 +1453,7 @@ namespace CI_PlatformWeb.Controllers
             foreach (var skills in selectedSkills)
             {
 
-               
+
                 _IHome.AddUserSkills(skills, id);
 
 
