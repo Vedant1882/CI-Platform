@@ -32,9 +32,20 @@
         <div class="addstorybg mt-3" style="height: 390px;">
         <div class="centered">
             <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem perferendis error recusandae temporibus neque officiis impedit repellendus laboriosam id delectus. Lorem ipsum dolor, sit amet.</p>
-            <div class="centeredbtn text-center">
-                    <a asp-action="StoryShare" asp-controller="Home" class="btn text-decoration-none" style="color: white;">Share your story <img src="~/Images/right-arrow.png" alt=""></a>
-            </div>
+                @if(userid != null)
+                {
+                    <div class="centeredbtn text-center">
+                        <a asp-action="StoryShare" asp-controller="Home" class="btn text-decoration-none" style="color: white;">Share your story <img src="~/Images/right-arrow.png" alt=""></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="centeredbtn text-center">
+                        <a onclick="alertforlogin()" class="btn text-decoration-none" style="color: white;">Share your story <img src="~/Images/right-arrow.png" alt=""></a>
+                    </div>
+                }
+
+
         </div>
       </div>
 
@@ -179,7 +190,19 @@
     function viewdetails() {
         location.replace("Login.cshtml");
     }
+    function alertforlogin() {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'warning',
+            width: '300',
+            height: '100',
+            title: 'Please Login or Register First',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/js/filter.js"></script>
 <script src="~/js/Volunteering.js"></script>
 

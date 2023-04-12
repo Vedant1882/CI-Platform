@@ -2,6 +2,9 @@
     Layout = "_One-NavbarLayout";
     ViewData["Title"] = "Home Page";
 }
+@{
+    var userid = Context.Session.GetInt32("userIDforfavmission");
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -92,20 +95,20 @@
                         <div class="row mt-4 mt-md-2">
                             <div class="col-3 me-auto  ">
                                 <div class=" d-flex justify-content-center">
-                                    @if (story.avtarpath != "")
+                                    @if (story.avtarpath == "" || story.avtarpath == null)
                                     {
-                                        <img src="@story.avtarpath" class="storyuserimg rounded-circle" style="height:70px;width:70px">
+                                        <img src="~/Images/user1.png" class="storyuserimg rounded-circle">
                                     }
                                     else
                                     {
-                                        <img src="~/Images/user1.png" class="storyuserimg rounded-circle">
+                                        <img src="@story.avtarpath" class="storyuserimg rounded-circle" style="height:70px;width:70px">
                                     }
                                 </div>
                                 <label class="fs-6 d-flex justify-content-center"> @story.UserName &nbsp;@story.LastName</label>
                             </div>
                             <div class="col-6 col-xl-3 col-md-4 mt-auto ">
                                 <div class="rounded-5 border border-black d-flex justify-content-center w-100">
-                                    <span>@story.viewcount</span>Stories views
+                                    <i class="bi bi-eye"></i><span class="ms-1">@story.viewcount</span><span class="ms-1">Views</span>
                                 </div>
 
                             </div>
@@ -117,10 +120,20 @@
                             </div>
                         </div>
                         <div class="row justify-content-between mt-3">
-                            <button class="recom col-11 col-xl-6 col-md-5 col-lg-11 rounded-5 d-flex justify-content-center align-items-center bg-white py-2 ms-0 ms-xl-3 ms-lg-0 ms-md-3 " data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <img src="~/images/add1.png">
-                                <span class="ms-2">Recomanded to Co-Worker</span>
-                            </button>
+                            @if (userid != null)
+                            {
+                                <button class="recom col-11 col-xl-6 col-md-5 col-lg-11 rounded-5 d-flex justify-content-center align-items-center bg-white py-2 ms-0 ms-xl-3 ms-lg-0 ms-md-3 " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <img src="~/images/add1.png">
+                                    <span class="ms-2">Recomanded to Co-Worker</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="recom col-11 col-xl-6 col-md-5 col-lg-11 rounded-5 d-flex justify-content-center align-items-center bg-white py-2 ms-0 ms-xl-3 ms-lg-0 ms-md-3 " onclick="alertforlogin()">
+                                    <img src="~/images/add1.png">
+                                    <span class="ms-2">Recomanded to Co-Worker</span>
+                                </button>
+                            }
                             <a class="col-11 col-xl-5  col-lg-11 col-md-5  bg-white text-decoration-none mt-2  mt-xl-0 mt-lg-2 mt-md-0  mb-2 mb-md-0 p-0" href="/Home/Volunteering/@ViewBag.UserId?missionid=@story.MissionId">
                                 <button class="openmissionbtn    d-flex justify-content-center align-items-cente bg-white  rounded-5  py-2  w-100  ">
                                     <span class="">Open Mission</span>
@@ -139,14 +152,23 @@
                                             @foreach (var user in ViewBag.alluser)
                                             {
                                                 <div class=" userlistdiv align-items-center d-flex my-3">
-                                                    <img src="~/images/volunteer1.png" class="aviluser ms-2 my-1">
+                                                    @if (user.avtarpath == "" || user.avtarpath == null)
+                                                    {
+                                                        <img src="~/images/user1.png" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
+
+                                                    }
+                                                    else
+                                                    {
+
+                                                        <img src="@user.avtarpath" class="rounded-5 me-5" style="border-radius:50%;width:50px;height:50px">
+                                                    }
                                                     <label class=" ms-4  me-auto">   @user.UserName  @user.LastName </label>
                                                     <input class="form-check-input me-2 " type="checkbox" value="" id="@user.UserIdForMail" name="mail">
                                                 </div>
                                             }
                                         </div>
                                         <div class="modal-footer">
-                                            
+
                                             <div class="text-center">
                                                 <a class="btn mt-2 landing-page-apply-mission-btn" data-bs-dismiss="modal">
                                                     Close
@@ -227,6 +249,17 @@
             }
         });
 
+    }
+    function alertforlogin() {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'warning',
+            width: '300',
+            height: '100',
+            title: 'Please Login or Register First',
+            showConfirmButton: false,
+            timer: 1500
+        })
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

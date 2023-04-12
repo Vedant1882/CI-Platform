@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="~/css/Volunteering.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/Volunteering.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
 
 
@@ -165,27 +165,45 @@
 
                     }
                     <div class="row">
-                        <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " id="favmissiondiv1" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
+                        @if (useridforrating != null)
+                        {
+                            <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " id="favmissiondiv1" onclick="addtofav(@Model.MissionId,@ViewBag.userid)">
 
 
-                            <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
-                            @if (ViewBag.fav == true)
-                            {
-                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">Remove From Favourite</label>
+                                <i class="bi bi-heart-fill" id="heart" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")"></i>
+                                @if (ViewBag.fav == true)
+                                {
+                                    <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">Remove From Favourite</label>
 
-                                <i class="spinner-border spinner-border-sm mt-1 ms-2" role="status" id="spinner" style="display:none;color:orange"></i>
-                            }
-                            else
-                            {
-                                <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
+                                    <i class="spinner-border spinner-border-sm mt-1 ms-2" role="status" id="spinner" style="display:none;color:orange"></i>
+                                }
+                                else
+                                {
+                                    <label class="ms-2" id="favmissiondiv" style="@(ViewBag.fav==true ? "color:#F88634;" : "color:black;")">ADD to Favourite</label>
 
-                                <i class="spinner-border spinner-border-sm mt-1 ms-2" role="status" id="spinner" style="display:none"></i>
-                            }
+                                    <i class="spinner-border spinner-border-sm mt-1 ms-2" role="status" id="spinner" style="display:none"></i>
+                                }
 
 
 
-                        </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col  col-12  col-xl-5 col-lg-12 col-md-5 col-sm-12  me-xl-4 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " id="favmissiondiv1" onclick="alertforlogin()">
 
+
+                                <i class="bi bi-heart-fill" id="heart" style="color:black;" )"></i>
+
+
+                                <label class="ms-2" id="favmissiondiv" style="color:black;" )">ADD to Favourite</label>
+
+
+
+
+
+                            </div>
+                        }
                         @if (useridforrating != null)
                         {
                             <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -199,7 +217,7 @@
                         }
                         else
                         {
-                            <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button">
+                            <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" onclick="alertforlogin()">
 
                                 <img src="~/images/add1.png" class="" />
 
@@ -261,38 +279,38 @@
                         @if (useridforrating != null)
                         {
                             <div id="ratingstar" class="mt-1">
-                            @if (@Model.Rating != null)
-                            {
-
-                                int count = 0;
-
-                                @for (var i = 1; i <= @Model.Rating; i++)
+                                @if (@Model.Rating != null)
                                 {
-                                    <i class="bi bi-star-fill mt-1" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                                    count++;
-                                }
-                                @for (var k = count + 1; k <= 5; k++)
-                                {
-                                    <i class="bi bi-star-fill mt-1" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                                }
 
-                            }
+                                    int count = 0;
+
+                                    @for (var i = 1; i <= @Model.Rating; i++)
+                                    {
+                                        <i class="bi bi-star-fill mt-1" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                        count++;
+                                    }
+                                    @for (var k = count + 1; k <= 5; k++)
+                                    {
+                                        <i class="bi bi-star-fill mt-1" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                    }
+
+                                }
                             </div>
                         }
                         else
                         {
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
+                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
+                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
+                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
+                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
                         }
 
 
                         <i class="spinner-border spinner-border-sm mt-2 ms-2 me-2" role="status" id="spinner1" style="display:none"></i>
                         <hr style="border:1px solid black">
                     </div>
-                    
+
                     <div class="row d-flex mt-3 d-lg-none d-xl-flex">
                         <div class="card col-md-3  col-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill mt-2 mb-auto" viewBox="0 0 16 16">
@@ -333,32 +351,43 @@
                         </div>
                     </div>
                     <div id="applydiv">
-                        @if (Model.isclosed == 0)
+                        @if (useridforrating != null)
                         {
-                            <div class="text-center">
-                                <button class="btn mt-2 landing-page-apply-mission-btn" style="color:red" disabled>
-                                    Mission Closed
-                                </button>
-                            </div>
-                        }
-                        else
-                        {
-                            @if (Model.isapplied == 1)
+                            @if (Model.isclosed == 0)
                             {
                                 <div class="text-center">
-                                    <button class="btn mt-2 landing-page-apply-mission-btn" style="color:red" disabled>
-                                        Already Applied
+                                    <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
+                                        Mission Closed
                                     </button>
                                 </div>
                             }
                             else
                             {
-                                <div class="text-center">
-                                    <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
-                                        Apply <img src="~/images/right-arrow.png" alt="">
-                                    </a>
-                                </div>
+                                @if (Model.isapplied == 1)
+                                {
+                                    <div class="text-center">
+                                        <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
+                                            Already Applied
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center">
+                                        <a class="btn mt-2 landing-page-apply-mission-btn" onclick="applyformission(@Model.MissionId,@useridforrating)">
+                                            Apply <img src="~/images/right-arrow.png" alt="">
+                                        </a>
+                                    </div>
+                                }
                             }
+                        }
+                        else
+                        {
+                            <div class="text-center">
+                                <a class="btn mt-2 landing-page-apply-mission-btn" onclick="alertforlogin()">
+                                    Login or Register first <img src="~/images/right-arrow.png" alt="">
+                                </a>
+                            </div>
                         }
                     </div>
 
@@ -397,20 +426,20 @@
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                     <h1>Documents</h1>
                     <div class="row">
-                        <div class="col  col-12  col-xl-3 col-lg-12 col-md-3 col-sm-12  me-xl-3 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center">
+                        <div class="col  col-12  col-xl-3 col-lg-12 col-md-3 col-sm-12  me-xl-3 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " onclick='opendoc("/missiondoc/Hetviresume.docx")'>
                             <div><img src="~/images/doc.png" /></div>
                             <label class="ms-2">lorem-ipsum.pdf</label>
 
                         </div>
-                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 Addfavourite  justify-content-center">
+                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 Addfavourite  justify-content-center" onclick='opendoc("/missiondoc/Hetviresume.pdf")'>
                             <div><img src="~/images/doc.png" /></div>
 
-                            <label class="ms-2"> Recommend to a Co-Worker</label>
+                            <label class="ms-2"> Recommend </label>
                         </div>
-                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 ms-3 Addfavourite  justify-content-center">
+                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 ms-0 ms-xl-3 ms-lg-0 ms-md-3 Addfavourite  justify-content-center" onclick='opendoc("/missiondoc/CI-Platformdb.xlsx")'>
                             <div><img src="~/images/doc.png" /></div>
 
-                            <label class="ms-2"> Recommend to a Co-Worker</label>
+                            <label class="ms-2"> Recommend</label>
                         </div>
                     </div>
                 </div>
@@ -549,16 +578,18 @@
                     }
 
 
-                    
+
 
 
 
 
                 </div>
-                <i class="spinner-border spinner-border-sm mt-1 ms-4" role="status" id="spinner2" style="height:100px;width:100px;display:none"></i>
+                <div style="width:100%;margin-left:30%">
+                    <i class="spinner-border spinner-border-sm mt-1 ms-4" role="status" id="spinner2" style="height:100px;width:100px;display:none"></i>
+                </div>
                 <hr>
                 <div class="row text-center">
-                    
+
 
                     <div class="d-flex display-volunteers mt-5" style="text-align:center;">
                         @if (ViewBag.PageIndex > 1)
@@ -575,7 +606,9 @@
                 </div>
             </div>
         </div>
-        <partial name="_Related_Partial" />
+        <div class="mt-4">
+            <partial name="_Related_Partial" />
+        </div>
 </body>
 <script>
     function recent(index, missionid) {
@@ -600,6 +633,9 @@
             }
         });
     }
+    function opendoc(url) {
+        window.open(url);
+    }
     function addRating(starId, missionId, Id) {
         var spinner = document.getElementById('spinner1');
         var rating = document.getElementById('ratingstar');
@@ -623,14 +659,14 @@
         });
     }
     function addtofav(missionId, Id) {
-        var spinner=document.getElementById('spinner');
-        spinner.style.display='block';
+        var spinner = document.getElementById('spinner');
+        spinner.style.display = 'block';
         $.ajax({
             url: '/Home/AddToFav',
             type: 'POST',
             data: { MissionId: missionId, UserId: Id },
             success: function (response) {
-               
+
                 $('#favmissiondiv1').html($(response).find('#favmissiondiv1').html());
                 spinner.style.display = 'none';
             }
@@ -665,7 +701,15 @@
 </script>
 <script>
     function alertforlogin() {
-        alert("Login First");
+        Swal.fire({
+            position: 'top-end',
+            icon: 'warning',
+            width: '300',
+            height: '100',
+            title: 'Please Login or Register First',
+            showConfirmButton: false,
+            timer: 1500
+        })
     }
     function comment(mid, uid) {
         var text = document.getElementById("commenttext").value;

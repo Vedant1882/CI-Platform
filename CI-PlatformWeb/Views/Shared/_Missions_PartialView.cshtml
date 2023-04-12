@@ -188,15 +188,26 @@
                                         }
                                         else
                                         {
-                                            <button class="mb-2 landing-page-btn-img afterApply" id="@item.MissionId">
+                                            <button class="mb-2 landing-page-btn-img afterApply" id="@item.MissionId" onclick="alertforlogin()">
                                                 <img src="~/images/add1.png" class="" />
                                             </button>
                                         }
-                                        <button class="mb-2 landing-page-btn-img" id="favmissiondiv" onclick="addtofav(@item.MissionId,@ViewBag.UserId)">
+                                        @if (Context.Session.GetString("UserID") != null)
+                                        {
+                                            <button class="mb-2 landing-page-btn-img" id="favmissiondiv" onclick="addtofav(@item.MissionId,@ViewBag.UserId)">
 
-                                            <i class="bi bi-heart-fill" style="@(@item.isFavrouite ? "color:#F88634;" : "color:white;")" id="heart-@item.MissionId"></i>
+                                                <i class="bi bi-heart-fill" style="@(@item.isFavrouite ? "color:#F88634;" : "color:white;")" id="heart-@item.MissionId"></i>
 
-                                        </button>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="mb-2 landing-page-btn-img" id="favmissiondiv" onclick="alertforlogin()">
+
+                                                <i class="bi bi-heart-fill" style="color:white;" id="heart-@item.MissionId"></i>
+
+                                            </button>
+                                        }
                                     </div>
 
                                     <button class="landing-page-bottom-center">@item.Theme</button>
@@ -462,11 +473,22 @@
                 type: 'POST',
                 data: { missionId: missionId, UserId: Id },
                 success: function (result) {
-                   
+
                     location.reload();
 
                 }
             });
+        }
+        function alertforlogin() {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'warning',
+                width: '300',
+                height: '100',
+                title: 'Please Login or Register First',
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         function sendmail(id) {
             const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);

@@ -1078,6 +1078,7 @@ namespace CI_PlatformWeb.Controllers
                         UserName = i.FirstName,
                         LastName = i.LastName,
                         UserIdForMail = i.UserId,
+                        avtarpath=i.Avatar,
 
                     });
                 }
@@ -1141,8 +1142,7 @@ namespace CI_PlatformWeb.Controllers
         public async Task<IActionResult> addstory(StoryShareViewModel model)
         {
 
-            if (ModelState.IsValid)
-            {
+            
                 int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
                 long id = Convert.ToInt64(userId);
                 //long storyid = model.storyId;
@@ -1172,11 +1172,8 @@ namespace CI_PlatformWeb.Controllers
                 }
                 TempData["saved"] = "Your Story has been saved";
                 return RedirectToAction("storyShare", "Home");
-            }
-            else
-            {
-                return RedirectToAction("storyShare", "Home", model);
-            }
+            
+            
 
 
             //return RedirectToAction("storyShare","Home");
@@ -1229,8 +1226,15 @@ namespace CI_PlatformWeb.Controllers
         {
             int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
             StoryShareViewModel storyVm = new StoryShareViewModel();
-            if (storyId != null)
+            if (storyId == null || storyId==0 )
             {
+                storyVm.missions = _IHome.Allmissions();
+                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
+            }
+            else
+            {
+                
+
                 storyVm.missions = _IHome.Allmissions();
                 storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
                 var story = _IHome.story().Where(story => story.StoryId == storyId).FirstOrDefault();
@@ -1240,11 +1244,6 @@ namespace CI_PlatformWeb.Controllers
                 storyVm.MissionId = story.MissionId;
                 storyVm.storyId = story.StoryId;
                 storyVm.storyMedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId).ToList();
-            }
-            else
-            {
-                storyVm.missions = _IHome.Allmissions();
-                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
             }
 
 
