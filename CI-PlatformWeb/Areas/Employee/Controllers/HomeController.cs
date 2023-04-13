@@ -1360,7 +1360,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
             userVM.employeeid = user.EmployeeId;
             userVM.firstname = user.FirstName;
             userVM.lastname = user.LastName;
-            userVM.username = user.FirstName + user.LastName;
+            userVM.username = user.FirstName +" "+ user.LastName;
             userVM.email = user.Email;
             userVM.whyivolunteered = user.WhyIVolunteer;
             userVM.title = user.Title;
