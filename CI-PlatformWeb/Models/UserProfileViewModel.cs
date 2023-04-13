@@ -24,6 +24,10 @@ namespace CI_PlatformWeb.Models
 
         public IFormFile files { get; set; }
         public string avatar { get; set; }
+        public string username { get; set; }
+        public string subject { get; set; }
+        public string message { get; set; }
+        
         public long? cityid { get; set; }
         public long? countryid { get; set; }
 

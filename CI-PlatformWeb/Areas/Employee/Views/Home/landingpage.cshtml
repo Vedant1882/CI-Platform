@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var firstname = Context.Session.GetString("UserID");
+    var id = Context.Session.GetString("user");
+
+   
+   
+        Layout = "_NavbarLayout";
+        ViewData["Title"] = "Home Page";
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -329,7 +338,7 @@
 
                                         <div class="d-flex justify-content-center">
                                             <div class="">
-                                                <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                <a class="btn mt-2 landing-page-apply-mission-btn" href="/Employee/Home/Volunteering?missionid=@item.MissionId">
                                                     Mission Closed <img src="~/images/right-arrow.png" alt="">
                                                 </a>
                                             </div>
@@ -343,7 +352,7 @@
 
                                             <div class="d-flex justify-content-center">
                                                 <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Employee/Home/Volunteering?missionid=@item.MissionId">
                                                         View Details <img src="~/images/right-arrow.png" alt="">
                                                     </a>
                                                 </div>
@@ -355,7 +364,7 @@
 
                                             <div class="d-flex justify-content-center">
                                                 <div class="">
-                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Home/Volunteering?missionid=@item.MissionId">
+                                                    <a class="btn mt-2 landing-page-apply-mission-btn" href="/Employee/Home/Volunteering?missionid=@item.MissionId">
                                                         Apply <img src="~/images/right-arrow.png" alt="">
                                                     </a>
                                                 </div>
@@ -537,3 +546,6 @@
 </body>
 
 </html>
+
+
+

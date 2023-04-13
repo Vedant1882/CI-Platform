@@ -134,7 +134,7 @@
                                     <span class="ms-2">Recomanded to Co-Worker</span>
                                 </button>
                             }
-                            <a class="col-11 col-xl-5  col-lg-11 col-md-5  bg-white text-decoration-none mt-2  mt-xl-0 mt-lg-2 mt-md-0  mb-2 mb-md-0 p-0" href="/Home/Volunteering/@ViewBag.UserId?missionid=@story.MissionId">
+                            <a class="col-11 col-xl-5  col-lg-11 col-md-5  bg-white text-decoration-none mt-2  mt-xl-0 mt-lg-2 mt-md-0  mb-2 mb-md-0 p-0" href="/Employee/Home/Volunteering/@ViewBag.UserId?missionid=@story.MissionId">
                                 <button class="openmissionbtn    d-flex justify-content-center align-items-cente bg-white  rounded-5  py-2  w-100  ">
                                     <span class="">Open Mission</span>
                                     <img src="~/images/right-arrow.png" class="mt-1 ms-2">
@@ -222,7 +222,7 @@
 
         })
         $.ajax({
-            url: '/Home/SendmailForStory',
+            url: '/Employee/Home/SendmailForStory',
             type: 'POST',
             data: { userid: mail, id: id },
             success: function (result) {

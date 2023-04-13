@@ -618,7 +618,7 @@
         spinner.style.display = 'block';
 
         $.ajax({
-            url: '/Home/Volunteering',
+            url: '/Employee/Home/Volunteering',
             type: 'POST',
             data: { pageindex: index, missionId: missionid },
             success: function (response) {
@@ -643,7 +643,7 @@
         spinner.style.display = 'block';
 
         $.ajax({
-            url: '/Home/Addrating',
+            url: '/Employee/Home/Addrating',
             type: 'POST',
             data: { missionId: missionId, Id: Id, rating: starId },
             success: function (response) {
@@ -662,7 +662,7 @@
         var spinner = document.getElementById('spinner');
         spinner.style.display = 'block';
         $.ajax({
-            url: '/Home/AddToFav',
+            url: '/Employee/Home/AddToFav',
             type: 'POST',
             data: { MissionId: missionId, UserId: Id },
             success: function (response) {
@@ -677,7 +677,7 @@
     function applyformission(missionid, userid) {
         $.ajax({
 
-            url: '/Home/applymission',
+            url: '/Employee/Home/applymission',
             type: 'POST',
             data: { MissionId: missionid, UserId: userid },
 
@@ -718,7 +718,7 @@
         if (text != "") {
             post.innerHTML = "Posting";
             $.ajax({
-                url: '/Home/comment',
+                url: '/Employee/Home/comment',
                 type: 'POST',
                 data: { MissionId: mid, UserId: uid, comment: text },
                 success: function (response) {
@@ -741,7 +741,7 @@
     function deletecomment(uId, cId, mId) {
 
         $.ajax({
-            url: '/Home/CommentDelete',
+            url: '/Employee/Home/CommentDelete',
             type: 'POST',
             data: { userId: uId, commentId: cId, missionId: mId },
             success: function (result) {

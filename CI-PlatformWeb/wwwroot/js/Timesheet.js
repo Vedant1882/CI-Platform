@@ -22,7 +22,7 @@ function deletetimesheet(timesheetid) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/Home/deletetimesheet',
+                url: '/Employee/Home/deletetimesheet',
                 type: 'POST',
                 data: { timesheetid: timesheetid },
 

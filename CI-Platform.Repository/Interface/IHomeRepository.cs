@@ -11,6 +11,8 @@ namespace CI_Platform.Repository.Interface
     public interface IHomeRepository
     {
         public User Logindetails(String Email,String Password);
+        
+        public Admin AdminEmail(String Email);
 
         public List<User> alluser();
         public User UserByEmail(String Email);
@@ -82,6 +84,7 @@ namespace CI_Platform.Repository.Interface
         public List<UserSkill> UserSkills(long userid);
 
         public void AddUserSkills(long skillid,long userId);
+        public ContactU addContactUs(string subject, string message,string username,string email);
 
     }
 }

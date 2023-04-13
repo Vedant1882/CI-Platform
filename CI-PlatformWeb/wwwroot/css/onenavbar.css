@@ -25,7 +25,10 @@
     position: fixed;
     z-index: 100;
 }
-
+.dropdown-item:focus, .dropdown-item:hover {
+    color: white !important;
+    background-color: #F88634 !important;
+}
 @media (max-width: 992px) {
     .dropdownborder,
     .dropdownborderright {

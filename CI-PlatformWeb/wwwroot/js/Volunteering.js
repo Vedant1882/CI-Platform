@@ -40,7 +40,7 @@ function sendmail(id) {
         
     })
     $.ajax({
-        url: '/Home/Sendmail',
+        url: '/Employee/Home/Sendmail',
         type: 'POST',
         data: { userid: mail ,id:id},
         success: function (result) {

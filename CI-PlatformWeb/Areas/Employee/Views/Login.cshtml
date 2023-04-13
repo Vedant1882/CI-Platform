@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="D:\TatvaSoft\CI-Platform\CI-PlatformWeb\wwwroot\css\bootstrap.min.css">
-    <link rel="stylesheet" href=" ~ /css/login-page.css">
+    <link rel="stylesheet" href=" ~ /css/login-page.css" asp-apend-version="true">
 
 
 </head>
@@ -116,7 +116,7 @@
                                 <span class="text-danger ms-2">Please Login First</span>
                             }
                         }
-                        <form asp-controller="Home" asp-action="login" method="post" class="form-horizontal" role="form">
+                        <form asp-controller="Home" asp-action="Login" asp-area="Employee" method="post" class="form-horizontal" role="form">
                             <div>
                                 <div class="mb-5 text-danger" id="viewbag">@ViewBag.email</div>
                                 <label asp-for="Email" class="form-label">Email address</label>
@@ -129,7 +129,8 @@
                                 <span asp-validation-for="Password" class="text-danger" id="password"></span>
                             </div>
                             <div class="mt-3">
-                                <input type="Submit" value="Login" class="btn mt-3">
+                               @* <input type="Submit" value="Login" class="btn mt-3">*@
+                               <button type="submit">Login</button>
                             </div>
                             <div class="text-center mt-2">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ForgetPass">ForgotPassword?</a>

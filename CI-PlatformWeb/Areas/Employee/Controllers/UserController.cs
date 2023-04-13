@@ -1,11 +1,12 @@
 ﻿using CI_Entity.Models;
 using CI_PlatformWeb.Models;
 using CI_Platform.Repository.Interface;
-using CI_PlatformWeb.Controllers;
+
 using Microsoft.AspNetCore.Mvc;
 
-namespace CI.Controllers
+namespace CI_PlatformWeb.Areas.Employee.Controllers
 {
+    [Area("Employee")]
     public class UserController : Controller
     {
 
@@ -39,7 +40,7 @@ namespace CI.Controllers
 
 
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (_IUser.UserExist(user.FirstName, user.LastName, user.Email, user.PhoneNumber, user.ConfirmPassword))
                 {
@@ -52,11 +53,11 @@ namespace CI.Controllers
                     ViewBag.RegEmail = "email exist";
 
                 }
-                
+
             }
             return View();
         }
 
-      
+
     }
 }

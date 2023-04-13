@@ -27,6 +27,10 @@
     position: fixed;
     z-index: 100;
 }
+.dropdown-item:focus, .dropdown-item:hover {
+    color: white !important;
+    background-color: #F88634 !important;
+}
 @media screen and (min-width:767px) {
     .hamburger, #offcanvasWithBothOptions, #filteroffcanvasWithBothOptions{
            display: none;

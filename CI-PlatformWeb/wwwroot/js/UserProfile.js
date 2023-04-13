@@ -51,7 +51,7 @@ function changepass() {
 	}
 	else {
 		$.ajax({
-			url: '/Home/changepass',
+			url: '/Employee/Home/changepass',
 			type: 'POST',
 			data: { pass1: pass1, pass2: pass2, pass3: pass3 },
 
@@ -101,7 +101,7 @@ document.getElementById('skillSave').addEventListener("click", e => {
 	//}
 	console.log(selectedSkills);
 	$.ajax({
-		url: '/Home/SaveUserSkills',
+		url: '/Employee/Home/SaveUserSkills',
 		type: 'POST',
 		data: { selectedSkills: selectedSkills},
 

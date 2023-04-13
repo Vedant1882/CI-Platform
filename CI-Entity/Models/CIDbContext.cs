@@ -25,6 +25,8 @@ public partial class CIDbContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
 
+    public virtual DbSet<ContactU> ContactUs { get; set; }
+
     public virtual DbSet<Country> Countries { get; set; }
 
     public virtual DbSet<FavoriteMission> FavoriteMissions { get; set; }
@@ -48,6 +50,8 @@ public partial class CIDbContext : DbContext
     public virtual DbSet<MissionTheme> MissionThemes { get; set; }
 
     public virtual DbSet<PasswordReset> PasswordResets { get; set; }
+
+    public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Skill> Skills { get; set; }
 
@@ -98,9 +102,16 @@ public partial class CIDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("password");
+            entity.Property(e => e.RoleId)
+                .HasDefaultValueSql("((1))")
+                .HasColumnName("role_id");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Admins)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("FK_admin_roles");
         });
 
         modelBuilder.Entity<Banner>(entity =>
@@ -234,6 +245,29 @@ public partial class CIDbContext : DbContext
                 .HasConstraintName("FK__comment__user_id__71D1E811");
         });
 
+        modelBuilder.Entity<ContactU>(entity =>
+        {
+            entity.HasKey(e => e.ContactId);
+
+            entity.ToTable("contact_us");
+
+            entity.Property(e => e.ContactId).HasColumnName("contact_id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("email");
+            entity.Property(e => e.Message)
+                .HasColumnType("text")
+                .HasColumnName("message");
+            entity.Property(e => e.Subject)
+                .IsUnicode(false)
+                .HasColumnName("subject");
+            entity.Property(e => e.UserName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("user_name");
+        });
+
         modelBuilder.Entity<Country>(entity =>
         {
             entity.HasKey(e => e.CountryId).HasName("PK__country__7E8CD055CCED5EDB");
@@ -335,6 +369,10 @@ public partial class CIDbContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("availability");
+            entity.Property(e => e.AvailabilityTime)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("availability_time");
             entity.Property(e => e.CityId).HasColumnName("city_id");
             entity.Property(e => e.CountryId).HasColumnName("country_id");
             entity.Property(e => e.CreatedAt)
@@ -655,6 +693,27 @@ public partial class CIDbContext : DbContext
                 .HasColumnName("email");
         });
 
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.ToTable("roles");
+
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.DeletedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("deleted_at");
+            entity.Property(e => e.RoleName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("role_name");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+        });
+
         modelBuilder.Entity<Skill>(entity =>
         {
             entity.HasKey(e => e.SkillId).HasName("PK__skill__FBBA83798338AD7E");
@@ -707,6 +766,9 @@ public partial class CIDbContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("('draft')")
                 .HasColumnName("status");
+            entity.Property(e => e.StoryDate)
+                .HasColumnType("datetime")
+                .HasColumnName("story_date");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -899,6 +961,9 @@ public partial class CIDbContext : DbContext
             entity.Property(e => e.ProfileText)
                 .HasColumnType("text")
                 .HasColumnName("profile_text");
+            entity.Property(e => e.RoleId)
+                .HasDefaultValueSql("((2))")
+                .HasColumnName("role_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -922,6 +987,10 @@ public partial class CIDbContext : DbContext
             entity.HasOne(d => d.Country).WithMany(p => p.Users)
                 .HasForeignKey(d => d.CountryId)
                 .HasConstraintName("FK__users__country_i__48CFD27E");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("FK_users_roles");
         });
 
         modelBuilder.Entity<UserSkill>(entity =>

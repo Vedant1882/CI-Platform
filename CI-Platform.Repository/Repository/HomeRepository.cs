@@ -27,7 +27,10 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.Users.Where(u => u.Email == Email && u.Password == Password).FirstOrDefault();
         }
-
+        public Admin AdminEmail(String Email)
+        {
+            return _CIDbContext.Admins.Where(u => u.Email == Email).FirstOrDefault();
+        }
         public User UserByEmail(String Email)
         {
             return _CIDbContext.Users.FirstOrDefault(u => u.Email == Email);
@@ -388,6 +391,18 @@ namespace CI_Platform.Repository.Repository
             userskills.SkillId = skillid;
             _CIDbContext.Add(userskills);
             _CIDbContext.SaveChanges();
+        }
+        public ContactU addContactUs(string subject,string message, string username, string email)
+        {
+            var contactUs = new ContactU();
+            contactUs.UserName= username;
+            contactUs.Email= email;
+            contactUs.Subject = subject;
+            contactUs.Message = message;
+         
+            _CIDbContext.Add(contactUs);
+            _CIDbContext.SaveChanges();
+            return contactUs;
         }
 
     }
