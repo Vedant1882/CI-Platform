@@ -101,7 +101,45 @@
     float: left;
     
 }
+/*carousel*/
 
+.next-and-prev-btn {
+    background-color: black !important;
+    width: 31px !important;
+}
+
+
+
+
+
+
+
+
+hr {
+    flex-grow: 1;
+    / width: 100%;
+    / / or this /
+}
+
+.volunteering-sec-1 {
+    margin-top: 5%;
+}
+
+
+.vol-page-crousel {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+    .vol-page-crousel .row .col .img-fluid {
+        cursor: pointer;
+    }
+
+.vol-img-change-n {
+    height: 100px;
+}
 /* Add a transparency effect for thumnbail images */
 .demo {
     opacity: 0.6;

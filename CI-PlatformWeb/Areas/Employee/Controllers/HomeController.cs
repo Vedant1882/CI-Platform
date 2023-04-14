@@ -1061,7 +1061,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
                 //var user = _IHome.UserByUserid(id);
                 var story = _IHome.StoryByStoryidList(storyid);
-
+                var storyMedia = _IHome.storymedia().Where(SM => SM.StoryId == storyid).ToList();
+                ViewBag.StoryMedia = storyMedia.Count();
                 List<storyListingViewModel> storylist = new List<storyListingViewModel>();
                 foreach (var item in story)
                 {
@@ -1081,6 +1082,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                         avtarpath = user.Avatar,
                         viewcount = item.Viewcount,
                         whyivolunteer = user.WhyIVolunteer,
+                        StoryMedia = storyMedia,
 
                     });
 

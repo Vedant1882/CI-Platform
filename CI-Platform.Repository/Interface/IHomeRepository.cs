@@ -85,6 +85,13 @@ namespace CI_Platform.Repository.Interface
 
         public void AddUserSkills(long skillid,long userId);
         public ContactU addContactUs(string subject, string message,string username,string email);
-
+        public MissionTheme AddTheme(string themeName);
+        public MissionTheme UpdateTheme(string themeName,long themeId);
+        public MissionTheme DeleteTheme(long themeId);
+        public Skill AddSkill(string skillName);
+        public Skill UpdateSkill(string skillName, long skillId);
+        public Skill DeleteSkill(long skillId);
+        
+        public User AddUser(string firstname, string lastname, string email, string password, string department, string status, string employeeid);
     }
 }

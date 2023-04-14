@@ -404,6 +404,74 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.SaveChanges();
             return contactUs;
         }
+        public MissionTheme AddTheme(string themeName)
+        {
+            var missiontheme=new MissionTheme();
+            missiontheme.Title= themeName;
+            missiontheme.CreatedAt= DateTime.Now; 
+            _CIDbContext.Add(missiontheme);
+            _CIDbContext.SaveChanges();
+            return missiontheme;
+        }
+        public MissionTheme UpdateTheme(string themeName, long themeId)
+        {
+            var missiontheme = _CIDbContext.MissionThemes.FirstOrDefault(t=>t.MissionThemeId==themeId);
+            missiontheme.Title= themeName;
+            missiontheme.UpdatedAt= DateTime.Now;
+            _CIDbContext.Update(missiontheme);
+            _CIDbContext.SaveChanges();
+            return missiontheme;
+        }
+        public MissionTheme DeleteTheme(long themeId)
+        {
+            var theme = _CIDbContext.MissionThemes.FirstOrDefault(t => t.MissionThemeId == themeId);
+            theme.DeletedAt = DateTime.Now;
+            theme.Status = 0;
+            _CIDbContext.Update(theme);
+            _CIDbContext.SaveChanges();
+            return theme;
+        }
+        public Skill AddSkill(string skillName)
+        {
+            var skill = new Skill();
+            skill.SkillName = skillName;
+            skill.CreatedAt = DateTime.Now;
+            _CIDbContext.Add(skill);
+            _CIDbContext.SaveChanges();
+            return skill;
+        }
+        public Skill UpdateSkill(string skillName, long skillId)
+        {
+            var skills = _CIDbContext.Skills.FirstOrDefault(t => t.SkillId == skillId);
+            skills.SkillName = skillName;
+            skills.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(skills);
+            _CIDbContext.SaveChanges();
+            return skills;
+        }
+        public Skill DeleteSkill(long skillId)
+        {
+            var skill = _CIDbContext.Skills.FirstOrDefault(t => t.SkillId == skillId);
+            skill.DeletedAt = DateTime.Now;
+            skill.Status = "0";
+            _CIDbContext.Update(skill);
+            _CIDbContext.SaveChanges();
+            return skill;
+        }
+        public User AddUser(string firstname, string lastname, string email, string password, string department, string status, string employeeid)
+        {
+            var user= new User();
+            user.FirstName = firstname;
+            user.LastName = lastname;
+            user.Email = email;
+            user.Password= password;
+            user.Department = department;
+            user.Status = status;
+            user.EmployeeId = employeeid;
+            _CIDbContext.Add(user);
+            _CIDbContext.SaveChanges();
+            return user;
+        }
 
     }
 }

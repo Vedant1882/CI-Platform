@@ -76,7 +76,7 @@
                         <div class="column" style="width:25%">
                             <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
                         </div>
-                        @*<div class="column">
+                       @*<div class="column">
                         <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(5)" alt="Nature and sunrise">
                         </div>
                         <div class="column">
@@ -87,6 +87,110 @@
 
                 </div>
             </div>
+
+   @* @foreach(var Model in Model)
+    {
+        <div class="col-12 col-md-6 vol-page-img-sec d-flex flex-column">
+            <div>
+                @if (ViewBag.StoryMedia != 0)
+                {
+                    @for (var i = 0; i < 1; i++)
+                    {
+                        <img class="img-fluid vol-page-crousel" id="vol-page-crousel"
+                 src="@Model.StoryMedia[i].StoryPath" alt="">
+                    }
+                }
+                else
+                {
+                    <img class="img-fluid vol-page-crousel" id="vol-page-crousel"
+                 src="~/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-3.png" alt="">
+
+                }
+
+
+            </div>
+            @if (ViewBag.StoryMedia != 0)
+            {
+                <div class="d-flex mt-2" style="height: 100px;">
+                    <div id="carouselExample" class="carousel slide">
+                        <div class="carousel-inner" style="height: 100px;">
+                            <div class="carousel-item active vol-page-crousel">
+                                <div class="row">
+
+
+                                    @if (ViewBag.StoryMedia > 4)
+                                    {
+                                        @for (var i = 0; i < 4; i++)
+                                        {
+                                            <div class="col">
+                                                <img class="img-fluid vol-img-change-@i vol-img-change-n"
+                                     src="@Model.StoryMedia[i].StoryPath" alt=""
+                                     onclick="onImageChange(@i)">
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @for (var i = 0; i < ViewBag.StoryMedia; i++)
+                                        {
+                                            <div class="col">
+                                                <img class="img-fluid vol-img-change-@i vol-img-change-n"
+                                     src="@Model.StoryMedia[i].StoryPath" alt=""
+                                     onclick="onImageChange(@i)">
+                                            </div>
+                                        }
+                                    }
+
+
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="carousel-item vol-page-crousel">
+                                <div class="row">
+
+                                    @for (var i = 4; i < ViewBag.StoryMedia; i++)
+                                    {
+                                        if (i > 7)
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            <div class="col">
+                                                <img class="img-fluid vol-img-change-@i vol-img-change-n"
+                                     src="@Model.StoryMedia[i].StoryPath" alt=""
+                                     onclick="onImageChange(@i)">
+                                            </div>
+                                        }
+
+                                    }
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <button class="carousel-control-prev next-and-prev-btn" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next next-and-prev-btn" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }*@
+            
+
 
             <div class="rightdiv  col-12 col-lg-6 col-md-12 col-sm-12 mt-4 mt-lg-0">
                 @foreach (var story in Model)
@@ -261,6 +365,12 @@
             timer: 1500
         })
     }
+    function onImageChange(imgCount) {
+        var img = document.getElementById("vol-page-crousel");
+        var subImage = document.getElementsByClassName(`vol-img-change-${imgCount}`);
+        img.src = subImage[0].src
+    }
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

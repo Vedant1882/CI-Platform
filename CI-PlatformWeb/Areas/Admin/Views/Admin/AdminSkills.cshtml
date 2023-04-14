@@ -1,0 +1,143 @@
+﻿@model CI_PlatformWeb.Models.AdminSkillViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_AdminSidebar";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
+    @* <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />*@
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
+</head>
+<body>
+    <div class=" container">
+        <div class="d-flex borderbottom justify-content-between">
+            <h3 class="borderbotm mb-0">Mission Themes</h3>
+            <button type="button" onclick="refreshModal()" class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminMissionSkillmodal">
+                <i class="fa-regular fa-plus" style="color: #F88735"></i>
+                Add
+            </button>
+            <div class="modal fade" id="AdminMissionSkillmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form asp-action="AddSkill" asp-controller="Admin">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">ADD New Skill</h1>
+                                <button type="button" class="bg-white border-0" data-bs-dismiss="modal" aria-label="Close">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <lable>Skill Name</lable>
+                                            <input type="hidden" asp-for="skillId" />
+                                            <input asp-for="skillName" id="skillName" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn closebtn " data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn savebtn">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table id="example" class="table" style="width:100%;border: 1px solid #e9ecef;">
+            <thead class="thead-light" style="background-color:#F8F9FC;">
+                <tr>
+                    <th scope="col">Skill Name</th>
+
+                    <th scope="col" class="d-flex justify-content-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var skill in Model.skill)
+                {
+                    <tr>
+                        <td>@skill.SkillName</td>
+
+                        <td class="d-flex justify-content-center"><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#AdminMissionSkillmodal" onclick="editAdminSkill(@skill.SkillId)"></i> | <i class="fa fa-trash" style="color:red" onclick="deleteSkill(@skill.SkillId)"></i></td>
+                    </tr>
+                }
+
+
+
+
+
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        function refreshModal() {
+            document.getElementById("skillName").value = "";
+        }
+        function editAdminSkill(skillId){
+            $.ajax({
+                url: '/Admin/Admin/GetSkill',
+                type: 'POST',
+                data: { skillId: skillId },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#AdminMissionSkillmodal').html($(response).find('#AdminMissionSkillmodal').html());
+
+                },
+                error: function () {
+                    alert("could not comment");
+                }
+            });
+        }
+        function deleteSkill(skillId) {
+            $.ajax({
+                url: '/Admin/Admin/deleteSkill',
+                type: 'POST',
+                data: { skillId: skillId },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#example').html($(response).find('#example').html());
+
+                },
+                error: function () {
+                    alert("could not comment");
+                }
+            });
+        }
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    @*  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/Admin.js" asp-append-version="true"></script>
+    <link href="~/css/Adminindex.css" rel="stylesheet" asp-append-version="true" />
+
+
+</body>
+</html>
