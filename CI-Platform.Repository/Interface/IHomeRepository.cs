@@ -1,4 +1,5 @@
 ﻿using CI_Entity.Models;
+using CI_Entity.ViewModel;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,19 @@ namespace CI_Platform.Repository.Interface
         public Skill AddSkill(string skillName);
         public Skill UpdateSkill(string skillName, long skillId);
         public Skill DeleteSkill(long skillId);
-        
-        public User AddUser(string firstname, string lastname, string email, string password, string department, string status, string employeeid);
+
+        public User AddUser(string firstname, string lastname, string email, string password, string department, string profiletext,
+            string status, string employeeid, string avatar, long cityid, long countryid);
+        public User UpdateUser(string firstname, string lastname, string email, string password, string department, string profiletext,
+    string status, string employeeid, string avatar, long cityid, long countryid, long userId);
+        public IQueryable<MissionApplicationViewModel> GetPendingMissionApplications();
+        public void Approveapplication(long MaId, string status);
+        public List<CmsPage> GetCmsPages();
+        public void AddCms(CI_Entity.ViewModel.AdminCmsPageVM cms);
+        public void UpdateCms(CI_Entity.ViewModel.AdminCmsPageVM cms);
+        public void Deletecms(long id);
+        public CI_Entity.ViewModel.AdminCmsPageVM GetCmsPages(long CmsPageId);
+        public IQueryable<AdminStoryVM> GetPendingStories();
+        public void Approvestory(long MaId, string status);
     }
 }

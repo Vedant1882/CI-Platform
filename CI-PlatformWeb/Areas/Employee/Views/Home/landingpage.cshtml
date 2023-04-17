@@ -138,6 +138,10 @@
                                     {
                                         <div class="applied-div">Applied</div>
                                     }
+                                    @if (item.ispending == 1)
+                                    {
+                                        <div class="pending-div">Pending</div>
+                                    }
                                     @if (item.isclosed == 0)
                                     {
                                         <div class="closed-div">Closed</div>
@@ -347,7 +351,7 @@
                                     }
                                     else
                                     {
-                                        @if (item.isapplied == 1)
+                                        @if (item.isapplied == 1 || item.ispending==1)
                                         {
 
                                             <div class="d-flex justify-content-center">

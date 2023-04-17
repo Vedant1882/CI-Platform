@@ -460,7 +460,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                         GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
                         FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                         var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
-                        var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId).FirstOrDefault();
+                        var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus=="1").FirstOrDefault();
+                        var pendingmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus=="0").FirstOrDefault();
                         var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId).FirstOrDefault();
                         int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
 
@@ -512,6 +513,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             available = Convert.ToInt32(missions.Availability) - appliedseat,
                             deadline = missions.Deadline,
                             isapplied = applicationmission != null ? 1 : 0,
+                            ispending=pendingmission!=null?1:0,
                             isclosed = close == "1" ? 0 : 1,
                             path = missionmedia.MediaPath,
                             defaultimg = missionmedia.Default,
@@ -778,7 +780,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
                 string[] startDateNtime = mission.StartDate.ToString().Split(' ');
                 string[] endDateNtime = mission.EndDate.ToString().Split(' ');
-                var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId);
+                var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus=="1");
+                var pendingmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus=="0");
                 VolunteeringVM volunteeringMission = new();
                 int finalrating = 0;
                 int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId).Count();
@@ -819,6 +822,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     avgrating = finalrating,
                     available = Convert.ToInt32(mission.Availability) - appliedseat,
                     isapplied = applicationmission != null ? 1 : 0,
+                    ispending=pendingmission!=null?1:0,
                     isclosed = close == "1" ? 0 : 1,
                     goalval = Convert.ToInt32(goalMission.GoalValue),
                 };
@@ -996,7 +1000,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
             try
             {
 
-                List<Story> story = _IHome.story().Where(s => s.Status == "1").ToList();
+                List<Story> story = _IHome.story().Where(s => s.Status == "Approved").ToList();
 
                 List<storyListingViewModel> storylist = new List<storyListingViewModel>();
                 foreach (var item in story)

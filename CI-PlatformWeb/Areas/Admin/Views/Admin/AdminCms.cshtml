@@ -1,9 +1,11 @@
-﻿@*
+﻿
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
     Layout = "_AdminSidebar";
 }
+@model CI_Entity.ViewModel.AdminCmsPageVM
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,52 +26,12 @@
     <div class=" container">
         <div class="d-flex justify-content-between borderbottom">
             <h3 class="borderbotm mb-0 ">CMS Page</h3>
-            <button class="btn  mb-2  landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminCMSAddmodal">
+            <button onclick="emptyform()" class="btn  mb-2  landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminCMSmodal">
                 <i class="fa-regular fa-plus" style="color: #F88735"></i>
                 Add
             </button>
-            <div class="modal fade " id="AdminCMSAddmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog  modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">ADD </h1>
-                            <button type="button" class="bg-white border-0" data-bs-dismiss="modal" aria-label="Close">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body ">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-12 mb-2">
-                                        <lable>Title</lable>
-                                        <input class="form-control" />
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <lable>Description</lable>
-                                        <input name="editor1" id="editor1" class="form-control" />
-
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <lable>Slug</lable>
-                                        <input class="form-control" />
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <lable>Status</lable>
-                                        <input class="form-control" />
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn closebtn " data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn savebtn">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-        <div class="modal fade " id="AdminCMSEditmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade " id="AdminCMSmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog  modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -78,34 +40,41 @@
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
-                    <div class="modal-body ">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12 mb-2">
-                                    <lable>Title</lable>
-                                    <input class="form-control" />
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <lable>Description</lable>
-                                    <input name="editor2" id="editor2" class="form-control" />
+                    <form asp-action="AddCms" asp-controller="Admin" method="post">
+                        <div class="modal-body ">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <lable>Title</lable>
+                                        <input asp-for="Title" id="Title" class="form-control" />
+                                        <input asp-for="CmsPageId" id="CmsPageId" type="hidden" />
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <lable>Description</lable>
+                                        <textarea asp-for="Description" name="Description" id="Description" class="form-control"></textarea>
+
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <lable>Slug</lable>
+                                        <input asp-for="Slug" id="Slug" class="form-control" />
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <lable>Status</lable>
+                                        <select asp-for="Status" class="form-select" id="Status" placeholder="Status">
+                                            <option selected value="null">Select Status</option>
+                                            <option value="1"> Active</option>
+                                            <option value="0"> In-Active</option>
+                                        </select>
+                                    </div>
 
                                 </div>
-                                <div class="col-12 mb-2">
-                                    <lable>Slug</lable>
-                                    <input class="form-control" />
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <lable>Status</lable>
-                                    <input class="form-control" />
-                                </div>
-
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn closebtn " data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn savebtn">Save changes</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn closebtn " data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn savebtn">Save changes</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -119,12 +88,27 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>shfuksdigjgsdgsdilfjhsdjfsldkfhsdkfliishfsoidfjsldhfsildfhusi</td>
-                    <td>Active</td>
+                @foreach (var cms in Model.CmsPages)
+                {
+                    <tr>
+                        <td>@cms.Title</td>
 
-                    <td class="d-flex justify-content-center"><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#AdminCMSEditmodal" onclick="editAdminUser()"></i> | <i class="fa fa-trash" style="color:red"></i></td>
-                </tr>
+                        @if (cms.Status == "1")
+                        {
+                            <td class="text-success">Active</td>
+                        }
+                        else
+                        {
+                            <td class="text-danger">In-Active</td>
+                        }
+
+                        <td class="d-flex justify-content-center">
+                            <i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#AdminCMSmodal" id="@cms.CmsPageId" onclick="editCms(this.id)"></i> |
+                            <i class="fa fa-trash" id="@cms.CmsPageId" style="color:red" onclick="deletecms(this.id)"></i>
+                        </td>
+                    </tr>
+                }
+
 
 
 
@@ -136,7 +120,66 @@
 
     </div>
 
+    <script>
 
+        function emptyform() {
+            document.getElementById('Status').value = null;
+            document.getElementById('Slug').value = null;
+            document.getElementById('Description').value = null;
+            document.getElementById('CmsPageId').value = null;
+            document.getElementById('Title').value = null;
+        }
+        function editCms(id) {
+            $.ajax({
+                url: '/Admin/Admin/GetCms',
+                type: 'POST',
+                data: {
+                    CmsPageId: id
+                },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#AdminCMSmodal').html($(response).find('#AdminCMSmodal').html());
+
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists',
+                        timer: 2500,
+                    })
+                }
+            });
+        }
+        function deletecms(id) {
+            $.ajax({
+                url: '/Admin/Admin/DeleteCms',
+                type: 'POST',
+                data: {
+                    CmsPageId: id
+                },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#AdminCMSmodal').html($(response).find('#AdminCMSmodal').html());
+                    CKEDITOR.replace('Description');
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists',
+                        timer: 2500,
+                    })
+                }
+            });
+        }
+
+        CKEDITOR.replace('Description');
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     @*  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>*@

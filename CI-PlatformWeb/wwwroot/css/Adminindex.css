@@ -8,6 +8,10 @@
     background-color: #F88634;
 }
 
+.Viewbtn {
+    color: #F88634 !important;
+    border: 1px solid #F88634 !important;
+}
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #F88634;
@@ -35,6 +39,48 @@
     width: 18px;
     height: 23px;
 }
+
+
+element.style {
+}
+
+.dropzone .dz-preview.dz-file-preview .dz-image {
+    border-radius: 20px;
+    background: #999;
+    background: white;
+    border: 2px solid #F88634;
+}
+
+.dropzone .dz-preview.dz-file-preview .dz-details {
+    opacity: 1;
+    color: #F88634;
+}
+
+.dropzone .dz-preview .dz-progress {
+    opacity: 1;
+    z-index: 1000;
+    pointer-events: none;
+    position: absolute;
+    height: 16px;
+    left: 50%;
+    top: 50%;
+    margin-top: -8px;
+    width: 80px;
+    margin-left: -40px;
+    background: none !important;
+    -webkit-transform: scale(1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dz-remove {
+    position: absolute !important;
+    top: 90px !important;
+    z-index: 10 !important;
+    left: 50px !important;
+    color: grey;
+}
+
 
 .adminofcanvasdiv {
     background-color: #F88634;
@@ -112,7 +158,7 @@ a:hover {
     background-color: #F88634 !important;
 }
 
-/*Modal*/
+/Modal/
 .user-change-pass-link {
     font-size: 13px;
 }
@@ -137,7 +183,7 @@ a:hover {
     top: 100px;
     right: 16px;
     /*  color: #F88634;*/
-font-size: 26px;
+    font-size: 26px;
 }
 
 .imdupperdiv {

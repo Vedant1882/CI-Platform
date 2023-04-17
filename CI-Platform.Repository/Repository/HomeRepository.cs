@@ -1,5 +1,7 @@
 ﻿using CI_Entity.Models;
+using CI_Entity.ViewModel;
 using CI_Platform.Repository.Interface;
+using CI_PlatformWeb.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
@@ -10,10 +12,11 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CI_Platform.Repository.Repository
 {
-    public class HomeRepository:IHomeRepository
+    public class HomeRepository : IHomeRepository
     {
         public readonly CIDbContext _CIDbContext;
 
@@ -62,11 +65,11 @@ namespace CI_Platform.Repository.Repository
         }
         public List<Skill> AllSkills()
         {
-           return _CIDbContext.Skills.ToList();
+            return _CIDbContext.Skills.ToList();
         }
         public List<MissionRating> missionRatings()
         {
-            return _CIDbContext.MissionRatings.ToList();   
+            return _CIDbContext.MissionRatings.ToList();
         }
         public List<GoalMission> goalmission()
         {
@@ -100,7 +103,7 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.FavoriteMissions.Where(FM => FM.MissionId == missionid && FM.UserId == userid).FirstOrDefault();
         }
-        public MissionRating updaterating(MissionRating ratingExists,int rating)
+        public MissionRating updaterating(MissionRating ratingExists, int rating)
         {
             ratingExists.Rating = rating;
             _CIDbContext.Update(ratingExists);
@@ -123,7 +126,7 @@ namespace CI_Platform.Repository.Repository
             newcomment.UserId = UserId;
             newcomment.MissionId = MissionId;
             newcomment.CommentText = comment;
-            newcomment.CreatedAt= DateTime.Now;
+            newcomment.CreatedAt = DateTime.Now;
             _CIDbContext.Add(newcomment);
             _CIDbContext.SaveChanges();
             return newcomment;
@@ -155,7 +158,7 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.Countries.ToList();
         }
-        
+
         public List<Story> story()
         {
             return _CIDbContext.Stories.ToList();
@@ -174,7 +177,7 @@ namespace CI_Platform.Repository.Repository
         }
         public List<User> alluser()
         {
-            return _CIDbContext.Users.ToList(); 
+            return _CIDbContext.Users.ToList();
         }
         public Story StoryByStoryid(long storyid)
         {
@@ -186,11 +189,11 @@ namespace CI_Platform.Repository.Repository
             missionapplication.UserId = userid;
             missionapplication.MissionId = missionid;
             missionapplication.AppliedAt = DateTime.Now;
-            missionapplication.ApprovalStatus = "1";
+            missionapplication.ApprovalStatus = "0";
             _CIDbContext.Add(missionapplication);
             _CIDbContext.SaveChanges();
         }
-        public long addstory(long MissionId, string title, DateTime date, string discription, long id,long storyId)
+        public long addstory(long MissionId, string title, DateTime date, string discription, long id, long storyId)
         {
             if (storyId == 0)
             {
@@ -207,23 +210,23 @@ namespace CI_Platform.Repository.Repository
             }
             else
             {
-                var story=_CIDbContext.Stories.Where(s=>s.StoryId==storyId).FirstOrDefault();
-                
+                var story = _CIDbContext.Stories.Where(s => s.StoryId == storyId).FirstOrDefault();
+
                 story.MissionId = MissionId;
                 story.UserId = id;
                 story.Title = title;
                 story.Description = discription;
                 story.Status = "1";
-                story.UpdatedAt =DateTime.Now;
+                story.UpdatedAt = DateTime.Now;
                 _CIDbContext.Update(story);
                 _CIDbContext.SaveChanges();
                 return story.StoryId;
             }
-            
-                
-            
+
+
+
         }
-        public long addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId)
+        public long addstorydraft(long MissionId, string title, DateTime date, string discription, long id, long storyId)
         {
             if (storyId == 0)
             {
@@ -252,24 +255,24 @@ namespace CI_Platform.Repository.Repository
                 return story.StoryId;
 
             }
-           
+
 
 
         }
-        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id,long storyId, long sId)
+        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id, long storyId, long sId)
         {
-            
 
-                
-                StoryMedium st = new StoryMedium();
-                st.StoryId = sId;
-                st.StoryType = mediatype;
-                st.StoryPath = mediapath;
-                _CIDbContext.Add(st);
-                _CIDbContext.SaveChanges();
-            
-            
-            
+
+
+            StoryMedium st = new StoryMedium();
+            st.StoryId = sId;
+            st.StoryType = mediatype;
+            st.StoryPath = mediapath;
+            _CIDbContext.Add(st);
+            _CIDbContext.SaveChanges();
+
+
+
         }
         public void removemedia(long storyId)
         {
@@ -280,9 +283,9 @@ namespace CI_Platform.Repository.Repository
                 _CIDbContext.SaveChanges();
             }
         }
-        public void addtimesheet(long MissionId, long id, int? hour, int? minute, DateTime date, string message, int? action,long? timesheetid)
+        public void addtimesheet(long MissionId, long id, int? hour, int? minute, DateTime date, string message, int? action, long? timesheetid)
         {
-            if(timesheetid== 0)
+            if (timesheetid == 0)
             {
                 if (hour != null && minute != null)
                 {
@@ -340,9 +343,9 @@ namespace CI_Platform.Repository.Repository
                     _CIDbContext.SaveChanges();
                 }
             }
-            
-            
-           
+
+
+
 
 
 
@@ -356,21 +359,21 @@ namespace CI_Platform.Repository.Repository
         public void deletetimesheet(long timesheetid)
         {
             var time = _CIDbContext.Timesheets.FirstOrDefault(t => t.TimesheetId == timesheetid);
-            time.DeletedAt= DateTime.Now;
-            time.Status= "deleted";
+            time.DeletedAt = DateTime.Now;
+            time.Status = "deleted";
             _CIDbContext.Update(time);
             _CIDbContext.SaveChanges();
         }
         public void commentdelete(long? userId, long? commentId)
         {
-            var comment=_CIDbContext.Comments.FirstOrDefault(c => c.CommentId == commentId);
+            var comment = _CIDbContext.Comments.FirstOrDefault(c => c.CommentId == commentId);
             _CIDbContext.Comments.Remove(comment);
             _CIDbContext.SaveChanges();
         }
         public void changepass(long? id, string? password)
         {
             var user = _CIDbContext.Users.FirstOrDefault(t => t.UserId == id);
-            
+
             user.Password = password;
             _CIDbContext.Update(user);
             _CIDbContext.SaveChanges();
@@ -392,32 +395,32 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.Add(userskills);
             _CIDbContext.SaveChanges();
         }
-        public ContactU addContactUs(string subject,string message, string username, string email)
+        public ContactU addContactUs(string subject, string message, string username, string email)
         {
             var contactUs = new ContactU();
-            contactUs.UserName= username;
-            contactUs.Email= email;
+            contactUs.UserName = username;
+            contactUs.Email = email;
             contactUs.Subject = subject;
             contactUs.Message = message;
-         
+
             _CIDbContext.Add(contactUs);
             _CIDbContext.SaveChanges();
             return contactUs;
         }
         public MissionTheme AddTheme(string themeName)
         {
-            var missiontheme=new MissionTheme();
-            missiontheme.Title= themeName;
-            missiontheme.CreatedAt= DateTime.Now; 
+            var missiontheme = new MissionTheme();
+            missiontheme.Title = themeName;
+            missiontheme.CreatedAt = DateTime.Now;
             _CIDbContext.Add(missiontheme);
             _CIDbContext.SaveChanges();
             return missiontheme;
         }
         public MissionTheme UpdateTheme(string themeName, long themeId)
         {
-            var missiontheme = _CIDbContext.MissionThemes.FirstOrDefault(t=>t.MissionThemeId==themeId);
-            missiontheme.Title= themeName;
-            missiontheme.UpdatedAt= DateTime.Now;
+            var missiontheme = _CIDbContext.MissionThemes.FirstOrDefault(t => t.MissionThemeId == themeId);
+            missiontheme.Title = themeName;
+            missiontheme.UpdatedAt = DateTime.Now;
             _CIDbContext.Update(missiontheme);
             _CIDbContext.SaveChanges();
             return missiontheme;
@@ -458,20 +461,163 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.SaveChanges();
             return skill;
         }
-        public User AddUser(string firstname, string lastname, string email, string password, string department, string status, string employeeid)
+        public User AddUser(string firstname, string lastname, string email, string password, string department, string profiletext,
+            string status, string employeeid, string avatar, long cityid, long countryid)
         {
-            var user= new User();
+            var userexist = _CIDbContext.Users.Where(e => e.Email == email).Any();
+            if (!userexist)
+            {
+                var user = new User();
+                user.FirstName = firstname;
+                user.LastName = lastname;
+                user.Email = email;
+                user.Password = password;
+                user.Department = department;
+                user.Status = status;
+                user.EmployeeId = employeeid;
+                user.Avatar = avatar;
+                user.CityId = cityid;
+                user.CountryId = countryid;
+                user.ProfileText = profiletext;
+                _CIDbContext.Add(user);
+                _CIDbContext.SaveChanges();
+                return user;
+            }
+            else
+            {
+                return _CIDbContext.Users.Find(email);
+            }
+
+        }
+        public User UpdateUser(string firstname, string lastname, string email, string password, string department, string profiletext,
+    string status, string employeeid, string avatar, long cityid, long countryid, long userId)
+        {
+
+            var user = _CIDbContext.Users.FirstOrDefault(e => e.UserId == userId);
             user.FirstName = firstname;
             user.LastName = lastname;
             user.Email = email;
-            user.Password= password;
+            user.Password = password;
             user.Department = department;
             user.Status = status;
             user.EmployeeId = employeeid;
-            _CIDbContext.Add(user);
+            user.Avatar = avatar;
+            user.CityId = cityid;
+            user.CountryId = countryid;
+            user.ProfileText = profiletext;
+            user.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(user);
             _CIDbContext.SaveChanges();
             return user;
+
         }
+        public IQueryable<MissionApplicationViewModel> GetPendingMissionApplications()
+        {
+            var applicationsList = from ma in _CIDbContext.MissionApplications
+                                   join m in _CIDbContext.Missions on ma.MissionId equals m.MissionId
+                                   join u in _CIDbContext.Users on ma.UserId equals u.UserId
+                                   where ma.ApprovalStatus == "0" 
+                                   select new MissionApplicationViewModel
+                                   {
+                                       UserId = u.UserId,
+                                       MissionId = ma.MissionId,
+                                       Title = m.Title,
+                                       AppliedAt = ma.AppliedAt,
+                                       FirstName = u.FirstName,
+                                       LastName = u.LastName,
+                                       MissionApplicationId = ma.MissionApplicationId,
+                                   };
+
+            return applicationsList;
+        }
+
+        public void Approveapplication(long MaId, string status)
+        {
+            var ma = _CIDbContext.MissionApplications.FirstOrDefault(e => e.MissionApplicationId == MaId);
+            ma.ApprovalStatus = status;
+            _CIDbContext.Update(ma);
+            _CIDbContext.SaveChanges();
+        }
+
+        public List<CmsPage> GetCmsPages()
+        {
+            return _CIDbContext.CmsPages.Where(e => e.DeletedAt == null).ToList();
+        }
+
+        public void AddCms(CI_Entity.ViewModel.AdminCmsPageVM cms)
+        {
+            var cmsPage = new CmsPage();
+            cmsPage.Title = cms.Title;
+            cmsPage.Description = HttpUtility.HtmlEncode(cms.Description);
+            cmsPage.Status = cms.Status;
+            cmsPage.Slug = cms.Slug;
+            _CIDbContext.Add(cmsPage);
+            _CIDbContext.SaveChanges();
+        }
+
+        public void UpdateCms(CI_Entity.ViewModel.AdminCmsPageVM cms)
+        {
+            var cmsPage = _CIDbContext.CmsPages.FirstOrDefault(e => e.CmsPageId == cms.CmsPageId);
+            cmsPage.Title = cms.Title;
+            cmsPage.Description = HttpUtility.HtmlEncode(cms.Description);
+            cmsPage.Status = cms.Status;
+            cmsPage.Slug = cms.Slug;
+            cmsPage.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(cmsPage);
+            _CIDbContext.SaveChanges();
+        }
+
+        public void Deletecms(long id)
+        {
+            var cmsPage = _CIDbContext.CmsPages.FirstOrDefault(e => e.CmsPageId == id);
+            cmsPage.DeletedAt = DateTime.Now;
+            _CIDbContext.Update(cmsPage);
+            _CIDbContext.SaveChanges();
+        }
+
+        public CI_Entity.ViewModel.AdminCmsPageVM GetCmsPages(long CmsPageId)
+        {
+            var cms = _CIDbContext.CmsPages.FirstOrDefault(e => e.CmsPageId == CmsPageId);
+            var cmsPage = new CI_Entity.ViewModel.AdminCmsPageVM();
+            cmsPage.CmsPageId = CmsPageId;
+            cmsPage.CmsPages = _CIDbContext.CmsPages.Where(e => e.DeletedAt == null).ToList();
+            cmsPage.Title = cms.Title;
+            cmsPage.Description = HttpUtility.HtmlDecode(cms.Description);
+            cmsPage.Status = cms.Status;
+            cmsPage.Slug = cms.Slug;
+
+            return cmsPage;
+        }
+
+        public IQueryable<AdminStoryVM> GetPendingStories()
+        {
+            var applicationsList = from ma in _CIDbContext.Stories
+                                   join m in _CIDbContext.Missions on ma.MissionId equals m.MissionId
+                                   join u in _CIDbContext.Users on ma.UserId equals u.UserId
+                                   where ma.Status == "Pending"
+                                   select new AdminStoryVM
+                                   {
+                                       StoryId = ma.StoryId,
+                                       MissionTitle = m.Title,
+                                       FirstName = u.FirstName,
+                                       LastName = u.LastName,
+                                       StoryTitle = ma.Title,
+                                   };
+            return applicationsList;
+        }
+
+        public void Approvestory(long MaId, string status)
+        {
+            var ma = _CIDbContext.Stories.FirstOrDefault(e => e.StoryId == MaId);
+            ma.Status = status;
+            _CIDbContext.Update(ma);
+            _CIDbContext.SaveChanges();
+        }
+
+
+
+
+
 
     }
 }

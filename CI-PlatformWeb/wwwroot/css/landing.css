@@ -189,6 +189,15 @@
     background-color: rgba(0, 255, 97, 0.6);
     font-size: 14px;
 }
+.pending-div {
+    position: absolute;
+    left: 0px;
+    top: 8px;
+    padding: 5px 10px;
+    color: white;
+    background-color: rgba(247, 221, 33, 0.6);
+    font-size: 14px;
+}
 #preloader {
     background: #ffff url(/Images/13.gif) no-repeat center center;
     height: 100vh;

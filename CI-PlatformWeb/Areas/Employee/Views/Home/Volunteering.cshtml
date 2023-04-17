@@ -206,14 +206,29 @@
                         }
                         @if (useridforrating != null)
                         {
-                            <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            @if (Model.isapplied == 1)
+                            {
+                                <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
 
-                                <img src="~/images/add1.png" class="" />
+                                    <img src="~/images/add1.png" class="" />
 
 
-                                <label class="ms-2"> Recommend to a Co-Worker</label>
+                                    <label class="ms-2"> Recommend to a Co-Worker</label>
 
-                            </button>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="col col-12 col-xl-6 col-lg-12  col-md-6 col-sm-12 rounded-5 d-flex  mt-3  Addfavourite  justify-content-center" type="button" onclick="alertforapply()">
+
+                                    <img src="~/images/add1.png" class="" />
+
+
+                                    <label class="ms-2"> Recommend to a Co-Worker</label>
+
+                                </button>
+                            }
+                            
                         }
                         else
                         {
@@ -278,32 +293,60 @@
 
                         @if (useridforrating != null)
                         {
-                            <div id="ratingstar" class="mt-1">
-                                @if (@Model.Rating != null)
+                            @if (Model.isapplied == 1)
+                            {
+                                <div id="ratingstar" class="mt-1">
+                                    @if (@Model.Rating != null)
+                                    {
+
+                                        int count = 0;
+
+                                        @for (var i = 1; i <= @Model.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill mt-1" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                            count++;
+                                        }
+                                        @for (var k = count + 1; k <= 5; k++)
+                                        {
+                                            <i class="bi bi-star-fill mt-1" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
+                                        }
+
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                @if (Model.avgrating != null)
                                 {
-
-                                    int count = 0;
-
-                                    @for (var i = 1; i <= @Model.Rating; i++)
+                                    @for (int i = 0; i < Model.avgrating; i++)
                                     {
-                                        <i class="bi bi-star-fill mt-1" style="color:orange" id="@i" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                                        count++;
-                                    }
-                                    @for (var k = count + 1; k <= 5; k++)
-                                    {
-                                        <i class="bi bi-star-fill mt-1" id="@k" onclick="addRating(this.id,@Model.MissionId,@useridforrating)"></i>
-                                    }
+                                        <img src="~/images/selected-star.png">
 
+                                    }
+                                    @for (int? i = Model.avgrating; i < 5; i++)
+                                    {
+                                        <img src="~/images/star.png">
+
+                                    }
                                 }
-                            </div>
+                            }
+
                         }
                         else
                         {
-                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
-                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
-                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
-                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
-                            <i class="bi bi-star-fill" onclick="alertforlogin()"></i>
+                            @if (Model.avgrating != null)
+                            {
+                                @for (int i = 0; i < Model.avgrating; i++)
+                                {
+                                    <img src="~/images/selected-star.png">
+
+                                }
+                                @for (int? i = Model.avgrating; i < 5; i++)
+                                {
+                                    <img src="~/images/star.png">
+
+                                }
+                            }
                         }
 
 
@@ -363,14 +406,26 @@
                             }
                             else
                             {
-                                @if (Model.isapplied == 1)
+                                @if (Model.isapplied == 1 || Model.ispending == 1)
                                 {
-                                    <div class="text-center">
-                                        <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
-                                            Already Applied
-                                        </button>
-                                    </div>
+                                    @if (Model.isapplied == 1)
+                                    {
+                                        <div class="text-center">
+                                            <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
+                                                Already Applied
+                                            </button>
+                                        </div>
+                                    }
+                                    @if (Model.ispending == 1)
+                                    {
+                                        <div class="text-center">
+                                            <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
+                                                Pending
+                                            </button>
+                                        </div>
+                                    }
                                 }
+
                                 else
                                 {
                                     <div class="text-center">
@@ -695,6 +750,7 @@
                 })
                 $('#applydiv').html($(response).find('#applydiv').html());
                 $('#availableseat').html($(response).find('#availableseat').html());
+                $('#starsr').html($(response).find('#starsr').html());
                 $('.recentvol').html($(response).find('.recentvol').html());
             }
 
@@ -710,6 +766,17 @@
             width: '300',
             height: '100',
             title: 'Please Login or Register First',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+    function alertforapply() {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'warning',
+            width: '300',
+            height: '100',
+            title: 'Please Apply first for recommandation',
             showConfirmButton: false,
             timer: 1500
         })

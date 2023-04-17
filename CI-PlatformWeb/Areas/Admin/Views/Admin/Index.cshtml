@@ -1,7 +1,8 @@
-﻿@model CI_PlatformWeb.Models.AdminUserViewModel
-@{
+﻿@{
     Layout = "_AdminSidebar";
 }
+
+@model CI_Entity.ViewModel.AdminUserViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
 
 
@@ -28,7 +29,7 @@
 
         <div class="d-flex justify-content-between borderbottom">
             <h3 class="borderbotm mb-0">User</h3>
-            <button class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+            <button onclick="onclickAdd()" class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#exampleModal1">
                 <i class="fa-regular fa-plus" style="color: #F88735"></i>
                 Add
             </button>
@@ -39,55 +40,64 @@
         <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <form asp-action="AddUser" asp-controller="Admin">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            
+                    <form asp-action="AddUser" asp-controller="Admin" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+
                                 <div class="row">
                                     <div class="d-flex flex-column align-items-center justify-content-center imdupperdiv py-1">
-                                        <div class="user-profile-div " id="imgdiv">
-                                            <input type="file" @* asp-for="files"*@ style="display:none" id="imginput" />
+                                        <div class="user-profile-div" onclick="CLICK()" id="imgdiv">
+                                            <input onchange="CHANGE(event)" type="file" style="display:none" id="imginput" />
                                             @if (@Model.avatar != "")
                                             {
-                                                <img src="@Model.avatar" alt=""
+                                                <img  src="@Model.avatar" alt=""
                                                  class="rounded-circle user-profile-img " id="user-profile-img">
                                             }
                                             else
                                             {
-                                                <img src="~/Images/abhi.png"
+                                                <img  src="~/Images/user1.png"
                                                  class="rounded-circle user-profile-img" id="user-profile-img">
                                             }
 
                                             <i class="bi bi-plus-circle-fill addimgplus" height="25px" width="25px"></i>
 
                                         </div>
-                                        <div class="user-username">@*@Model.firstname.ToUpperInvariant() @Model.lastname.ToUpperInvariant()*@ Abhi Undhad</div>
+                                        <div class="user-username">
+                                            @if (@Model.firstname == "")
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                @(Model.firstname + " " + Model.lastname)
+                                            }
+                                        </div>
 
                                     </div>
                                 </div>
                                 <div class="row mt-2 imdupperdiv py-2">
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <input asp-for="firstname" type="text" id="FirstName" class="form-control" placeholder="First name">
+                                        <input asp-for="firstname" type="text" id="firstname" class="form-control" placeholder="First name">
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <input asp-for="lastname" type="text" id="LastName" class="form-control" placeholder="Last name">
+                                        <input asp-for="lastname" type="text" id="lastname" class="form-control" placeholder="Last name">
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <input asp-for="email" type="email" id="Email" class="form-control" placeholder="Enter Email">
+                                        <input asp-for="email" type="email" id="email" class="form-control" placeholder="Enter Email">
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <input asp-for="password" type="password" id="Password" class="form-control" placeholder="Enter Password">
+                                        <input asp-for="password" type="password" id="password" class="form-control" placeholder="Enter Password">
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <input asp-for="department" type="text" id="Department" class="form-control" placeholder="Department">
+                                        <input asp-for="department" type="text" id="department" class="form-control" placeholder="Department">
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <select asp-for="countryid" class="form-select"  placeholder="Country">
-                                            <option selected disabled>Select user country</option>
+                                        <select asp-for="countryid" class="form-select" placeholder="Country">
+                                            <option selected value="null">Select user country</option>
                                             @foreach (var country in Model.allcountry)
                                             {
                                                 <option value="@country.CountryId"> @country.Name</option>
@@ -96,8 +106,8 @@
                                         </select>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <select asp-for="cityid" class="form-select" placeholder="City">
-                                            <option selected disabled>Select user city</option>
+                                        <select asp-for="cityid" class="form-select" id="cityid" placeholder="City">
+                                            <option selected disabled value="null">Select user city</option>
                                             @foreach (var city in Model.allcity)
                                             {
                                                 <option value="@city.CityId"> @city.Name</option>
@@ -107,31 +117,34 @@
 
                                         </select>
                                     </div>
-                                    
-                                    <div class="col-12 col-lg-4 col-md-6 mb-3">
-                                        <select asp-for="status" class="form-select " placeholder="Status">
 
-                                            <option value="1 "> Active</option>
+                                    <div class="col-12 col-lg-4 col-md-6 mb-3">
+                                        <select asp-for="status" class="form-select" id="status" placeholder="Status">
+                                            <option selected disabled value="null">Select user country</option>
+                                            <option value="1"> Active</option>
                                             <option value="0"> In-Active</option>
 
                                         </select>
                                     </div>
+                                    <div class="col-12 col-lg-4 col-md-6 mb-3">
+                                        <input asp-for="employeeid" type="text" id="employeeid" class="form-control" placeholder="Employee Id">
+                                    </div>
                                     <div class=" col-12 mb-3">
-                                        <textarea asp-for="profiletext" class="form-control" placeholder="Profile_Txt..."></textarea>
-
+                                        <textarea asp-for="profiletext" id="profiletext" class="form-control" placeholder="Profile_Txt..."></textarea>
+                                        <input asp-for="userId" id="userId" type="hidden" />
                                     </div>
 
 
                                 </div>
-                            
+
+                            </div>
+
+
                         </div>
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" data-bs-dismiss="modal" class="btn closebtn">Close</button>
-                        <button type="submit" data-bs-dismiss="modal" class="btn savebtn" onclick="saveAdminUser()">Save changes</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" data-bs-dismiss="modal" class="btn closebtn">Close</button>
+                            <button type="button" data-bs-dismiss="modal" class="btn savebtn" onclick="saveAdminUser()">Save changes</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -172,7 +185,7 @@
                             <td class="text-danger">In-Active</td>
                         }
 
-                        <td><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="editAdminUser()"></i> | <i class="fa fa-trash" style="color:red"></i></td>
+                        <td><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal1" id="@fn.UserId" onclick="editAdminUser(this.id)"></i> | <i class="fa fa-trash" style="color:red"></i></td>
                     </tr>
 
 
@@ -185,7 +198,98 @@
         </table>
     </div>
 
+    <script>
 
+
+        function onclickAdd() {
+            document.getElementById("email").value = null;
+            document.getElementById("password").value = null;
+            document.getElementById("lastname").value = null;
+            document.getElementById("firstname").value = null;
+            document.getElementById("cityid").value = null;
+            document.getElementById("countryid").value = null;
+            document.getElementById("department").value = null;
+            document.getElementById("status").value = null;
+            document.getElementById("employeeid").value = null;
+            document.getElementById("userId").value = null;
+            document.getElementById("user-profile-img").src = "/Images/user1.png";
+        }
+
+        function CHANGE(event) {
+            const reader = new FileReader(); // Create a new FileReader object
+            reader.onload = function () {
+                document.getElementById('user-profile-img').src = reader.result; // Set the source of the image tag to the selected image
+            }
+            reader.readAsDataURL(event.target.files[0]); // Read the selected file as a data URL
+        }
+
+
+        function editAdminUser(id) {
+            $.ajax({
+                url: '/Admin/Admin/GetUser',
+                type: 'POST',
+                data: {
+                    userId: id
+                },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#exampleModal1').html($(response).find('#exampleModal1').html());
+
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists',
+                        timer: 2500,
+                    });
+                }
+            });
+        }
+
+        function saveAdminUser() {
+
+            $.ajax({
+                url: '/Admin/Admin/AddUser',
+                type: 'POST',
+                data: {
+                    firstname: document.getElementById("firstname").value,
+                    lastname: document.getElementById("lastname").value,
+                    email: document.getElementById("email").value,
+                    password: document.getElementById("password").value,
+                    department: document.getElementById("department").value,
+                    employeeid: document.getElementById("employeeid").value,
+                    avatar: document.getElementById("user-profile-img").src,
+                    cityid: document.getElementById("cityid").value,
+                    countryid: document.getElementById("countryid").value,
+                    status: document.getElementById("status").value,
+                    profiletext: document.getElementById("profiletext").value,
+                    userId: document.getElementById("userId").value
+                },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#example').html($(response).find('#example').html());
+                    location.reload();
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists',
+                        timer: 2500,
+                    })
+                }
+            });
+        }
+
+        function CLICK() {
+            document.getElementById("imginput").click();
+        }
+    </script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
 
