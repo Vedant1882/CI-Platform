@@ -494,10 +494,7 @@ public partial class CIDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("document_name");
-            entity.Property(e => e.DocumentPath)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("document_path");
+            entity.Property(e => e.DocumentPath).HasColumnName("document_path");
             entity.Property(e => e.DocumentType)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -572,7 +569,7 @@ public partial class CIDbContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("media_name");
             entity.Property(e => e.MediaPath)
-                .HasMaxLength(255)
+                .IsUnicode(false)
                 .HasColumnName("media_path");
             entity.Property(e => e.MediaType)
                 .HasMaxLength(255)

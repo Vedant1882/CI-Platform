@@ -2,6 +2,7 @@
 using CI_Entity.ViewModel;
 using CI_Platform.Repository.Interface;
 using CI_PlatformWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
@@ -516,7 +517,7 @@ namespace CI_Platform.Repository.Repository
             var applicationsList = from ma in _CIDbContext.MissionApplications
                                    join m in _CIDbContext.Missions on ma.MissionId equals m.MissionId
                                    join u in _CIDbContext.Users on ma.UserId equals u.UserId
-                                   where ma.ApprovalStatus == "0" 
+                                   where ma.ApprovalStatus == "0"
                                    select new MissionApplicationViewModel
                                    {
                                        UserId = u.UserId,
@@ -614,9 +615,120 @@ namespace CI_Platform.Repository.Repository
             _CIDbContext.SaveChanges();
         }
 
+        public Mission AddMission(AdminMissionViewModel model, IFormFileCollection? files)
+        {
+            var mission = new Mission();
+            mission.Title = model.title;
+            mission.ShortDescription = model.shortdescription;
+            mission.Description = model.description;
+            mission.MissionType = model.missionType;
+            mission.StartDate = model.startDate;
+            mission.EndDate = model.endDate;
+            mission.Deadline = model.deadline;
+            mission.Availability = model.totalseats;
+            mission.AvailabilityTime = model.timeavailability;
+            mission.CityId = model.cityId;
+            mission.CountryId = model.countryId;
+            mission.ThemeId = model.themeId;
+            _CIDbContext.Add(mission);
+            _CIDbContext.SaveChanges();
+            if (model.url != null)
+            {
+                var videoUrls = model.url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var videoUrl in videoUrls)
+                {
+                    var missionMedia = new MissionMedium();
+                    missionMedia.CreatedAt = DateTime.Now;
+                    missionMedia.MissionId = mission.MissionId;
+                    missionMedia.MediaPath = videoUrl;
+                    missionMedia.MediaType = "Video";
+                    _CIDbContext.Add(missionMedia);
+                    _CIDbContext.SaveChanges();
+                }
+            }
+            if (model.selectedSkills != null)
+            {
+                var skills = model.selectedSkills.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var skill in skills)
+                {
+                    var skillId = Convert.ToInt64(skill);
+                    var missiionskills = new MissionSkill();
+                    missiionskills.CreatedAt = DateTime.Now;
+                    missiionskills.MissionId = mission.MissionId;
+                    missiionskills.SkillId = skillId;
+                    _CIDbContext.Add(missiionskills);
+                    _CIDbContext.SaveChanges();
+                }
+            }
+            if (mission.MissionType == "time")
+            {
+                var missiongoal = new GoalMission();
+                missiongoal.MissionId = mission.MissionId;
+                missiongoal.GoalObjectiveText = "default";
+                missiongoal.GoalValue = "0";
+                _CIDbContext.Add(missiongoal);
+                _CIDbContext.SaveChanges();
+            }
+            else
+            {
+                var missiongoal = new GoalMission();
+                missiongoal.MissionId = mission.MissionId;
+                missiongoal.GoalObjectiveText = model.goalObjectiveText;
+                missiongoal.GoalValue = model.goalValue;
+                _CIDbContext.Add(missiongoal);
+                _CIDbContext.SaveChanges();
+            }
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    if(file.ContentType.Contains("pdf") || file.ContentType.Contains("docx") || file.ContentType.Contains("xlxs"))
+                    {
+                        byte[] fileBytes;
+                        using (var stream = new MemoryStream())
+                        {
+                            file.CopyTo(stream);
+                            fileBytes = stream.ToArray();
+                        }
+                        var missionmedia = new MissionDocument();
+                        missionmedia.MissionId = mission.MissionId;
+                        var ext = file.ContentType.Split("/");
+                        missionmedia.DocumentType = ext[1];
+                        missionmedia.DocumentName = "document";
+                        missionmedia.DocumentPath = fileBytes;
+                        _CIDbContext.Add(missionmedia);
+                        _CIDbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        byte[] fileBytes;
+                        using (var stream = new MemoryStream())
+                        {
+                            file.CopyTo(stream);
+                            fileBytes = stream.ToArray();
+                        }
+                        string base64String = Convert.ToBase64String(fileBytes);
+                        var missionmedia = new MissionMedium();
+                        missionmedia.MissionId = mission.MissionId;
+                        var ext = file.ContentType.Split("/");
+                        missionmedia.MediaType = ext[1];
+                        missionmedia.MediaName = "image";
+                        missionmedia.MediaPath = "data:image/"+ ext[1] + ";base64,"+base64String;
+                        _CIDbContext.Add(missionmedia);
+                        _CIDbContext.SaveChanges();
+                    }
+                }
+            }
 
+            return mission;
+        }
 
-
+        public IQueryable<SkillListVM> MissionSkilljoinSkill()
+        {
+            return from US in _CIDbContext.MissionSkills
+                   join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
+                   select new SkillListVM { SkillId = US.SkillId, SkillName = S.SkillName, MissionId = US.MissionId };
+        }
 
 
     }

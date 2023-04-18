@@ -462,7 +462,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                         var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
                         var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus=="1").FirstOrDefault();
                         var pendingmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus=="0").FirstOrDefault();
-                        var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId).FirstOrDefault();
+                        var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId && m.MediaType!="Video").FirstOrDefault();
                         int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
 
                         var close = "0";
@@ -507,17 +507,17 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             createdAt = missions.CreatedAt,
                             GoalText = goalMission.GoalObjectiveText,
                             UserId = useridfavmission,
-                            addedtofavM = favoriteMissions.MissionId,
-                            addedtofavU = (long)favoriteMissions.UserId,
+                            //addedtofavM = favoriteMissions.MissionId,
+                            //addedtofavU = (long)favoriteMissions.UserId,
                             avgrating = finalrating,
                             available = Convert.ToInt32(missions.Availability) - appliedseat,
                             deadline = missions.Deadline,
                             isapplied = applicationmission != null ? 1 : 0,
                             ispending=pendingmission!=null?1:0,
                             isclosed = close == "1" ? 0 : 1,
-                            path = missionmedia.MediaPath,
-                            defaultimg = missionmedia.Default,
-                            goalval = Convert.ToInt32(goalMission.GoalValue),
+                            path = missionmedia!=null?missionmedia.MediaPath:"",
+                            defaultimg = missionmedia != null ? missionmedia.Default:"",
+                            goalval = goalMission.GoalValue!=null?Convert.ToInt32(goalMission.GoalValue):0,
 
                         });
 

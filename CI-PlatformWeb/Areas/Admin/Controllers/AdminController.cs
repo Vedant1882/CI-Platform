@@ -1,4 +1,5 @@
 ﻿using CI_Entity.Models;
+using CI_Entity.ViewModel;
 using CI_Platform.Repository.Interface;
 using CI_PlatformWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -123,9 +124,71 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
         {
             HttpContext.Session.SetInt32("Nav", 3);
             ViewBag.nav = HttpContext.Session.GetInt32("Nav");
-            return View();
+            var missionvm=new AdminMissionViewModel();
+            missionvm.missions=_IHome.Allmissions();
+            missionvm.countries=_IHome.allcountry();
+            missionvm.cities=_IHome.AllCity();
+            missionvm.themes=_IHome.alltheme();
+            missionvm.AllSkills = _IHome.AllSkills();
+
+            //var skills = _IHome.MissionSkilljoinSkill();
+            //var uskills = skills.Where(e => e.MissionId == ).ToList();
+            //ViewBag.userskills = uskills;
+            //foreach (var skill in uskills)
+            //{
+            //    var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
+            //    allskills.Remove(rskill);
+            //}
+            //ViewBag.remainingSkills = allskills;
+            return View(missionvm);
         }
-        public IActionResult AdminTheme()
+        //[HttpPost]
+        //public async Task<IActionResult> SaveUserSkills(long[] selectedSkills)
+        //{
+
+        //    int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+        //    long id = Convert.ToInt64(userid);
+        //    var abc = _CIDbContext.UserSkills.Where(e => e.UserId == id).ToList();
+        //    _CIDbContext.RemoveRange(abc);
+        //    _CIDbContext.SaveChanges();
+        //    foreach (var skills in selectedSkills)
+        //    {
+
+
+        //        _IHome.AddUserSkills(skills, id);
+
+
+        //    }
+
+        //    return RedirectToAction("UserProfile", "Home");
+
+        //}
+        [HttpPost]
+        public IActionResult AddMission(AdminMissionViewModel model)
+        {
+            if (model.missionId == null || model.missionId == 0)
+            {
+                var files = Request.Form.Files;
+                _IHome.AddMission(model,files);
+                
+            }
+            //else
+            //{
+
+            //    var savedUser = _IHome.UpdateUser(firstname, lastname, email, password, department, profiletext, status, employeeid, avatar, cityid, countryid, userId);
+            //    return RedirectToAction("Index");
+            //}
+
+            var missionvm = new AdminMissionViewModel();
+            missionvm.missions = _IHome.Allmissions();
+            missionvm.countries = _IHome.allcountry();
+            missionvm.cities = _IHome.AllCity();
+            missionvm.themes = _IHome.alltheme();
+
+            return RedirectToAction("AdminMission");
+        }
+
+            public IActionResult AdminTheme()
         {
             HttpContext.Session.SetInt32("Nav", 4);
             ViewBag.nav = HttpContext.Session.GetInt32("Nav");

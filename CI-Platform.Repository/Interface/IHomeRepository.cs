@@ -1,5 +1,6 @@
 ﻿using CI_Entity.Models;
 using CI_Entity.ViewModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -106,5 +107,9 @@ namespace CI_Platform.Repository.Interface
         public CI_Entity.ViewModel.AdminCmsPageVM GetCmsPages(long CmsPageId);
         public IQueryable<AdminStoryVM> GetPendingStories();
         public void Approvestory(long MaId, string status);
+
+        public Mission AddMission(AdminMissionViewModel model, IFormFileCollection? files);
+
+        public IQueryable<SkillListVM> MissionSkilljoinSkill();
     }
 }

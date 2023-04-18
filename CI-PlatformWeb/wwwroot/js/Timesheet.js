@@ -81,7 +81,7 @@ function deletegoalsheet(timesheetid) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/Home/deletetimesheet',
+                url: '/Employee/Home/deletetimesheet',
                 type: 'POST',
                 data: { timesheetid: timesheetid },
 
@@ -120,7 +120,7 @@ function deletegoalsheet(timesheetid) {
 function editgoalsheet(timesheetid) {
 
     $.ajax({
-        url: '/Home/editsheet',
+        url: '/Employee/Home/editsheet',
         type: 'POST',
         data: { timesheetid: timesheetid },
 
@@ -151,7 +151,7 @@ function editgoalsheet(timesheetid) {
 function edittimesheet(timesheetid) {
 
     $.ajax({
-        url: '/Home/editsheet',
+        url: '/Employee/Home/editsheet',
         type: 'POST',
         data: { timesheetid: timesheetid },
 

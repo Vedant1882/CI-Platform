@@ -13,7 +13,7 @@ public partial class MissionDocument
 
     public string DocumentType { get; set; } = null!;
 
-    public string? DocumentPath { get; set; }
+    public byte[]? DocumentPath { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

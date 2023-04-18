@@ -76,7 +76,7 @@ element.style {
 .dz-remove {
     position: absolute !important;
     top: 90px !important;
-    z-index: 10 !important;
+    z-index: 20 !important;
     left: 50px !important;
     color: grey;
 }
