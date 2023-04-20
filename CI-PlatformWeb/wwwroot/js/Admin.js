@@ -10,7 +10,8 @@ currentTime();
 $(document).ready(function () {
     $('#example').DataTable();
 });
-CKEDITOR.replace('editor1');
+/*CKEDITOR.replace('editor1');*/
+
 
 function ved1() {
 	var a = document.getElementById("s1");

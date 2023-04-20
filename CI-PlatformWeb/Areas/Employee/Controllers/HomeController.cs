@@ -97,7 +97,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 {
                     if (admin.Password == model.Password)
                     {
-                        return RedirectToAction("Index", "Admin", new {area="Admin"});
+                        return RedirectToAction("Index", "Admin", new { area = "Admin" });
                     }
                     else
                     {
@@ -460,10 +460,10 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                         GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
                         FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                         var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
-                        var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus=="1").FirstOrDefault();
-                        var pendingmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus=="0").FirstOrDefault();
-                        var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId && m.MediaType!="Video").FirstOrDefault();
-                        int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId).Count();
+                        var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus == "1").FirstOrDefault();
+                        var pendingmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus == "0").FirstOrDefault();
+                        var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId && m.MediaType != "Video" && m.DeletedAt == null).FirstOrDefault();
+                        int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId && m.ApprovalStatus == "1").Count();
 
                         var close = "0";
                         if (DateTime.Now > missions.Deadline)
@@ -513,11 +513,11 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             available = Convert.ToInt32(missions.Availability) - appliedseat,
                             deadline = missions.Deadline,
                             isapplied = applicationmission != null ? 1 : 0,
-                            ispending=pendingmission!=null?1:0,
+                            ispending = pendingmission != null ? 1 : 0,
                             isclosed = close == "1" ? 0 : 1,
-                            path = missionmedia!=null?missionmedia.MediaPath:"",
-                            defaultimg = missionmedia != null ? missionmedia.Default:"",
-                            goalval = goalMission.GoalValue!=null?Convert.ToInt32(goalMission.GoalValue):0,
+                            path = missionmedia != null ? missionmedia.MediaPath : "",
+                            defaultimg = missionmedia != null ? missionmedia.Default : "",
+                            goalval = goalMission.GoalValue != null ? Convert.ToInt32(goalMission.GoalValue) : 0,
 
                         });
 
@@ -780,11 +780,11 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 missionlist = missionlist.Where(t => t.ThemeId == mission.ThemeId && t.MissionId != mission.MissionId).Take(3).ToList();
                 string[] startDateNtime = mission.StartDate.ToString().Split(' ');
                 string[] endDateNtime = mission.EndDate.ToString().Split(' ');
-                var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus=="1");
-                var pendingmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus=="0");
+                var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus == "1");
+                var pendingmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus == "0");
                 VolunteeringVM volunteeringMission = new();
                 int finalrating = 0;
-                int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId).Count();
+                int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId && m.ApprovalStatus == "1").Count();
                 var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
                 var close = "0";
                 if (DateTime.Now > mission.Deadline)
@@ -822,7 +822,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     avgrating = finalrating,
                     available = Convert.ToInt32(mission.Availability) - appliedseat,
                     isapplied = applicationmission != null ? 1 : 0,
-                    ispending=pendingmission!=null?1:0,
+                    ispending = pendingmission != null ? 1 : 0,
                     isclosed = close == "1" ? 0 : 1,
                     goalval = Convert.ToInt32(goalMission.GoalValue),
                 };
@@ -881,6 +881,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 }
 
                 ViewBag.relatedmission = relatedlist.Take(3);
+                ViewBag.relatedmissioncount = relatedlist.Count();
                 List<VolunteeringVM> recentvolunteredlist = new List<VolunteeringVM>();
                 var recentvoluntered = from U in _IHome.alluser().Where(u => u.UserId != useridforrating) join MA in _IHome.missionapplication() on U.UserId equals MA.UserId where MA.MissionId == mission.MissionId select U;
                 foreach (var item in recentvoluntered)
@@ -934,41 +935,48 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         #region storydraft get
         public IActionResult storyDraft(int? pageIndex)
         {
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            List<Story> story = _IHome.story().Where(s => s.Status == "draft" && s.UserId == id).ToList();
-
-            List<storyListingViewModel> storylist = new List<storyListingViewModel>();
-            foreach (var item in story)
+            try
             {
-                var user = _IHome.UserByUserid(item.UserId);
-                var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == item.MissionId);
-                var missiontheme = _IHome.missiontheme().FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
-                var storymedia = _IHome.storymedia().Where(s => s.StoryId == item.StoryId).FirstOrDefault();
-                storylist.Add(new storyListingViewModel
+                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userid);
+                List<Story> story = _IHome.story().Where(s => s.Status == "draft" && s.UserId == id).ToList();
+
+                List<storyListingViewModel> storylist = new List<storyListingViewModel>();
+                foreach (var item in story)
                 {
-                    UserId = user.UserId,
-                    StoryTitle = item.Title,
-                    Description = item.Description,
-                    StoryId = item.StoryId,
-                    MissionId = item.MissionId,
-                    UserName = user.FirstName,
-                    LastName = user.LastName,
-                    Theme = missiontheme.Title,
-                    avtarpath = user.Avatar,
-                    storypath = storymedia != null ? storymedia.StoryPath : null,
-                    Created = item.CreatedAt,
+                    var user = _IHome.UserByUserid(item.UserId);
+                    var mission = _IHome.Allmissions().FirstOrDefault(m => m.MissionId == item.MissionId);
+                    var missiontheme = _IHome.missiontheme().FirstOrDefault(m => m.MissionThemeId == mission.ThemeId);
+                    var storymedia = _IHome.storymedia().Where(s => s.StoryId == item.StoryId).FirstOrDefault();
+                    storylist.Add(new storyListingViewModel
+                    {
+                        UserId = user.UserId,
+                        StoryTitle = item.Title,
+                        Description = item.Description,
+                        StoryId = item.StoryId,
+                        MissionId = item.MissionId,
+                        UserName = user.FirstName,
+                        LastName = user.LastName,
+                        Theme = missiontheme.Title,
+                        avtarpath = user.Avatar,
+                        storypath = storymedia != null ? storymedia.StoryPath : null,
+                        Created = item.CreatedAt,
 
-                });
+                    });
 
+                }
+
+                ViewBag.storydraft = storylist;
+
+
+
+
+                return View(storylist);
             }
-
-            ViewBag.storydraft = storylist;
-
-
-
-
-            return View(storylist);
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
         }
         #endregion
@@ -1164,39 +1172,45 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         public async Task<IActionResult> addstory(StoryShareViewModel model)
         {
 
-
-            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userId);
-            //long storyid = model.storyId;
-            var sId = _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
-            if (model.attachment != null)
+            try
             {
-                if (model.storyId != 0)
-                {
-                    _IHome.removemedia(model.storyId);
-                }
-                foreach (var i in model.attachment)
-                {
-                    var FileName = "";
 
 
-                    using (var ms = new MemoryStream())
+                int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userId);
+                //long storyid = model.storyId;
+                var sId = _IHome.addstory(model.MissionId, model.title, model.date, model.editor1, id, model.storyId);
+                if (model.attachment != null)
+                {
+                    if (model.storyId != 0)
                     {
-                        await i.CopyToAsync(ms);
-                        var imageBytes = ms.ToArray();
-                        var base64String = Convert.ToBase64String(imageBytes);
-                        FileName = "data:image/png;base64," + base64String;
+                        _IHome.removemedia(model.storyId);
+                    }
+                    foreach (var i in model.attachment)
+                    {
+                        var FileName = "";
+
+
+                        using (var ms = new MemoryStream())
+                        {
+                            await i.CopyToAsync(ms);
+                            var imageBytes = ms.ToArray();
+                            var base64String = Convert.ToBase64String(imageBytes);
+                            FileName = "data:image/png;base64," + base64String;
+                        }
+
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                     }
 
-                    _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                 }
+                TempData["saved"] = "Your Story has been saved";
+                return RedirectToAction("storyShare", "Home");
 
             }
-            TempData["saved"] = "Your Story has been saved";
-            return RedirectToAction("storyShare", "Home");
-
-
-
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
             //return RedirectToAction("storyShare","Home");
 
@@ -1246,249 +1260,307 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         }
         public IActionResult storyShare(int? storyId)
         {
-            int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
-            StoryShareViewModel storyVm = new StoryShareViewModel();
-            if (storyId == null || storyId == 0)
-            {
-                storyVm.missions = _IHome.Allmissions();
-                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
-            }
-            else
+            try
             {
 
 
-                storyVm.missions = _IHome.Allmissions();
-                storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
-                var story = _IHome.story().Where(story => story.StoryId == storyId).FirstOrDefault();
-                storyVm.title = story.Title;
-                storyVm.editor1 = story.Description;
-                storyVm.date = story.CreatedAt;
-                storyVm.MissionId = story.MissionId;
-                storyVm.storyId = story.StoryId;
-                storyVm.storyMedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId).ToList();
+                int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
+                StoryShareViewModel storyVm = new StoryShareViewModel();
+                if (storyId == null || storyId == 0)
+                {
+                    storyVm.missions = _IHome.Allmissions();
+                    storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
+                }
+                else
+                {
+
+
+                    storyVm.missions = _IHome.Allmissions();
+                    storyVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
+                    var story = _IHome.story().Where(story => story.StoryId == storyId).FirstOrDefault();
+                    storyVm.title = story.Title;
+                    storyVm.editor1 = story.Description;
+                    storyVm.date = story.CreatedAt;
+                    storyVm.MissionId = story.MissionId;
+                    storyVm.storyId = story.StoryId;
+                    storyVm.storyMedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId).ToList();
+                }
+
+
+
+
+                return View(storyVm);
             }
-
-
-
-
-            return View(storyVm);
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         public IActionResult VolunteeringTimeSheet()
         {
-            int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
-            TimesheetViewModel timeVm = new TimesheetViewModel();
-
-            timeVm.missions = _IHome.Allmissions();
-            timeVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
-            var timelist = _IHome.alltimesheet().Where(t => t.UserId == userIdForRating).ToList();
-            timeVm.timesheet = timelist.OrderByDescending(c => c.CreatedAt).ToList();
+            try
+            {
 
 
-            return View(timeVm);
+                int? userIdForRating = HttpContext.Session.GetInt32("userIDforfavmission");
+                TimesheetViewModel timeVm = new TimesheetViewModel();
+
+                timeVm.missions = _IHome.Allmissions();
+                timeVm.missionapplication = _IHome.missionapplication().Where(m => m.UserId == userIdForRating).ToList();
+                var timelist = _IHome.alltimesheet().Where(t => t.UserId == userIdForRating).ToList();
+                timeVm.timesheet = timelist.OrderByDescending(c => c.CreatedAt).ToList();
+
+
+                return View(timeVm);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         [HttpPost]
         public async Task<IActionResult> addTimesheet(TimesheetViewModel model)
         {
+            try
+            {
+                int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userId);
+                //long storyid = model.storyId;
+                _IHome.addtimesheet(model.missionId, id, model.hour, model.minute, model.date, model.message, model.action, model.hiddenInput);
 
-            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userId);
-            //long storyid = model.storyId;
-            _IHome.addtimesheet(model.missionId, id, model.hour, model.minute, model.date, model.message, model.action, model.hiddenInput);
-
-
-
-
-
-            return RedirectToAction("VolunteeringTimeSheet", "Home");
-
+                return RedirectToAction("VolunteeringTimeSheet", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
         }
         [HttpPost]
         public async Task<IActionResult> deletetimesheet(long timesheetid)
         {
-
-            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userId);
-            //long storyid = model.storyId;
-            _IHome.deletetimesheet(timesheetid);
-
-
-
-
-
-            return RedirectToAction("VolunteeringTimeSheet", "Home");
-
+            try
+            {
+                int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userId);
+                //long storyid = model.storyId;
+                _IHome.deletetimesheet(timesheetid);
+                return RedirectToAction("VolunteeringTimeSheet", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
         }
 
         [HttpPost]
         public async Task<IActionResult> editsheet(long timesheetid)
         {
+            try
+            {
+                int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userId);
+                //long storyid = model.storyId;
+                var timesheet = _IHome.alltimesheet().Where(t => t.TimesheetId == timesheetid).FirstOrDefault();
 
-            int? userId = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userId);
-            //long storyid = model.storyId;
-            var timesheet = _IHome.alltimesheet().Where(t => t.TimesheetId == timesheetid).FirstOrDefault();
-
-            return Json(new { success = true, timesheet });
-
+                return Json(new { success = true, timesheet });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
         }
         [HttpPost]
         public async Task<IActionResult> changepass(string? pass1, string? pass2, string? pass3)
         {
-
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            //long storyid = model.storyId;
-            var userDetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
-            if (userDetail.Password == pass1)
+            try
             {
-                if (pass2 == pass3)
-                {
-                    _IHome.changepass(id, pass2);
-                }
-                else
-                {
-                    ViewBag.samePass = "Password and Confirm password must be same!!";
-                }
-            }
-            return RedirectToAction("UserProfile", "Home");
 
+
+                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userid);
+                //long storyid = model.storyId;
+                var userDetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
+                if (userDetail.Password == pass1)
+                {
+                    if (pass2 == pass3)
+                    {
+                        _IHome.changepass(id, pass2);
+                    }
+                    else
+                    {
+                        ViewBag.samePass = "Password and Confirm password must be same!!";
+                    }
+                }
+                return RedirectToAction("UserProfile", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         public IActionResult UserProfile()
         {
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            var user = _IHome.UserByUserid(id);
-            UserProfileViewModel userVM = new UserProfileViewModel();
-
-            userVM.employeeid = user.EmployeeId;
-            userVM.firstname = user.FirstName;
-            userVM.lastname = user.LastName;
-            userVM.username = user.FirstName +" "+ user.LastName;
-            userVM.email = user.Email;
-            userVM.whyivolunteered = user.WhyIVolunteer;
-            userVM.title = user.Title;
-            userVM.cityid = user.CityId;
-            userVM.countryid = user.CountryId;
-            //userVM.availability = user.
-            userVM.myprofile = user.ProfileText;
-            userVM.linkedinurl = user.LinkedInUrl;
-            userVM.avatar = user.Avatar;
-            userVM.department = user.Department;
-            userVM.cityid = user.CityId;
-            userVM.countryid = user.CountryId;
-            userVM.availability = user.Availability;
-            var allskills = _IHome.AllSkills();
-            ViewBag.allskills = allskills;
-            var skills = from US in _CIDbContext.UserSkills
-                         join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
-                         select new { US.SkillId, S.SkillName, US.UserId };
-            var uskills = skills.Where(e => e.UserId == id).ToList();
-            ViewBag.userskills = uskills;
-            foreach (var skill in uskills)
+            try
             {
-                var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
-                allskills.Remove(rskill);
-            }
-            ViewBag.remainingSkills = allskills;
-            ViewBag.allcities = _IHome.AllCity();
-            ViewBag.allcountry = _IHome.allcountry();
-            return View(userVM);
-        }
 
+
+                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userid);
+                var user = _IHome.UserByUserid(id);
+                UserProfileViewModel userVM = new UserProfileViewModel();
+
+                userVM.employeeid = user.EmployeeId;
+                userVM.firstname = user.FirstName;
+                userVM.lastname = user.LastName;
+                userVM.username = user.FirstName + " " + user.LastName;
+                userVM.email = user.Email;
+                userVM.whyivolunteered = user.WhyIVolunteer;
+                userVM.title = user.Title;
+                userVM.cityid = user.CityId;
+                userVM.countryid = user.CountryId;
+                //userVM.availability = user.
+                userVM.myprofile = user.ProfileText;
+                userVM.linkedinurl = user.LinkedInUrl;
+                userVM.avatar = user.Avatar;
+                userVM.department = user.Department;
+                userVM.cityid = user.CityId;
+                userVM.countryid = user.CountryId;
+                userVM.availability = user.Availability;
+                var allskills = _IHome.AllSkills();
+                ViewBag.allskills = allskills;
+                var skills = from US in _CIDbContext.UserSkills
+                             join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
+                             select new { US.SkillId, S.SkillName, US.UserId };
+                var uskills = skills.Where(e => e.UserId == id).ToList();
+                ViewBag.userskills = uskills;
+                foreach (var skill in uskills)
+                {
+                    var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
+                    allskills.Remove(rskill);
+                }
+                ViewBag.remainingSkills = allskills;
+                ViewBag.allcities = _IHome.AllCity();
+                ViewBag.allcountry = _IHome.allcountry();
+                return View(userVM);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> UserProfile(UserProfileViewModel model, IFormFileCollection files)
         {
+            try
+            {
 
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            //long storyid = model.storyId;
-            var userdetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
-            userdetail.FirstName = model.firstname;
-            userdetail.LastName = model.lastname;
-            HttpContext.Session.SetString("UserID", model.firstname);
-            HttpContext.Session.SetString("lastname", model.lastname);
-            userdetail.WhyIVolunteer = model.whyivolunteered;
-            userdetail.Title = model.title;
-            userdetail.EmployeeId = model.employeeid;
-            userdetail.ProfileText = model.myprofile;
-            userdetail.LinkedInUrl = model.linkedinurl;
-            userdetail.UpdatedAt = DateTime.Now;
-            userdetail.Department = model.department;
-            userdetail.CountryId = model.countryid;
-            userdetail.CityId = model.cityid;
-            userdetail.Availability = model.availability;
 
-            if (model.avatar == null)
-            {
-                model.avatar = userdetail.Avatar;
-            }
-            else
-            {
-                userdetail.Avatar = model.avatar;
-            }
-            foreach (var file in files)
-            {
-                using (var ms = new MemoryStream())
+                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userid);
+                //long storyid = model.storyId;
+                var userdetail = _IHome.alluser().FirstOrDefault(u => u.UserId == id);
+                userdetail.FirstName = model.firstname;
+                userdetail.LastName = model.lastname;
+                HttpContext.Session.SetString("UserID", model.firstname);
+                HttpContext.Session.SetString("lastname", model.lastname);
+                userdetail.WhyIVolunteer = model.whyivolunteered;
+                userdetail.Title = model.title;
+                userdetail.EmployeeId = model.employeeid;
+                userdetail.ProfileText = model.myprofile;
+                userdetail.LinkedInUrl = model.linkedinurl;
+                userdetail.UpdatedAt = DateTime.Now;
+                userdetail.Department = model.department;
+                userdetail.CountryId = model.countryid;
+                userdetail.CityId = model.cityid;
+                userdetail.Availability = model.availability;
+
+                if (model.avatar == null)
                 {
-                    await file.CopyToAsync(ms);
-                    var imageBytes = ms.ToArray();
-                    var base64String = Convert.ToBase64String(imageBytes);
-                    userdetail.Avatar = "data:image/png;base64," + base64String;
-                    model.avatar = "data:image/png;base64," + base64String;
-                    HttpContext.Session.SetString("avtarpath", "data:image/png;base64," + base64String);
+                    model.avatar = userdetail.Avatar;
                 }
+                else
+                {
+                    userdetail.Avatar = model.avatar;
+                }
+                foreach (var file in files)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await file.CopyToAsync(ms);
+                        var imageBytes = ms.ToArray();
+                        var base64String = Convert.ToBase64String(imageBytes);
+                        userdetail.Avatar = "data:image/png;base64," + base64String;
+                        model.avatar = "data:image/png;base64," + base64String;
+                        HttpContext.Session.SetString("avtarpath", "data:image/png;base64," + base64String);
+                    }
+                }
+
+
+                var allskills = _IHome.AllSkills();
+                ViewBag.allskills = allskills;
+                var skills = from US in _CIDbContext.UserSkills
+                             join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
+                             select new { US.SkillId, S.SkillName, US.UserId };
+                var uskills = skills.Where(e => e.UserId == id).ToList();
+                ViewBag.userskills = uskills;
+                foreach (var skill in uskills)
+                {
+                    var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
+                    allskills.Remove(rskill);
+                }
+                ViewBag.remainingSkills = allskills;
+                ViewBag.allcities = _IHome.AllCity();
+                ViewBag.allcountry = _IHome.allcountry();
+                _IHome.updateuser(userdetail);
+                TempData["saveuser"] = "saved";
+                return View(model);
             }
-
-
-            var allskills = _IHome.AllSkills();
-            ViewBag.allskills = allskills;
-            var skills = from US in _CIDbContext.UserSkills
-                         join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
-                         select new { US.SkillId, S.SkillName, US.UserId };
-            var uskills = skills.Where(e => e.UserId == id).ToList();
-            ViewBag.userskills = uskills;
-            foreach (var skill in uskills)
+            catch (Exception ex)
             {
-                var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
-                allskills.Remove(rskill);
+                return RedirectToAction("Error", "Home");
             }
-            ViewBag.remainingSkills = allskills;
-            ViewBag.allcities = _IHome.AllCity();
-            ViewBag.allcountry = _IHome.allcountry();
-            _IHome.updateuser(userdetail);
-            TempData["saveuser"] = "saved";
-            return View(model);
-
         }
         [HttpPost]
         public async Task<IActionResult> SaveUserSkills(long[] selectedSkills)
         {
-
-            int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-            long id = Convert.ToInt64(userid);
-            var abc = _CIDbContext.UserSkills.Where(e => e.UserId == id).ToList();
-            _CIDbContext.RemoveRange(abc);
-            _CIDbContext.SaveChanges();
-            foreach (var skills in selectedSkills)
+            try
             {
+                int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
+                long id = Convert.ToInt64(userid);
+                var abc = _CIDbContext.UserSkills.Where(e => e.UserId == id).ToList();
+                _CIDbContext.RemoveRange(abc);
+                _CIDbContext.SaveChanges();
+                foreach (var skills in selectedSkills)
+                {
 
 
-                _IHome.AddUserSkills(skills, id);
+                    _IHome.AddUserSkills(skills, id);
 
 
+                }
+
+                return RedirectToAction("UserProfile", "Home");
             }
-
-            return RedirectToAction("UserProfile", "Home");
-
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
         [HttpPost]
         public async Task<IActionResult> SaveContactus(UserProfileViewModel model)
         {
-            _IHome.addContactUs(model.subject, model.message, model.username, model.email);
-            return RedirectToAction("UserProfile", "Home");
+            try
+            {
+                _IHome.addContactUs(model.subject, model.message, model.username, model.email);
+                return RedirectToAction("UserProfile", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
     }
 

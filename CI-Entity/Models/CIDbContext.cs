@@ -565,6 +565,7 @@ public partial class CIDbContext : DbContext
             entity.Property(e => e.DeletedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("deleted_at");
+            entity.Property(e => e.MediaInBytes).HasColumnName("media_in_bytes");
             entity.Property(e => e.MediaName)
                 .HasMaxLength(255)
                 .HasColumnName("media_name");

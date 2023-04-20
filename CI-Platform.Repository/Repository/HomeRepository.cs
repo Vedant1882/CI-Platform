@@ -66,7 +66,7 @@ namespace CI_Platform.Repository.Repository
         }
         public List<Skill> AllSkills()
         {
-            return _CIDbContext.Skills.ToList();
+            return _CIDbContext.Skills.Where(s=>s.DeletedAt==null).ToList();
         }
         public List<MissionRating> missionRatings()
         {
@@ -172,6 +172,7 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.MissionMedia.ToList();
         }
+        
         public List<Story> StoryByStoryidList(long storyid)
         {
             return _CIDbContext.Stories.Where(s => s.StoryId == storyid).ToList(); ;
@@ -179,6 +180,10 @@ namespace CI_Platform.Repository.Repository
         public List<User> alluser()
         {
             return _CIDbContext.Users.ToList();
+        }
+        public List<MissionSkill> allmissionskills()
+        {
+            return _CIDbContext.MissionSkills.ToList();
         }
         public Story StoryByStoryid(long storyid)
         {
@@ -620,11 +625,15 @@ namespace CI_Platform.Repository.Repository
             var mission = new Mission();
             mission.Title = model.title;
             mission.ShortDescription = model.shortdescription;
-            mission.Description = model.description;
+            mission.Description = model.editor2;
             mission.MissionType = model.missionType;
+            mission.OrganizationDetail= model.organizationDetail;
+            mission.OrganizationName = model.organizationName;
+
             mission.StartDate = model.startDate;
             mission.EndDate = model.endDate;
             mission.Deadline = model.deadline;
+            mission.Status = "1";
             mission.Availability = model.totalseats;
             mission.AvailabilityTime = model.timeavailability;
             mission.CityId = model.cityId;
@@ -694,7 +703,7 @@ namespace CI_Platform.Repository.Repository
                         missionmedia.MissionId = mission.MissionId;
                         var ext = file.ContentType.Split("/");
                         missionmedia.DocumentType = ext[1];
-                        missionmedia.DocumentName = "document";
+                        missionmedia.DocumentName = file.FileName;
                         missionmedia.DocumentPath = fileBytes;
                         _CIDbContext.Add(missionmedia);
                         _CIDbContext.SaveChanges();
@@ -712,7 +721,8 @@ namespace CI_Platform.Repository.Repository
                         missionmedia.MissionId = mission.MissionId;
                         var ext = file.ContentType.Split("/");
                         missionmedia.MediaType = ext[1];
-                        missionmedia.MediaName = "image";
+                        missionmedia.MediaInBytes= fileBytes;
+                        missionmedia.MediaName = file.FileName;
                         missionmedia.MediaPath = "data:image/"+ ext[1] + ";base64,"+base64String;
                         _CIDbContext.Add(missionmedia);
                         _CIDbContext.SaveChanges();
@@ -729,7 +739,135 @@ namespace CI_Platform.Repository.Repository
                    join S in _CIDbContext.Skills on US.SkillId equals S.SkillId
                    select new SkillListVM { SkillId = US.SkillId, SkillName = S.SkillName, MissionId = US.MissionId };
         }
+        public Mission UpdateMission(AdminMissionViewModel model, IFormFileCollection? files)
+        {
+            var mission = _CIDbContext.Missions.FirstOrDefault(s => s.MissionId == model.missionId);
+            mission.Title = model.title;
+            mission.ShortDescription = model.shortdescription;
+            mission.Description = model.editor2;
+            mission.MissionType = model.missionType;
+            mission.OrganizationDetail = model.organizationDetail;
+            mission.OrganizationName = model.organizationName;
+            mission.StartDate = model.startDate;
+            mission.EndDate = model.endDate;
+            mission.Deadline = model.deadline;
+            mission.Availability = model.totalseats;
+            mission.AvailabilityTime = model.timeavailability;
+            mission.CityId = model.cityId;
+            mission.CountryId = model.countryId;
+            mission.ThemeId = model.themeId;
+            _CIDbContext.Update(mission);
+            _CIDbContext.SaveChanges();
+            if (model.url != null)
+            {
+                var videoUrls = model.url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var abc = _CIDbContext.MissionMedia.Where(e => e.MissionId == model.missionId && e.MediaType == "Video").ToList();
+                _CIDbContext.RemoveRange(abc);
+                _CIDbContext.SaveChanges();
+                foreach (var videoUrl in videoUrls)
+                {
 
+                    var missionMedia = new MissionMedium();
+                    missionMedia.CreatedAt = DateTime.Now;
+                    missionMedia.MissionId = mission.MissionId;
+                    missionMedia.MediaPath = videoUrl;
+                    missionMedia.MediaType = "Video";
+                    _CIDbContext.Update(missionMedia);
+                    _CIDbContext.SaveChanges();
+                }
+            }
+            if (model.selectedSkills != null)
+            {
+                var skills = model.selectedSkills.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                var abc = _CIDbContext.MissionSkills.Where(e => e.MissionId == model.missionId).ToList();
+                _CIDbContext.RemoveRange(abc);
+                _CIDbContext.SaveChanges();
+                foreach (var skill in skills)
+                {
+                    var skillId = Convert.ToInt64(skill);
+                    var missiionskills = new MissionSkill();
+                    missiionskills.CreatedAt = DateTime.Now;
+                    missiionskills.MissionId = mission.MissionId;
+                    missiionskills.SkillId = skillId;
+                    _CIDbContext.Update(missiionskills);
+                    _CIDbContext.SaveChanges();
+                }
+            }
+            if (mission.MissionType == "time")
+            {
+                var missiongoal = new GoalMission();
+                missiongoal.MissionId = mission.MissionId;
+                missiongoal.GoalObjectiveText = "default";
+                missiongoal.GoalValue = "0";
+                _CIDbContext.Update(missiongoal);
+                _CIDbContext.SaveChanges();
+            }
+            else
+            {
+                var missiongoal = new GoalMission();
+                missiongoal.MissionId = mission.MissionId;
+                missiongoal.GoalObjectiveText = model.goalObjectiveText;
+                missiongoal.GoalValue = model.goalValue;
+                _CIDbContext.Update(missiongoal);
+                _CIDbContext.SaveChanges();
+            }
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    if (file.ContentType.Contains("pdf") || file.ContentType.Contains("docx") || file.ContentType.Contains("xlxs"))
+                    {
+                        byte[] fileBytes;
+                        using (var stream = new MemoryStream())
+                        {
+                            file.CopyTo(stream);
+                            fileBytes = stream.ToArray();
+                        }
+                        var missionmedia = new MissionDocument();
+                        missionmedia.MissionId = mission.MissionId;
+                        var ext = file.ContentType.Split("/");
+                        missionmedia.DocumentType = ext[1];
+                        missionmedia.DocumentName = file.FileName;
+                        missionmedia.DocumentPath = fileBytes;
+                        _CIDbContext.Update(missionmedia);
+                        _CIDbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        byte[] fileBytes;
+                        using (var stream = new MemoryStream())
+                        {
+                            file.CopyTo(stream);
+                            fileBytes = stream.ToArray();
+                        }
+                        string base64String = Convert.ToBase64String(fileBytes);
+                        var missionmedia = new MissionMedium();
+                        missionmedia.MissionId = mission.MissionId;
+                        var ext = file.ContentType.Split("/");
+                        missionmedia.MediaType = ext[1];
+                        missionmedia.MediaName = file.FileName;
+                        missionmedia.MediaPath = "data:image/" + ext[1] + ";base64," + base64String;
+                        _CIDbContext.Update(missionmedia);
+                        _CIDbContext.SaveChanges();
+                    }
+                }
+            }
 
+            return mission;
+        }
+        public void delDoc(long id)
+        {
+            var doc = _CIDbContext.MissionDocuments.FirstOrDefault(d => d.MissionDocumentId == id);
+            doc.DeletedAt= DateTime.Now;
+            _CIDbContext.Update(doc);
+            _CIDbContext.SaveChanges();
+        }
+        public void delImg(long id)
+        {
+            var doc = _CIDbContext.MissionMedia.FirstOrDefault(d => d.MissionMediaId == id);
+            doc.DeletedAt = DateTime.Now;
+            _CIDbContext.Update(doc);
+            _CIDbContext.SaveChanges();
+        }
     }
 }

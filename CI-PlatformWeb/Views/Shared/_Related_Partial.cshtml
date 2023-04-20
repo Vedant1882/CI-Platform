@@ -33,7 +33,7 @@
         <div class="container">
             
             <div id="products" class="row view-group">
-                @if (ViewBag.relatedmission != null)
+                @if (ViewBag.relatedmissioncount!=0)
                 {
                     @foreach (var item in ViewBag.relatedmission)
                     {
@@ -164,6 +164,10 @@
                             </div>
                         </div>
                     }
+                }
+                else
+                {
+                    <h1 class="ms-4 mt-4 text-danger">No Related Mission Found</h1>
                 }
             </div>
     </div>

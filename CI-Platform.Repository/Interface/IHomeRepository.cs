@@ -57,6 +57,7 @@ namespace CI_Platform.Repository.Interface
         public List<Comment> comment();
 
         public List<MissionTheme> alltheme();
+        public List<MissionSkill> allmissionskills();
         public List<Country> allcountry();
         public List<Timesheet> alltimesheet();
         public void deletetimesheet(long timesheetid);
@@ -109,7 +110,11 @@ namespace CI_Platform.Repository.Interface
         public void Approvestory(long MaId, string status);
 
         public Mission AddMission(AdminMissionViewModel model, IFormFileCollection? files);
+        public Mission UpdateMission(AdminMissionViewModel model, IFormFileCollection? files);
 
         public IQueryable<SkillListVM> MissionSkilljoinSkill();
+
+        public void delDoc(long id);
+        public void delImg(long id);
     }
 }

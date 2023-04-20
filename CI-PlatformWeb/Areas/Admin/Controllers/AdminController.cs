@@ -10,12 +10,15 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
     [Area("Admin")]
     public class AdminController : Controller
     {
+
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
         private readonly IHomeRepository _IHome;
-        public AdminController(IHomeRepository IHome, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
+        private readonly CIDbContext _db;
+        public AdminController(IHomeRepository IHome, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment
+            , CIDbContext db)
         {
             _IHome = IHome;
-
+            _db= db;
             _hostingEnvironment = hostingEnvironment;
 
         }
@@ -35,49 +38,67 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
         public async Task<IActionResult> AddUser(string firstname, string lastname, string email, string password, string profiletext, string department,
             string status, string employeeid, string avatar, long userId, long cityid, long countryid)
         {
-            HttpContext.Session.SetInt32("Nav", 4);
-            ViewBag.nav = HttpContext.Session.GetInt32("Nav");
-            if (userId == null || userId == 0)
+            try
             {
 
-                var savedUser = _IHome.AddUser(firstname, lastname, email, password, department, profiletext, status, employeeid, avatar, cityid, countryid);
-                if (savedUser.Email == email)
+
+                HttpContext.Session.SetInt32("Nav", 4);
+                ViewBag.nav = HttpContext.Session.GetInt32("Nav");
+                if (userId == null || userId == 0)
                 {
+
+                    var savedUser = _IHome.AddUser(firstname, lastname, email, password, department, profiletext, status, employeeid, avatar, cityid, countryid);
+                    if (savedUser.Email == email)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+
+                    var savedUser = _IHome.UpdateUser(firstname, lastname, email, password, department, profiletext, status, employeeid, avatar, cityid, countryid, userId);
                     return RedirectToAction("Index");
                 }
-            }
-            else
-            {
 
-                var savedUser = _IHome.UpdateUser(firstname, lastname, email, password, department, profiletext, status, employeeid, avatar, cityid, countryid, userId);
+                var uservm = new CI_Entity.ViewModel.AdminUserViewModel();
+                uservm.users = _IHome.alluser().ToList();
+
                 return RedirectToAction("Index");
             }
-
-            var uservm = new CI_Entity.ViewModel.AdminUserViewModel();
-            uservm.users = _IHome.alluser().ToList();
-
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home", new {area="Employee"});
+            }
         }
 
         [HttpPost]
         public IActionResult GetUser(long userId)
         {
-            var user = _IHome.UserByUserid(userId);
-            var userVM = new CI_Entity.ViewModel.AdminUserViewModel();
-            userVM.users = _IHome.alluser().ToList();
-            userVM.allcity = _IHome.AllCity();
-            userVM.allcountry = _IHome.allcountry();
-            userVM.firstname = user.FirstName;
-            userVM.lastname = user.LastName;
-            userVM.email = user.Email;
-            userVM.avatar = user.Avatar;
-            userVM.status = user.Status;
-            userVM.cityid = user.CityId;
-            userVM.employeeid = user.EmployeeId;
-            userVM.countryid = user.CountryId;
-            userVM.profiletext = user.ProfileText;
-            userVM.department = user.Department;
-            return View("Index", userVM);
+            try
+            {
+
+
+                var user = _IHome.UserByUserid(userId);
+                var userVM = new CI_Entity.ViewModel.AdminUserViewModel();
+                userVM.users = _IHome.alluser().ToList();
+                userVM.allcity = _IHome.AllCity();
+                userVM.allcountry = _IHome.allcountry();
+                userVM.firstname = user.FirstName;
+                userVM.lastname = user.LastName;
+                userVM.email = user.Email;
+                userVM.avatar = user.Avatar;
+                userVM.status = user.Status;
+                userVM.cityid = user.CityId;
+                userVM.employeeid = user.EmployeeId;
+                userVM.countryid = user.CountryId;
+                userVM.profiletext = user.ProfileText;
+                userVM.department = user.Department;
+                return View("Index", userVM);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home", new { area = "Employee" });
+            }
         }
         public IActionResult AdminCms()
         {
@@ -91,16 +112,24 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AddCms(CI_Entity.ViewModel.AdminCmsPageVM model)
         {
-            if (model.CmsPageId == 0 || model.CmsPageId == null)
+            try
             {
-                _IHome.AddCms(model);
 
+                if (model.CmsPageId == 0 || model.CmsPageId == null)
+                {
+                    _IHome.AddCms(model);
+
+                }
+                else
+                {
+                    _IHome.UpdateCms(model);
+                }
+                return RedirectToAction("AdminCms");
             }
-            else
+            catch (Exception ex)
             {
-                _IHome.UpdateCms(model);
+                return RedirectToAction("Error", "Home", new { area = "Employee" });
             }
-            return RedirectToAction("AdminCms");
         }
 
 
@@ -142,27 +171,7 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
             //ViewBag.remainingSkills = allskills;
             return View(missionvm);
         }
-        //[HttpPost]
-        //public async Task<IActionResult> SaveUserSkills(long[] selectedSkills)
-        //{
-
-        //    int? userid = HttpContext.Session.GetInt32("userIDforfavmission");
-        //    long id = Convert.ToInt64(userid);
-        //    var abc = _CIDbContext.UserSkills.Where(e => e.UserId == id).ToList();
-        //    _CIDbContext.RemoveRange(abc);
-        //    _CIDbContext.SaveChanges();
-        //    foreach (var skills in selectedSkills)
-        //    {
-
-
-        //        _IHome.AddUserSkills(skills, id);
-
-
-        //    }
-
-        //    return RedirectToAction("UserProfile", "Home");
-
-        //}
+        
         [HttpPost]
         public IActionResult AddMission(AdminMissionViewModel model)
         {
@@ -172,12 +181,12 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
                 _IHome.AddMission(model,files);
                 
             }
-            //else
-            //{
-
-            //    var savedUser = _IHome.UpdateUser(firstname, lastname, email, password, department, profiletext, status, employeeid, avatar, cityid, countryid, userId);
-            //    return RedirectToAction("Index");
-            //}
+            else
+            {
+                var files = Request.Form.Files;
+                var savedUser = _IHome.UpdateMission(model,files);
+                return RedirectToAction("AdminMission");
+            }
 
             var missionvm = new AdminMissionViewModel();
             missionvm.missions = _IHome.Allmissions();
@@ -187,8 +196,93 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
 
             return RedirectToAction("AdminMission");
         }
+        [HttpPost]
+        public IActionResult GetMission(long missionId)
+        {
+            var mission = _IHome.Allmissions().FirstOrDefault(t => t.MissionId == missionId && t.Status=="1" && t.DeletedAt==null);
+            var goalmission=_IHome.goalmission().FirstOrDefault(g=>g.MissionId==missionId);
+            var allskills= _IHome.AllSkills();
+            var skillsJoin = _IHome.MissionSkilljoinSkill();
+            var missionskill = skillsJoin.Where(m=>m.MissionId==missionId).ToList();
+            foreach (var skill in missionskill)
+            {
+                var rskill = allskills.FirstOrDefault(e => e.SkillId == skill.SkillId);
+                allskills.Remove(rskill);
+            }
+            var finalurl = "";
+            var VideoURLs = _IHome.allmedia().Where(e => e.MissionId == missionId && e.MediaType == "Video").ToList();
+            foreach (var videoURL in VideoURLs)
+            {
+                finalurl = finalurl + videoURL.MediaPath + "\r\n";
+            }
+            var missionVm = new AdminMissionViewModel();
+            missionVm.missions = _IHome.Allmissions().Where(t => t.Status == "1" && t.DeletedAt == null).ToList();
+            missionVm.title= mission.Title;
+            mission.MissionId = mission.MissionId;
+            missionVm.editor2 = mission.Description;
+            missionVm.shortdescription = mission.ShortDescription;
+            missionVm.timeavailability = mission.AvailabilityTime;
+            missionVm.startDate=mission.StartDate;
+            missionVm.endDate=mission.EndDate;
+            missionVm.deadline=mission.Deadline;
+            missionVm.cityId=mission.CityId;
+            missionVm.countryId=mission.CountryId;
+            missionVm.themeId=mission.ThemeId;
+            missionVm.organizationDetail = mission.OrganizationDetail;
+            missionVm.organizationName = mission.OrganizationName;
+            missionVm.totalseats = mission.Availability;
+            missionVm.goalValue = goalmission.GoalValue;
+            missionVm.goalObjectiveText = goalmission.GoalObjectiveText;
+            missionVm.missionType=mission.MissionType;
+            missionVm.countries = _IHome.allcountry();
+            missionVm.cities = _IHome.AllCity();
+            missionVm.themes = _IHome.alltheme();
+            missionVm.AllSkills = _IHome.AllSkills();
+            missionVm.MissionSkill = missionskill;
+            missionVm.RemainingSkills = allskills;
+            missionVm.url = finalurl;
+            missionVm.ImageFiles = new List<MissionMedium>();
+            missionVm.DocFiles = new List<IFormFile>();
+            var imgfiles = _db.MissionMedia.Where(m => m.MissionId == missionId && m.MediaType != "Video" && m.DeletedAt == null).ToList();
+            var docfiles = _db.MissionDocuments.Where(m => m.MissionId == missionId && m.DeletedAt == null).ToList();
+            int i = 1;
+            if (imgfiles.Count > 0)
+            {
+                foreach (var ifile in imgfiles)
+                {
+                    missionVm.ImageFiles.Add(ifile);
+                }
+            }
+            i = 0;
+            foreach (var ifile in docfiles)
+            {
+                i++;
+                string fileName = "example" + i + "." + ifile.DocumentType;  // specify the file name and extension
+                string contentType =  ifile.MissionDocumentId.ToString();
+                MemoryStream ms = new MemoryStream(ifile.DocumentPath);
+                var file = new FormFile(ms, 0, ms.Length, contentType, fileName);
+                missionVm.DocFiles.Add(file);
+            }
 
-            public IActionResult AdminTheme()
+            //Request.Form.Files= missionVm.ImageFiles;
+            return View("AdminMission", missionVm);
+        }
+
+        [HttpPost]
+        public IActionResult delDoc(string docId)
+        {
+            _IHome.delDoc(long.Parse(docId));
+            return Json(new {success = true});
+        }
+
+        [HttpPost]
+        public IActionResult delImg(long imgId)
+        {
+            _IHome.delImg(imgId);
+            return Json(new { success = true });
+        }
+
+        public IActionResult AdminTheme()
         {
             HttpContext.Session.SetInt32("Nav", 4);
             ViewBag.nav = HttpContext.Session.GetInt32("Nav");
