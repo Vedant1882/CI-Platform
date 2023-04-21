@@ -97,6 +97,9 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 {
                     if (admin.Password == model.Password)
                     {
+                        HttpContext.Session.SetString("Adminfirstname", admin.FirstName);
+                        HttpContext.Session.SetString("AdminLastname", admin.LastName);
+                        HttpContext.Session.SetInt32("AdminId", (int)admin.AdminId);
                         return RedirectToAction("Index", "Admin", new { area = "Admin" });
                     }
                     else
@@ -456,7 +459,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     {
                         int finalrating = 0;
                         City city = _IHome.AllCity().Where(e => e.CityId == missions.CityId).FirstOrDefault();
-                        MissionTheme theme = _IHome.alltheme().Where(e => e.MissionThemeId == missions.ThemeId).FirstOrDefault();
+                        MissionTheme theme = _IHome.alltheme().Where(e => e.MissionThemeId == missions.ThemeId && e.DeletedAt==null).FirstOrDefault();
                         GoalMission goalMission = _IHome.goalmission().Where(gm => gm.MissionId == missions.MissionId).FirstOrDefault();
                         FavoriteMission favoriteMissions = _IHome.favmission().Where(FM => FM.MissionId == missions.MissionId).FirstOrDefault();
                         var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();

@@ -116,5 +116,8 @@ namespace CI_Platform.Repository.Interface
 
         public void delDoc(long id);
         public void delImg(long id);
+        public Banner AddBanner(string discrption, string image, int sortorder);
+        public Banner UpdateBanner(string discrption, string image, int sortorder,long bannerId);
+        public List<Banner> AllBanners();
     }
 }

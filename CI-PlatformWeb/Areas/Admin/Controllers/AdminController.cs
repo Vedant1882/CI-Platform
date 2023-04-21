@@ -422,11 +422,45 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
         {
             HttpContext.Session.SetInt32("Nav", 8);
             ViewBag.nav = HttpContext.Session.GetInt32("Nav");
-            return View();
+            AdminBannerViewModel bannerVm= new AdminBannerViewModel();
+            bannerVm.banner = _IHome.AllBanners();
+            return View(bannerVm);
         }
 
+        [HttpPost]
+        public IActionResult AddBanner(string discrption,string image,int sortorder,long bannerId)
+        {
+            try
+            {
 
+                if (bannerId == 0 || bannerId == null)
+                {
+                    _IHome.AddBanner(discrption,image,sortorder);
 
+                }
+                else
+                {
+                    _IHome.UpdateBanner(discrption, image, sortorder,bannerId);
+                }
+                return RedirectToAction("AdminBannerManagement");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home", new { area = "Employee" });
+            }
+        }
+        [HttpPost]
+        public IActionResult GetBanner(long bannerId)
+        {
+            var bannerlist = _IHome.AllBanners().FirstOrDefault(t => t.BannerId == bannerId);
+            var banner = new AdminBannerViewModel();
+            banner.img = bannerlist.Image;
+            banner.BannerText = bannerlist.Text;
+            banner.BannerSortOrder = bannerlist.SortOrder;
+            banner.BannerId = bannerId;
+            banner.banner = _IHome.AllBanners();
+            return View("AdminBannerManagement", banner);
+        }
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model CI_Entity.ViewModel.AdminBannerViewModel
 @{
     Layout = "_AdminSidebar";
 }
@@ -22,14 +23,14 @@
     <div class=" container">
         <div class="d-flex borderbottom justify-content-between mb-2">
             <h3 class="borderbotm mb-0">Banner Management</h3>
-            <button type="button" onclick="refreshModal()" class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal">
+            <button type="button" @*onclick="refreshModal()"*@ class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal">
                 <i class="fa-regular fa-plus" style="color: #F88735"></i>
                 Add
             </button>
 
             <div class="modal fade" id="AdminBannerModalmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content ">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">ADD NEW/Edit BANNER</h1>
                             <button type="button" class="bg-white border-0" data-bs-dismiss="modal" aria-label="Close">
@@ -41,20 +42,33 @@
                                 <div class="Row">
                                     <div class="col-12  ">
                                         <label>Select Banner Img</label>
-                                        <div class="col-12 d-flex justify-content-center align-items-center rounded-2 mt-1  position-relative" style="border:1px solid gray; height:150px;">
-                                            <input class="form-control position-absolute opacity-0 " type="file" />
+                                        <div class="upload-btn-wrapper position-relative d-flex justify-content-center col-md-12" onclick="CLICK()">
+                                            @if(Model.img==null)
+                                            {
+                                                <img src="~/Images/InsertImage.png" class="user-profile-image" id="imgTag" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@Model.img" class="user-profile-image" id="imgTag" />
+                                            }
 
-                                            <img src="~/images/add.png" />
+                                            <button class="btn-edit-image"><i class="bi bi-person-bounding-box change-image-icon" style="color:black;"></i></button>
+                                            <div id="refresh-profile-image-div">
+                                                <input type="hidden" asp-for="BannerId" id="bannerId" />
+                                                <input type="file" style="display:none;" id="imginput" onchange="CHANGE(event)" />
+                                                @*                                                <input hidden value="abcd" id="bannerImage" />*@
+                                                @*<span asp-validation-for="BannerImage" style="color:red;font-size:10px;"></span>*@
+                                            </div>
                                         </div>
 
                                     </div>
                                     <div class="col-12">
                                         <label>Description</label>
-                                        <textarea class="form-control"></textarea>
+                                        <textarea id="discrption" asp-for="BannerText" class="text-break form-control" rows="9"></textarea>
                                     </div>
                                     <div class="col-12">
                                         <label> Sort Order Value</label>
-                                        <input type="number" class="form-control" />
+                                        <input type="number" asp-for="BannerSortOrder" id="sortorder" class="form-control" />
 
 
 
@@ -68,7 +82,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn closebtn " data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn savebtn">Save Banner</button>
+                            <button type="button" class="btn savebtn" onclick="savebanner()">Save Banner</button>
                         </div>
                     </div>
                 </div>
@@ -87,14 +101,17 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach (var banner in Model.banner)
+                {
+                    <tr>
+                        <td><img src="@banner.Image" id="cardBanner" /></td>
+                        <td class="text-break">@banner.Text</td>
+                        <td>@banner.SortOrder</td>
 
-                <tr>
-                    <td>SkillName</td>
-                    <td>dfdffhdsufiidsdvsdidhdhbdyugdssyfsdfyusyfdsfsdf</td>
-                    <td>2</td>
+                        <td class="d-flex justify-content-center"><i class="fas fa-edit  me-1" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal" onclick="getBanner(@banner.BannerId)"></i> | <i class="fa fa-trash  ms-1 " style="color:red" onclick=""></i></td>
+                    </tr>
+                }
 
-                    <td class="d-flex justify-content-center"><i class="fas fa-edit  me-1" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal" onclick=""></i> | <i class="fa fa-trash  ms-1 " style="color:red" onclick=""></i></td>
-                </tr>
 
 
 
@@ -108,6 +125,71 @@
 
     </div>
 
+    <script>
+        function CLICK() {
+
+            document.getElementById("imginput").click();
+        }
+        function CHANGE(event) {
+            const reader = new FileReader(); // Create a new FileReader object
+            reader.onload = function () {
+                document.getElementById('imgTag').src = reader.result; // Set the source of the image tag to the selected image
+            }
+            reader.readAsDataURL(event.target.files[0]);         // Read the selected file as a data URL
+        }
+        function savebanner() {
+            $.ajax({
+                url: '/Admin/Admin/AddBanner',
+                type: 'POST',
+                data: {
+                    discrption: document.getElementById("discrption").value,
+                    bannerId: document.getElementById("bannerId").value,
+                    image: document.getElementById("imgTag").src,
+                    sortorder: document.getElementById("sortorder").value,
+
+                },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#AdminBannerModalmodal').html($(response).find('#AdminBannerModalmodal').html());
+                    location.reload();
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists',
+                        timer: 2500,
+                    })
+                }
+            });
+        }
+        function getBanner(id) {
+            $.ajax({
+                url: '/Admin/Admin/GetBanner',
+                type: 'POST',
+                data: {
+                    bannerId: id
+                },
+
+                success: function (response) {
+
+                    //document.getElementById("themeName").value = response.title;
+                    $('#AdminBannerModalmodal').html($(response).find('#AdminBannerModalmodal').html());
+
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email already exists',
+                        timer: 2500,
+                    });
+                }
+            });
+        }
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 

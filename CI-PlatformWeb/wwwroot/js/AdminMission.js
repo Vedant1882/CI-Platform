@@ -19,15 +19,17 @@ function reload() {
     location.reload();
 }
 function editmission(missionId) {
+
     $.ajax({
         url: '/Admin/Admin/GetMission',
         type: 'POST',
         data: { missionId: missionId },
 
         success: function (response) {
-
+            console.log(response)
             //document.getElementById("themeName").value = response.title;
             $('#AdminMissionmodal').html($(response).find('#AdminMissionmodal').html());
+           
 
         },
         error: function () {

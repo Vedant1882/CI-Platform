@@ -1,9 +1,14 @@
 ﻿using CI_Entity.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace CI_PlatformWeb.Models
 {
     public class UserProfileViewModel
     {
+        [Required(ErrorMessage = "First Name is a Required field.")]
+        [DataType(DataType.Text)]
+        [Display(Order = 1, Name = "FirstName")]
+        [RegularExpression("^((?!^First Name$)[a-zA-Z '])+$", ErrorMessage = "First name  must be properly formatted.")]
         public string firstname { get; set; }
         public string lastname { get; set; }
         public string employeeid { get; set; }

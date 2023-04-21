@@ -795,7 +795,7 @@ namespace CI_Platform.Repository.Repository
             }
             if (mission.MissionType == "time")
             {
-                var missiongoal = new GoalMission();
+                var missiongoal = _CIDbContext.GoalMissions.FirstOrDefault(g => g.MissionId == mission.MissionId);
                 missiongoal.MissionId = mission.MissionId;
                 missiongoal.GoalObjectiveText = "default";
                 missiongoal.GoalValue = "0";
@@ -804,7 +804,7 @@ namespace CI_Platform.Repository.Repository
             }
             else
             {
-                var missiongoal = new GoalMission();
+                var missiongoal = _CIDbContext.GoalMissions.FirstOrDefault(g => g.MissionId == mission.MissionId);
                 missiongoal.MissionId = mission.MissionId;
                 missiongoal.GoalObjectiveText = model.goalObjectiveText;
                 missiongoal.GoalValue = model.goalValue;
@@ -868,6 +868,33 @@ namespace CI_Platform.Repository.Repository
             doc.DeletedAt = DateTime.Now;
             _CIDbContext.Update(doc);
             _CIDbContext.SaveChanges();
+        }
+
+        public Banner AddBanner(string discrption, string image, int sortorder)
+        {
+            Banner banner = new Banner();
+            banner.SortOrder = sortorder;
+            banner.Image = image;
+            banner.Text = discrption;
+            banner.CreatedAt= DateTime.Now;
+            _CIDbContext.Add(banner);
+            _CIDbContext.SaveChanges();
+            return banner;
+        }
+        public Banner UpdateBanner(string discrption, string image, int sortorder, long bannerId)
+        {
+            Banner banner = _CIDbContext.Banners.FirstOrDefault(b=>b.BannerId==bannerId);
+            banner.SortOrder = sortorder;
+            banner.Image = image;
+            banner.Text = discrption;
+            banner.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(banner);
+            _CIDbContext.SaveChanges();
+            return banner;
+        }
+        public List<Banner> AllBanners()
+        {
+            return _CIDbContext.Banners.Where(b => b.DeletedAt == null).ToList();
         }
     }
 }

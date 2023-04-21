@@ -1,5 +1,6 @@
 ﻿@{
-
+    var firstname = Context.Session.GetString("Adminfirstname");
+    var Lastname = Context.Session.GetString("AdminLastname");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +27,7 @@
 
 </head>
 <body>
+    <div id="preloader"></div>
     <div class="container-fluid m-0 " style="width:100vw;">
         <div class="row d-flex">
             @*  <-----sidebar----->*@
@@ -119,7 +121,7 @@
                             <div class="dropdown  d-flex justify-content-end py-1  ">
                                 <button class="border-0 bg-white ms-auto me-3 dropdown-toggle  " type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img src="~/images/user1.png" alt="mdo" width="40" height="40" class="rounded-circle loginimg">
-                                    Dropdown button
+                                    @firstname @Lastname
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" asp-action="Logout" asp-controller="Home" asp-area="Employee">Logout</a></li>

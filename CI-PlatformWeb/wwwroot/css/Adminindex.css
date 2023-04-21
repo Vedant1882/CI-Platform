@@ -262,3 +262,73 @@ div#example_info {
 .borderbotm {
     border-bottom: 2px solid black;
 }
+#preloader {
+    background: #ffff url(/Images/14.gif) no-repeat center center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+}
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.btn-edit-image {
+    position: absolute;
+    bottom: 0;
+    border: 2px solid gray;
+    color: gray;
+    background-color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.btn-edit-image {
+    border-radius: 63px;
+    height: 44px;
+    width: 44px;
+    text-align: center;
+}
+
+.user-profile-image {
+    height: 370px;
+    width: 370px;
+   /* border-radius: 100px;*/
+}
+
+.banner-image {
+    height: 150px;
+    width: 150px;
+    border-radius: 100px;
+}
+
+.change-image-icon {
+    color: black;
+    position: absolute;
+    bottom: 0px;
+    background-color: white;
+    height: 34px;
+    width: 35px;
+    opacity: 0.8;
+    border-radius: 50px;
+    left: 7%;
+}
+#cardBanner {
+    width: 70%;
+    height: 150px;
+    object-fit: cover;
+    object-position: 100% 50%;
+    opacity: 1;
+}
