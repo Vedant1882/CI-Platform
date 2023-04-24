@@ -10,6 +10,10 @@ namespace CI_PlatformWeb.Models
         [Display(Order = 1, Name = "FirstName")]
         [RegularExpression("^((?!^First Name$)[a-zA-Z '])+$", ErrorMessage = "First name  must be properly formatted.")]
         public string firstname { get; set; }
+        [Required(ErrorMessage = "Last Name is a Required field.")]
+        [DataType(DataType.Text)]
+        [Display(Order = 1, Name = "LastName")]
+        [RegularExpression("^((?!^First Name$)[a-zA-Z '])+$", ErrorMessage = "Last name  must be properly formatted.")]
         public string lastname { get; set; }
         public string employeeid { get; set; }
 
@@ -34,6 +38,8 @@ namespace CI_PlatformWeb.Models
         public string message { get; set; }
         
         public long? cityid { get; set; }
+        [Display(Name = "Country")]
+        [Required(ErrorMessage = "Country Is Required")]
         public long? countryid { get; set; }
 
         public List<Skill> allskills { get; set; }  

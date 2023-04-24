@@ -29,11 +29,11 @@ namespace CI_Platform.Repository.Repository
         }
         public User Logindetails(String Email, String Password)
         {
-            return _CIDbContext.Users.Where(u => u.Email == Email && u.Password == Password).FirstOrDefault();
+            return _CIDbContext.Users.Where(u => u.Email == Email && u.Password == Password && u.DeletedAt == null).FirstOrDefault();
         }
         public Admin AdminEmail(String Email)
         {
-            return _CIDbContext.Admins.Where(u => u.Email == Email).FirstOrDefault();
+            return _CIDbContext.Admins.Where(u => u.Email == Email && u.DeletedAt == null).FirstOrDefault();
         }
         public User UserByEmail(String Email)
         {
@@ -58,7 +58,7 @@ namespace CI_Platform.Repository.Repository
         }
         public List<Mission> Allmissions()
         {
-            return _CIDbContext.Missions.ToList();
+            return _CIDbContext.Missions.Where(m=>m.DeletedAt==null).ToList();
         }
         public List<City> AllCity()
         {
@@ -66,7 +66,7 @@ namespace CI_Platform.Repository.Repository
         }
         public List<Skill> AllSkills()
         {
-            return _CIDbContext.Skills.Where(s=>s.DeletedAt==null).ToList();
+            return _CIDbContext.Skills.Where(s => s.DeletedAt == null).ToList();
         }
         public List<MissionRating> missionRatings()
         {
@@ -172,14 +172,14 @@ namespace CI_Platform.Repository.Repository
         {
             return _CIDbContext.MissionMedia.ToList();
         }
-        
+
         public List<Story> StoryByStoryidList(long storyid)
         {
             return _CIDbContext.Stories.Where(s => s.StoryId == storyid).ToList(); ;
         }
         public List<User> alluser()
         {
-            return _CIDbContext.Users.ToList();
+            return _CIDbContext.Users.Where(u => u.DeletedAt == null).ToList();
         }
         public List<MissionSkill> allmissionskills()
         {
@@ -627,7 +627,7 @@ namespace CI_Platform.Repository.Repository
             mission.ShortDescription = model.shortdescription;
             mission.Description = model.editor2;
             mission.MissionType = model.missionType;
-            mission.OrganizationDetail= model.organizationDetail;
+            mission.OrganizationDetail = model.organizationDetail;
             mission.OrganizationName = model.organizationName;
 
             mission.StartDate = model.startDate;
@@ -691,7 +691,7 @@ namespace CI_Platform.Repository.Repository
             {
                 foreach (var file in files)
                 {
-                    if(file.ContentType.Contains("pdf") || file.ContentType.Contains("docx") || file.ContentType.Contains("xlxs"))
+                    if (file.ContentType.Contains("pdf") || file.ContentType.Contains("docx") || file.ContentType.Contains("xlxs"))
                     {
                         byte[] fileBytes;
                         using (var stream = new MemoryStream())
@@ -721,9 +721,9 @@ namespace CI_Platform.Repository.Repository
                         missionmedia.MissionId = mission.MissionId;
                         var ext = file.ContentType.Split("/");
                         missionmedia.MediaType = ext[1];
-                        missionmedia.MediaInBytes= fileBytes;
+                        missionmedia.MediaInBytes = fileBytes;
                         missionmedia.MediaName = file.FileName;
-                        missionmedia.MediaPath = "data:image/"+ ext[1] + ";base64,"+base64String;
+                        missionmedia.MediaPath = "data:image/" + ext[1] + ";base64," + base64String;
                         _CIDbContext.Add(missionmedia);
                         _CIDbContext.SaveChanges();
                     }
@@ -858,7 +858,7 @@ namespace CI_Platform.Repository.Repository
         public void delDoc(long id)
         {
             var doc = _CIDbContext.MissionDocuments.FirstOrDefault(d => d.MissionDocumentId == id);
-            doc.DeletedAt= DateTime.Now;
+            doc.DeletedAt = DateTime.Now;
             _CIDbContext.Update(doc);
             _CIDbContext.SaveChanges();
         }
@@ -876,14 +876,14 @@ namespace CI_Platform.Repository.Repository
             banner.SortOrder = sortorder;
             banner.Image = image;
             banner.Text = discrption;
-            banner.CreatedAt= DateTime.Now;
+            banner.CreatedAt = DateTime.Now;
             _CIDbContext.Add(banner);
             _CIDbContext.SaveChanges();
             return banner;
         }
         public Banner UpdateBanner(string discrption, string image, int sortorder, long bannerId)
         {
-            Banner banner = _CIDbContext.Banners.FirstOrDefault(b=>b.BannerId==bannerId);
+            Banner banner = _CIDbContext.Banners.FirstOrDefault(b => b.BannerId == bannerId);
             banner.SortOrder = sortorder;
             banner.Image = image;
             banner.Text = discrption;
@@ -895,6 +895,159 @@ namespace CI_Platform.Repository.Repository
         public List<Banner> AllBanners()
         {
             return _CIDbContext.Banners.Where(b => b.DeletedAt == null).ToList();
+        }
+        public void DeleteUser(long userId)
+        {
+            var user = _CIDbContext.Users.FirstOrDefault(t => t.UserId == userId);
+            user.DeletedAt = DateTime.Now;
+            user.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(user);
+            var skills = _CIDbContext.UserSkills.Where(t => t.UserId == userId).ToList();
+            foreach (var skill in skills)
+            {
+                skill.DeletedAt = DateTime.Now;
+                skill.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(skill);
+
+            }
+            var timesheets = _CIDbContext.Timesheets.Where(t => t.UserId == userId).ToList();
+            foreach (var timesheet in timesheets)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var story = _CIDbContext.Stories.Where(t => t.UserId == userId).ToList();
+            foreach (var skill in story)
+            {
+                skill.DeletedAt = DateTime.Now;
+                skill.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(skill);
+
+            }
+            var favmission = _CIDbContext.FavoriteMissions.Where(t => t.UserId == userId).ToList();
+            foreach (var timesheet in favmission)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var comment = _CIDbContext.Comments.Where(t => t.UserId == userId).ToList();
+            foreach (var timesheet in comment)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var missionRating = _CIDbContext.MissionRatings.Where(t => t.UserId == userId).ToList();
+            foreach (var timesheet in missionRating)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var missionApplication = _CIDbContext.MissionApplications.Where(t => t.UserId == userId).ToList();
+            foreach (var timesheet in missionApplication)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            _CIDbContext.SaveChanges();
+
+        }
+        public void DeleteMission(long missionId)
+        {
+            var mission = _CIDbContext.Missions.FirstOrDefault(t => t.MissionId == missionId);
+            mission.DeletedAt = DateTime.Now;
+            mission.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(mission);
+            var missionApplication = _CIDbContext.MissionApplications.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in missionApplication)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var skills = _CIDbContext.MissionSkills.Where(t => t.MissionId == missionId).ToList();
+            foreach (var skill in skills)
+            {
+                skill.DeletedAt = DateTime.Now;
+                skill.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(skill);
+
+            }
+            var timesheets = _CIDbContext.Timesheets.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in timesheets)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var story = _CIDbContext.Stories.Where(t => t.MissionId == missionId).ToList();
+            foreach (var skill in story)
+            {
+                skill.DeletedAt = DateTime.Now;
+                skill.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(skill);
+
+            }
+            var favmission = _CIDbContext.FavoriteMissions.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in favmission)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var comment = _CIDbContext.Comments.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in comment)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var missionRating = _CIDbContext.MissionRatings.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in missionRating)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var missionmedia = _CIDbContext.MissionMedia.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in missionmedia)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var missiondoc = _CIDbContext.MissionDocuments.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in missiondoc)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            var goalmission = _CIDbContext.GoalMissions.Where(t => t.MissionId == missionId).ToList();
+            foreach (var timesheet in goalmission)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            _CIDbContext.SaveChanges();
         }
     }
 }

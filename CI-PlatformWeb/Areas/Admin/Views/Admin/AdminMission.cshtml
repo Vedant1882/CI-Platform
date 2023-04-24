@@ -17,7 +17,7 @@
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" /> 
 </head>
 <body>
 
@@ -361,7 +361,7 @@
                     <td>@mission.MissionType</td>
                     <td>@mission.StartDate</td>
                     <td>@mission.EndDate</td>
-                    <td><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#AdminMissionmodal" onclick="editmission(@mission.MissionId)"></i> | <i class="fa fa-trash" style="color:red"></i></td>
+                    <td><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#AdminMissionmodal" onclick="editmission(@mission.MissionId)"></i> | <i class="fa fa-trash" style="color:red" onclick="deletemission(@mission.MissionId)"></i></td>
                 </tr>
             }
 

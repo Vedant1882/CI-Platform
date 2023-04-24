@@ -11,8 +11,8 @@ namespace CI_Platform.Repository.Interface
     {
         
         public bool UserExist(string FirstName, string LastName, string Email, long PhoneNumber, string ConfirmPassword);
-        
-       
-       
+        public List<Banner> AllBanners();
+
+
     }
 }

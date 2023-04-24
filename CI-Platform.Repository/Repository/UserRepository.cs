@@ -41,7 +41,10 @@ namespace CI_Platform.Repository.Repository
                 return true;
             }
         }
-        
+        public List<Banner> AllBanners()
+        {
+            return _CIDbContext.Banners.Where(b => b.DeletedAt == null).ToList();
+        }
 
 
 

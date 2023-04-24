@@ -54,12 +54,12 @@
                                             <input onchange="CHANGE(event)" type="file" style="display:none" id="imginput" />
                                             @if (@Model.avatar != "")
                                             {
-                                                <img  src="@Model.avatar" alt=""
+                                                <img src="@Model.avatar" alt=""
                                                  class="rounded-circle user-profile-img " id="user-profile-img">
                                             }
                                             else
                                             {
-                                                <img  src="~/Images/user1.png"
+                                                <img src="~/Images/user1.png"
                                                  class="rounded-circle user-profile-img" id="user-profile-img">
                                             }
 
@@ -185,7 +185,7 @@
                             <td class="text-danger">In-Active</td>
                         }
 
-                        <td><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal1" id="@fn.UserId" onclick="editAdminUser(this.id)"></i> | <i class="fa fa-trash" style="color:red"></i></td>
+                        <td><i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal1" id="@fn.UserId" onclick="editAdminUser(this.id)"></i> | <i class="fa fa-trash" style="color:red" onclick="deleteuser(@fn.UserId)"></i></td>
                     </tr>
 
 
@@ -199,7 +199,67 @@
     </div>
 
     <script>
+        function deleteuser(userId) {
 
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: true
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this goalsheet!",
+                icon: 'warning',
+                width: '300',
+                height: '100',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Admin/DeleteUser',
+                        type: 'POST',
+                        data: { userId: userId },
+
+                        success: function (response) {
+
+                            swalWithBootstrapButtons.fire(
+                                'Deleted!',
+                                'Your goalsheet has been deleted.',
+                                'success'
+                            )
+                            $('#example').html($(response).find('#example').html());
+                            location.reload();
+
+
+                        },
+                        error: function () {
+                            alert("could not comment");
+                        }
+                    });
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+
+                    )
+                }
+            })
+
+
+
+
+
+        }
 
         function onclickAdd() {
             document.getElementById("email").value = null;

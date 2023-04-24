@@ -53,7 +53,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         public IActionResult Login()
         {
             HttpContext.Session.Clear();
-
+            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
+            ViewBag.Banner = banner;
             return View();
         }
         public IActionResult Logout()
@@ -64,6 +65,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         }
         public IActionResult ForgetPass()
         {
+            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
+            ViewBag.Banner = banner;
             return View();
         }
         public IActionResult PrivacyPolicy()
@@ -73,10 +76,14 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
         public IActionResult ResetPassword()
         {
+            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
+            ViewBag.Banner = banner;
             return View();
         }
         public IActionResult Register()
         {
+            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
+            ViewBag.Banner = banner;
             return View();
         }
         private List<MissionViewModel> missionsVMList = new List<MissionViewModel>();
@@ -90,7 +97,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
             if (ModelState.IsValid)
             {
-
+                var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
+                ViewBag.Banner = banner;
                 var user = _IHome.Logindetails(model.Email, model.Password);
                 var admin = _IHome.AdminEmail(model.Email);
                 if (admin != null)
@@ -127,7 +135,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     }
                     else
                     {
-                        ViewBag.Email = "email or pass is incorrect";
+                        ViewBag.Email = "email or pass is incorrect Or User does not exist";
                     }
                 }
 

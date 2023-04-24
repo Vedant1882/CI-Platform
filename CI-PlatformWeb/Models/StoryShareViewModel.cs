@@ -11,7 +11,7 @@ namespace CI_PlatformWeb.Models
         public long MissionId { get; set; }
         public long storyId { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Please Enter Title")]
+        [Required(ErrorMessage = "First Name is a Required field.")]
         public string title { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please Enter Discription")]

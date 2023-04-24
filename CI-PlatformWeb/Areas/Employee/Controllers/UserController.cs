@@ -29,6 +29,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
         public IActionResult Register()
         {
+            var banner = _IUser.AllBanners().OrderBy(b => b.SortOrder);
+            ViewBag.Banner = banner;
             //User user = new User();
             return View();
         }

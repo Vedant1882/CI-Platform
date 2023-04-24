@@ -1,4 +1,69 @@
-﻿function SaveSkills() {
+﻿
+
+function deletemission(missionId) {
+
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: true
+    })
+
+    swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this goalsheet!",
+        icon: 'warning',
+        width: '300',
+        height: '100',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/Admin/Admin/DeleteMission',
+                type: 'POST',
+                data: { missionId: missionId },
+
+                success: function (response) {
+
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'Your goalsheet has been deleted.',
+                        'success'
+                    )
+                    $('#example').html($(response).find('#example').html());
+                    location.reload();
+
+
+                },
+                error: function () {
+                    alert("could not comment");
+                }
+            });
+
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire(
+                'Cancelled',
+
+            )
+        }
+    })
+
+
+
+
+
+}
+
+
+function SaveSkills() {
     var selectedSkills = [];
     var selected = "";
     const skillsSelected = $('#s2 option');

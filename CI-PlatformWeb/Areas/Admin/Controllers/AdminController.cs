@@ -100,6 +100,17 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
                 return RedirectToAction("Error", "Home", new { area = "Employee" });
             }
         }
+
+        [HttpPost]
+        public IActionResult DeleteUser(long userId)
+        {
+            _IHome.DeleteUser(userId);
+            var user = new CI_Entity.ViewModel.AdminUserViewModel();
+            user.users = _IHome.alluser().ToList();
+            user.allcity = _IHome.AllCity();
+            user.allcountry = _IHome.allcountry();
+            return RedirectToAction("Index");
+        }
         public IActionResult AdminCms()
         {
             HttpContext.Session.SetInt32("Nav", 2);
@@ -267,7 +278,17 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
             //Request.Form.Files= missionVm.ImageFiles;
             return View("AdminMission", missionVm);
         }
-
+        [HttpPost]
+        public IActionResult DeleteMission(long missionId)
+        {
+            _IHome.DeleteMission(missionId);
+            var missionvm = new AdminMissionViewModel();
+            missionvm.missions = _IHome.Allmissions();
+            missionvm.countries = _IHome.allcountry();
+            missionvm.cities = _IHome.AllCity();
+            missionvm.themes = _IHome.alltheme();
+            return RedirectToAction("AdminMission");
+        }
         [HttpPost]
         public IActionResult delDoc(string docId)
         {

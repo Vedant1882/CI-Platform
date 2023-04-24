@@ -119,5 +119,8 @@ namespace CI_Platform.Repository.Interface
         public Banner AddBanner(string discrption, string image, int sortorder);
         public Banner UpdateBanner(string discrption, string image, int sortorder,long bannerId);
         public List<Banner> AllBanners();
+        public void DeleteUser(long userId);
+        public void DeleteMission(long missionId);
+
     }
 }
