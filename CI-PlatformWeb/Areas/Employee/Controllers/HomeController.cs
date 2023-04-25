@@ -15,6 +15,7 @@ using Microsoft.Data.SqlClient;
 
 using CI_Platform.Repository.Interface;
 using CI_PlatformWeb.Areas.Admin.Controllers;
+using System.Reflection;
 
 namespace CI_PlatformWeb.Areas.Employee.Controllers
 {
@@ -53,8 +54,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         public IActionResult Login()
         {
             HttpContext.Session.Clear();
-            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
-            ViewBag.Banner = banner;
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             return View();
         }
         public IActionResult Logout()
@@ -65,8 +66,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         }
         public IActionResult ForgetPass()
         {
-            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
-            ViewBag.Banner = banner;
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             return View();
         }
         public IActionResult PrivacyPolicy()
@@ -76,14 +77,14 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
         public IActionResult ResetPassword()
         {
-            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
-            ViewBag.Banner = banner;
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             return View();
         }
         public IActionResult Register()
         {
-            var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
-            ViewBag.Banner = banner;
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             return View();
         }
         private List<MissionViewModel> missionsVMList = new List<MissionViewModel>();
@@ -94,11 +95,11 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login model)
         {
-
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             if (ModelState.IsValid)
             {
-                var banner = _IHome.AllBanners().OrderBy(b => b.SortOrder);
-                ViewBag.Banner = banner;
+                
                 var user = _IHome.Logindetails(model.Email, model.Password);
                 var admin = _IHome.AdminEmail(model.Email);
                 if (admin != null)
@@ -155,6 +156,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         {
             if (ModelState.IsValid)
             {
+                ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+                ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
                 var user = _IHome.UserByEmail(model.Email);
                 if (user == null)
                 {
@@ -213,6 +216,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
         public ActionResult ResetPassword(string email, string token)
         {
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             var passwordReset = _IHome.UserBymail_token(email, token);
             if (passwordReset == null)
             {
@@ -239,6 +244,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 if (ModelState.IsValid)
                 {
                     // Find the user by email
+                    ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+                    ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
                     var user = _IHome.UserByEmail(resetPasswordView.Email);
                     if (user == null)
                     {
@@ -473,6 +480,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                         var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == missions.MissionId).ToList();
                         var applicationmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus == "1").FirstOrDefault();
                         var pendingmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus == "0").FirstOrDefault();
+                        var rejectedmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus == "rejected").FirstOrDefault();
                         var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId && m.MediaType != "Video" && m.DeletedAt == null).FirstOrDefault();
                         int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId && m.ApprovalStatus == "1").Count();
 
@@ -525,6 +533,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             deadline = missions.Deadline,
                             isapplied = applicationmission != null ? 1 : 0,
                             ispending = pendingmission != null ? 1 : 0,
+                            isrejected = rejectedmission != null ? 1 : 0,
                             isclosed = close == "1" ? 0 : 1,
                             path = missionmedia != null ? missionmedia.MediaPath : "",
                             defaultimg = missionmedia != null ? missionmedia.Default : "",
@@ -793,10 +802,13 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 string[] endDateNtime = mission.EndDate.ToString().Split(' ');
                 var applicationmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus == "1");
                 var pendingmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus == "0");
+                var rejectedmission = _IHome.missionapplication().FirstOrDefault(m => m.UserId == useridforrating && m.MissionId == missionId && m.ApprovalStatus == "rejected");
                 VolunteeringVM volunteeringMission = new();
                 int finalrating = 0;
                 int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missionId && m.ApprovalStatus == "1").Count();
                 var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
+                ViewBag.missionmedia = _IHome.allmedia().Where(m => m.MissionId == mission.MissionId && m.DeletedAt == null).ToList();
+                ViewBag.missionmediacount = _IHome.allmedia().Where(m => m.MissionId == mission.MissionId && m.DeletedAt == null).ToList().Count();
                 var close = "0";
                 if (DateTime.Now > mission.Deadline)
                 {
@@ -833,6 +845,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     avgrating = finalrating,
                     available = Convert.ToInt32(mission.Availability) - appliedseat,
                     isapplied = applicationmission != null ? 1 : 0,
+                    isrejected = rejectedmission != null ? 1 : 0,
                     ispending = pendingmission != null ? 1 : 0,
                     isclosed = close == "1" ? 0 : 1,
                     goalval = Convert.ToInt32(goalMission.GoalValue),
@@ -1086,6 +1099,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 var story = _IHome.StoryByStoryidList(storyid);
                 var storyMedia = _IHome.storymedia().Where(SM => SM.StoryId == storyid).ToList();
                 ViewBag.StoryMedia = storyMedia.Count();
+                ViewBag.storymedia = _IHome.storymedia().Where(SM => SM.StoryId == storyid && SM.DeletedAt==null).ToList();
+                ViewBag.storymediacount = _IHome.storymedia().Where(SM => SM.StoryId == storyid && SM.DeletedAt == null).ToList().Count();
                 List<storyListingViewModel> storylist = new List<storyListingViewModel>();
                 foreach (var item in story)
                 {
@@ -1210,7 +1225,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             FileName = "data:image/png;base64," + base64String;
                         }
 
-                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId,model.url);
                     }
 
                 }
@@ -1256,7 +1271,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             FileName = "data:image/png;base64," + base64String;
                         }
 
-                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId,model.url);
                     }
 
                 }

@@ -21,5 +21,6 @@ namespace CI_PlatformWeb.Models
 
         public List<IFormFile> attachment { get; set; }
         public List<StoryMedium> storyMedia { get; set; }
+        public string url { get; set; }
     }
 }

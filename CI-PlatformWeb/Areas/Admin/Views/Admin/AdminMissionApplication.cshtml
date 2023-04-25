@@ -53,7 +53,7 @@
                         <td>@ma.UserId</td>
                         <td>@ma.FirstName @ma.LastName</td>
                         <td>@ma.AppliedAt.ToShortDateString()</td>
-                        <td><i class="fa-regular fa-circle-check" id="@ma.MissionApplicationId" style="color:green;" onclick="approve(this.id, '1')"></i> | <i class="fa-sharp fa-regular fa-circle-xmark" id="@ma.MissionApplicationId" style="color:red;" onclick="approve(this.id, '0')"></i></td>
+                        <td><i class="fa-regular fa-circle-check" id="@ma.MissionApplicationId" style="color:green;" onclick="approve(this.id, '1')"></i> | <i class="fa-sharp fa-regular fa-circle-xmark" id="@ma.MissionApplicationId" style="color:red;" onclick="approve(this.id, 'rejected')"></i></td>
                     </tr>
                 }
 

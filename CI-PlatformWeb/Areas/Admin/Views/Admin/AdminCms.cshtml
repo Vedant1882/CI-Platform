@@ -47,24 +47,27 @@
                                     <div class="col-12 mb-2">
                                         <lable>Title</lable>
                                         <input asp-for="Title" id="Title" class="form-control" />
+                                        <span asp-validation-for="Title" style="color:red;font-size:10px;"></span>
                                         <input asp-for="CmsPageId" id="CmsPageId" type="hidden" />
                                     </div>
                                     <div class="col-12 mb-2">
                                         <lable>Description</lable>
-                                        <textarea asp-for="Description" name="Description" id="Description" class="form-control"></textarea>
-
+                                        <textarea asp-for="Description" name="Description" id="Description" type="text" class="form-control"></textarea>
+                                        <span asp-validation-for="Description" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 mb-2">
                                         <lable>Slug</lable>
                                         <input asp-for="Slug" id="Slug" class="form-control" />
+                                        <span asp-validation-for="Slug" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 mb-2">
                                         <lable>Status</lable>
                                         <select asp-for="Status" class="form-select" id="Status" placeholder="Status">
-                                            <option selected value="null">Select Status</option>
+                                            <option selected disabled value="null">Select Status</option>
                                             <option value="1"> Active</option>
                                             <option value="0"> In-Active</option>
                                         </select>
+                                        <span asp-validation-for="Status" style="color:red;font-size:10px;"></span>
                                     </div>
 
                                 </div>
@@ -189,6 +192,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Admin.js" asp-append-version="true"></script>
     <link href="~/css/Adminindex.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 
 </body>

@@ -43,7 +43,7 @@
                                     <div class="col-12  ">
                                         <label>Select Banner Img</label>
                                         <div class="upload-btn-wrapper position-relative d-flex justify-content-center col-md-12" onclick="CLICK()">
-                                            @if(Model.img==null)
+                                            @if (Model.img == null)
                                             {
                                                 <img src="~/Images/InsertImage.png" class="user-profile-image" id="imgTag" />
                                             }
@@ -65,11 +65,12 @@
                                     <div class="col-12">
                                         <label>Description</label>
                                         <textarea id="discrption" asp-for="BannerText" class="text-break form-control" rows="9"></textarea>
+                                        <span asp-validation-for="BannerText" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12">
                                         <label> Sort Order Value</label>
                                         <input type="number" asp-for="BannerSortOrder" id="sortorder" class="form-control" />
-
+                                        <span asp-validation-for="BannerSortOrder" style="color:red;font-size:10px;"></span>
 
 
 
@@ -108,7 +109,7 @@
                         <td class="text-break">@banner.Text</td>
                         <td>@banner.SortOrder</td>
 
-                        <td class="d-flex justify-content-center"><i class="fas fa-edit  me-1" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal" onclick="getBanner(@banner.BannerId)"></i> | <i class="fa fa-trash  ms-1 " style="color:red" onclick=""></i></td>
+                        <td class="d-flex justify-content-center"><i class="fas fa-edit  me-1" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal" onclick="getBanner(@banner.BannerId)"></i> | <i class="fa fa-trash  ms-1 " style="color:red" onclick="deletebanner(@banner.BannerId)"></i></td>
                     </tr>
                 }
 
@@ -126,6 +127,64 @@
     </div>
 
     <script>
+        function deletebanner(bannerId) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: true
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this goalsheet!",
+                icon: 'warning',
+                width: '300',
+                height: '100',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Admin/DeleteBanner',
+                        type: 'POST',
+                        data: { bannerId: bannerId },
+
+                        success: function (response) {
+
+                            swalWithBootstrapButtons.fire(
+                                'Deleted!',
+                                'Your goalsheet has been deleted.',
+                                'success'
+                            )
+                            $('#example').html($(response).find('#example').html());
+                            location.reload();
+
+
+                        },
+                        error: function () {
+                            alert("could not comment");
+                        }
+                    });
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+
+                    )
+                }
+            })
+
+        }
+
+
+
         function CLICK() {
 
             document.getElementById("imginput").click();
@@ -200,5 +259,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Admin.js" asp-append-version="true"></script>
     <link href="~/css/Adminindex.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
 </body>
 </html>

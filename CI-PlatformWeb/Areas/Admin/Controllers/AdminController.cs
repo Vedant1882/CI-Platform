@@ -34,6 +34,7 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
             return View(user);
 
         }
+
         [HttpPost]
         public async Task<IActionResult> AddUser(string firstname, string lastname, string email, string password, string profiletext, string department,
             string status, string employeeid, string avatar, long userId, long cityid, long countryid)
@@ -434,7 +435,13 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
             return RedirectToAction("AdminStory");
         }
 
-
+        [HttpPost]
+        public IActionResult DeleteStory(long storyId)
+        {
+            _IHome.DeleteStory(storyId);
+          
+            return RedirectToAction("AdminStory");
+        }
 
 
 
@@ -482,6 +489,12 @@ namespace CI_PlatformWeb.Areas.Admin.Controllers
             banner.banner = _IHome.AllBanners();
             return View("AdminBannerManagement", banner);
         }
+        [HttpPost]
+        public IActionResult DeleteBanner(long bannerId)
+        {
+            _IHome.DeleteBanner(bannerId);
 
+            return RedirectToAction("AdminBannerManagement");
+        }
     }
 }

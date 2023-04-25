@@ -40,7 +40,7 @@
         <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <form asp-action="AddUser" asp-controller="Admin" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -82,12 +82,15 @@
                                 <div class="row mt-2 imdupperdiv py-2">
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <input asp-for="firstname" type="text" id="firstname" class="form-control" placeholder="First name">
+                                        <span asp-validation-for="firstname" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <input asp-for="lastname" type="text" id="lastname" class="form-control" placeholder="Last name">
+                                        <span asp-validation-for="lastname" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <input asp-for="email" type="email" id="email" class="form-control" placeholder="Enter Email">
+                                        <span asp-validation-for="email" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <input asp-for="password" type="password" id="password" class="form-control" placeholder="Enter Password">
@@ -143,7 +146,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" data-bs-dismiss="modal" class="btn closebtn">Close</button>
-                            <button type="button" data-bs-dismiss="modal" class="btn savebtn" onclick="saveAdminUser()">Save changes</button>
+                            <button type="submit"  class="btn savebtn" onclick="saveAdminUser()">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -310,40 +313,47 @@
         }
 
         function saveAdminUser() {
+            
+     
+            if(document.getElementById("firstname").value != "" || document.getElementById("lastname").value != "" ||
+                document.getElementById("email").value != "" || document.getElementById("password").value != ""){
+                    debugger;
+                $.ajax({
+                    url: '/Admin/Admin/AddUser',
+                    type: 'POST',
+                    data: {
+                        firstname: document.getElementById("firstname").value,
+                        lastname: document.getElementById("lastname").value,
+                        email: document.getElementById("email").value,
+                        password: document.getElementById("password").value,
+                        department: document.getElementById("department").value,
+                        employeeid: document.getElementById("employeeid").value,
+                        avatar: document.getElementById("user-profile-img").src,
+                        cityid: document.getElementById("cityid").value,
+                        countryid: document.getElementById("countryid").value,
+                        status: document.getElementById("status").value,
+                        profiletext: document.getElementById("profiletext").value,
+                        userId: document.getElementById("userId").value
+                    },
 
-            $.ajax({
-                url: '/Admin/Admin/AddUser',
-                type: 'POST',
-                data: {
-                    firstname: document.getElementById("firstname").value,
-                    lastname: document.getElementById("lastname").value,
-                    email: document.getElementById("email").value,
-                    password: document.getElementById("password").value,
-                    department: document.getElementById("department").value,
-                    employeeid: document.getElementById("employeeid").value,
-                    avatar: document.getElementById("user-profile-img").src,
-                    cityid: document.getElementById("cityid").value,
-                    countryid: document.getElementById("countryid").value,
-                    status: document.getElementById("status").value,
-                    profiletext: document.getElementById("profiletext").value,
-                    userId: document.getElementById("userId").value
-                },
+                    success: function (response) {
 
-                success: function (response) {
-
-                    //document.getElementById("themeName").value = response.title;
-                    $('#example').html($(response).find('#example').html());
-                    location.reload();
-                },
-                error: function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Email already exists',
-                        timer: 2500,
-                    })
+                        //document.getElementById("themeName").value = response.title;
+                        $('#example').html($(response).find('#example').html());
+                        location.reload();
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Email already exists',
+                            timer: 2500,
+                        })
+                    }
+                });
                 }
-            });
+
+          
         }
 
         function CLICK() {
@@ -356,6 +366,9 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Admin.js" asp-append-version="true"></script>
     <link href="~/css/Adminindex.css" rel="stylesheet" asp-append-version="true" />
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 </body>
 </html>

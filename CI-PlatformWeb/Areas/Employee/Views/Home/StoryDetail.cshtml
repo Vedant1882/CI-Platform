@@ -34,27 +34,32 @@
             <div class="col-12 col-lg-6 col-md-12 col-sm-12">
                 <div class="container p-0">
 
-                    <!-- Full-width images with number text -->
-                    <div class="mySlides">
-                        <div class="numbertext">1 / 6</div>
-                        <img src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-3.png" style="width:100%">
-                    </div>
 
-                    <div class="mySlides">
-                        <div class="numbertext">2 / 6</div>
-                        <img src="/Images/img1.png" style="width:100%">
-                    </div>
+                    @{
+                        int num = 0;
+                    }
+                    @foreach (var media in ViewBag.storymedia)
+                    {
 
-                    <div class="mySlides">
-                        <div class="numbertext">3 / 6</div>
-                        <img src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-2.png" style="width:100%">
-                    </div>
+                        @if (media.StoryType == "Video")
+                        {
+                            num++;
+                            <div class="mySlides" style="height:407px">
+                                <div class="numbertext">@num/ @ViewBag.storymediacount</div>
+                                <iframe width="560" height="315" class="img-fluid vol-page-crousel" id="vol-page-crousel"
+                                src=@media.StoryPath style="height:100%;object-fit:cover;width:100%" alt=""></iframe>
 
-                    <div class="mySlides">
-                        <div class="numbertext">4 / 6</div>
-                        <img src="/Images/img11.png" style="width:100%">
-                    </div>
-
+                            </div>
+                        }
+                        else
+                        {
+                            num++;
+                            <div class="mySlides">
+                                <div class="numbertext">@num/ @ViewBag.storymediacount</div>
+                                <img src="@media.StoryPath" style="width:100%">
+                            </div>
+                        }
+                    }
 
 
                     <!-- Next and previous buttons -->
@@ -64,131 +69,29 @@
                     <!-- Image text -->
                     <!-- Thumbnail images -->
                     <div class="row mt-1">
-                        <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-1.png" style="width:100%" onclick="currentSlide(1)" alt="The Woods">
-                        </div>
-                        <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/img1.png" style="width:100%" onclick="currentSlide(2)" alt="Cinque Terre">
-                        </div>
-                        <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" style="width:100%" onclick="currentSlide(3)" alt="Mountains and fjords">
-                        </div>
-                        <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
-                        </div>
-                       @*<div class="column">
-                        <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(5)" alt="Nature and sunrise">
-                        </div>
-                        <div class="column">
-                        <img class="demo cursor" src="/Images/Animal-welfare-&-save-birds-campaign-1.png" style="width:100%" onclick="currentSlide(6)" alt="Snowy Mountains">
-                        </div>*@
+                       
+                        @foreach (var media in ViewBag.storymedia)
+                        {
+                            @if (media.StoryType == "Video")
+                            {
+                                <div class="column" style="width:25%">
+                                    <iframe src=@media.StoryPath title="W3Schools Free Online Web Tutorials"></iframe>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="column" style="width:25%">
+                                    <img class="demo cursor" src="@media.StoryPath" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
+                                </div>
+                            }
+                        }
 
                     </div>
 
                 </div>
             </div>
 
-   @* @foreach(var Model in Model)
-    {
-        <div class="col-12 col-md-6 vol-page-img-sec d-flex flex-column">
-            <div>
-                @if (ViewBag.StoryMedia != 0)
-                {
-                    @for (var i = 0; i < 1; i++)
-                    {
-                        <img class="img-fluid vol-page-crousel" id="vol-page-crousel"
-                 src="@Model.StoryMedia[i].StoryPath" alt="">
-                    }
-                }
-                else
-                {
-                    <img class="img-fluid vol-page-crousel" id="vol-page-crousel"
-                 src="~/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-3.png" alt="">
-
-                }
-
-
-            </div>
-            @if (ViewBag.StoryMedia != 0)
-            {
-                <div class="d-flex mt-2" style="height: 100px;">
-                    <div id="carouselExample" class="carousel slide">
-                        <div class="carousel-inner" style="height: 100px;">
-                            <div class="carousel-item active vol-page-crousel">
-                                <div class="row">
-
-
-                                    @if (ViewBag.StoryMedia > 4)
-                                    {
-                                        @for (var i = 0; i < 4; i++)
-                                        {
-                                            <div class="col">
-                                                <img class="img-fluid vol-img-change-@i vol-img-change-n"
-                                     src="@Model.StoryMedia[i].StoryPath" alt=""
-                                     onclick="onImageChange(@i)">
-                                            </div>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @for (var i = 0; i < ViewBag.StoryMedia; i++)
-                                        {
-                                            <div class="col">
-                                                <img class="img-fluid vol-img-change-@i vol-img-change-n"
-                                     src="@Model.StoryMedia[i].StoryPath" alt=""
-                                     onclick="onImageChange(@i)">
-                                            </div>
-                                        }
-                                    }
-
-
-
-
-
-                                </div>
-                            </div>
-
-                            <div class="carousel-item vol-page-crousel">
-                                <div class="row">
-
-                                    @for (var i = 4; i < ViewBag.StoryMedia; i++)
-                                    {
-                                        if (i > 7)
-                                        {
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            <div class="col">
-                                                <img class="img-fluid vol-img-change-@i vol-img-change-n"
-                                     src="@Model.StoryMedia[i].StoryPath" alt=""
-                                     onclick="onImageChange(@i)">
-                                            </div>
-                                        }
-
-                                    }
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <button class="carousel-control-prev next-and-prev-btn" type="button" data-bs-target="#carouselExample"
-                        data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next next-and-prev-btn" type="button" data-bs-target="#carouselExample"
-                        data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-
-                </div>
-            }
-
-        </div>
-    }*@
+   
             
 
 

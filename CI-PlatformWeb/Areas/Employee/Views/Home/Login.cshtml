@@ -19,64 +19,72 @@
 </head>
 <body>
     @if (TempData["reg"] != null)
-        {
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-            <script type="text/javascript">
+    {
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script type="text/javascript">
 
 
-                toastr.success('@TempData["reg"]');
+            toastr.success('@TempData["reg"]');
 
 
-            </script>
-        }
+        </script>
+    }
     @if (TempData["Done"] != null)
-        {
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-            <script type="text/javascript">
+    {
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script type="text/javascript">
 
 
-                toastr.info('@TempData["Done"]');
+            toastr.info('@TempData["Done"]');
 
 
-            </script>
-        }
+        </script>
+    }
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 mt-2">
-                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
-                    @*      <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                    </div>*@
-                    <div class="carousel-inner">
-                        @foreach (var banner in ViewBag.Banner)
+                <div id="carouselExampleCaptions" style="height:98vh" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+                   
+                    <div class="carousel-inner" style="height:98vh">
+                        @foreach (var banner in ViewBag.firstBanner)
                         {
-                            <div class="carousel-item active">
-                                <img src="@banner.Image" class="d-block w-100" style="height:98vh" alt="...">
+                            <div class="carousel-item active" data-bs-interval="5000">
+                                <img src="@banner.Image" class="d-block w-100 carousel-img object-fit-none" alt="..." style="height:98vh">
                                 <div class="carousel-caption d-none d-md-block ">
-                                    <h5 class="title text-start ms-2">Sed ut perspiciatis unde omnis iste natus voluptatem.</h5>
-                                    <p class="subtitle text-start ms-2">
+                                    <h2>Sed ut perspiciatis unde omnis iste natus voluptatem.</h2>
+                                    <p>
                                         @banner.Text
                                     </p>
                                 </div>
                             </div>
                         }
-                        
-                        
+                        @foreach (var banner in ViewBag.Banners)
+                        {
+                            <div class="carousel-item" data-bs-interval="5000">
+                                <img src="@banner.Image" class="d-block w-100 carousel-img object-fit-none " alt="..." style="height:98vh">
+                                <div class="carousel-caption d-none d-md-block ">
+                                    <h2>Sed ut perspiciatis unde omnis iste natus voluptatem.</h2>
+                                    <p>
+                                        @banner.Text
+                                    </p>
+                                </div>
+                            </div>
+                        }
+
+
                     </div>
-                    <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                       <span class="visually-hidden">Previous</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
                       <span class="carousel-control-next-icon" aria-hidden="true"></span>
                       <span class="visually-hidden">Next</span>
-                    </button> -->
+                    </button>
                 </div>
             </div>
             <div class="side-div col-lg-4 col-md-12 col-sm-12 col-xs-12 mt-2 align-self-center">
@@ -102,7 +110,7 @@
                             </div>
                             <div class="mt-3">
                                 <input type="Submit" value="Login" class="btn mt-3">
-                             
+
                             </div>
                             <div class="text-center mt-2">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ForgetPass">ForgotPassword?</a>

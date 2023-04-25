@@ -45,22 +45,27 @@
                                     <div class="col-12 col-lg-4  col-md-6 mb-3">
                                         <label for="title">Mission Title</label>
                                         <input asp-for="title" type="text" class="form-control" placeholder="Enter title">
+                                        <span asp-validation-for="title" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <label for="short description">Mission Short Description</label>
                                         <input asp-for="shortdescription" type="text" class="form-control" placeholder="Enter short description">
+                                        <span asp-validation-for="shortdescription" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <label for="organization name">Mission Organization Name</label>
                                         <input asp-for="organizationName" type="text" class="form-control" placeholder="Enter organization name">
+                                        <span asp-validation-for="organizationName" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 mb-3">
                                         <label for="description">Mission Description</label>
                                         <textarea asp-for="editor2" name="editor2" id="editor2" class="form-control"></textarea>
+                                        <span asp-validation-for="editor2" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12  mb-3">
                                         <label for="organization Detail">Mission Organization Detail</label>
                                         <textarea asp-for="organizationDetail" type="text" class="form-control" placeholder="Enter organization name"></textarea>
+                                        <span asp-validation-for="organizationDetail" style="color:red;font-size:10px;"></span>
                                     </div>
 
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
@@ -75,6 +80,7 @@
 
 
                                         </Select>
+                                        <span asp-validation-for="countryId" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <label for="city">city</label>
@@ -85,6 +91,7 @@
                                                 <option value="@city.CityId">@city.Name</option>
                                             }
                                         </Select>
+                                        <span asp-validation-for="cityId" style="color:red;font-size:10px;"></span>
                                     </div>
                                     <div class="col-12 col-lg-4 col-md-6 mb-3">
                                         <label>Theme</label>
@@ -95,6 +102,7 @@
                                                 <option value="@theme.MissionThemeId">@theme.Title</option>
                                             }
                                         </Select>
+                                        <span asp-validation-for="cityId" style="color:red;font-size:10px;"></span>
                                     </div>
 
 
@@ -415,6 +423,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Admin.js" asp-append-version="true"></script>
     <link href="~/css/Adminindex.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 </body>
 </html>

@@ -15,6 +15,7 @@ namespace CI_PlatformWeb.Models
         [Display(Order = 1, Name = "LastName")]
         [RegularExpression("^((?!^First Name$)[a-zA-Z '])+$", ErrorMessage = "Last name  must be properly formatted.")]
         public string lastname { get; set; }
+        [Required(ErrorMessage = "EmployeeId is a Required field.")]
         public string employeeid { get; set; }
 
         public string email { get; set; }

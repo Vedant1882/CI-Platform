@@ -35,27 +35,30 @@
             <div class="col-12 col-lg-6 col-md-12 col-sm-12">
                 <div class="container p-0">
 
-                    <!-- Full-width images with number text -->
-                    <div class="mySlides">
-                        <div class="numbertext">1 / 6</div>
-                        <img src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-3.png" style="width:100%">
-                    </div>
+                    
+                    @{int num = 0;}
+                    @foreach (var media in ViewBag.missionmedia)
+                    {
 
-                    <div class="mySlides">
-                        <div class="numbertext">2 / 6</div>
-                        <img src="/Images/img1.png" style="width:100%">
-                    </div>
-
-                    <div class="mySlides">
-                        <div class="numbertext">3 / 6</div>
-                        <img src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-2.png" style="width:100%">
-                    </div>
-
-                    <div class="mySlides">
-                        <div class="numbertext">4 / 6</div>
-                        <img src="/Images/img11.png" style="width:100%">
-                    </div>
-
+                        @if (media.MediaType == "Video")
+                        {
+                            num++;
+                            <div class="mySlides" style="height:407px">
+                                <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
+                                <iframe width="560" height="315" class="img-fluid vol-page-crousel" id="vol-page-crousel"
+                                src=@media.MediaPath style="height:100%;object-fit:cover;width:100%" alt=""></iframe>
+                                
+                            </div>
+                        }
+                        else
+                        {
+                            num++;
+                            <div class="mySlides">
+                                <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
+                                <img src="@media.MediaPath" style="width:100%">
+                            </div>
+                        }
+                    }
 
 
                     <!-- Next and previous buttons -->
@@ -65,7 +68,7 @@
                     <!-- Image text -->
                     <!-- Thumbnail images -->
                     <div class="row mt-1">
-                        <div class="column" style="width:25%">
+                       @* <div class="column" style="width:25%">
                             <img class="demo cursor" src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-1.png" style="width:100%" onclick="currentSlide(1)" alt="The Woods">
                         </div>
                         <div class="column" style="width:25%">
@@ -76,8 +79,22 @@
                         </div>
                         <div class="column" style="width:25%">
                             <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
-                        </div>
-
+                        </div>*@
+                        @foreach (var media in ViewBag.missionmedia)
+                        {
+                            @if (media.MediaType == "Video")
+                            {
+                                <div class="column" style="width:25%">
+                                    <iframe src=@media.MediaPath title="W3Schools Free Online Web Tutorials"></iframe>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="column" style="width:25%">
+                                    <img class="demo cursor" src="@media.MediaPath" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
+                                </div>
+                            }
+                        }
 
                     </div>
 
@@ -228,7 +245,7 @@
 
                                 </button>
                             }
-                            
+
                         }
                         else
                         {
@@ -406,13 +423,13 @@
                             }
                             else
                             {
-                                @if (Model.isapplied == 1 || Model.ispending == 1)
+                                @if (Model.isapplied == 1 || Model.ispending == 1 || Model.isrejected == 1)
                                 {
                                     @if (Model.isapplied == 1)
                                     {
                                         <div class="text-center">
-                                            <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
-                                                Already Applied
+                                            <button class="btn mt-2 landing-page-apply-mission-btn " style="color:green" disabled>
+                                                Already Applied<i class="bi bi-check-circle ms-2" style="color:green"></i>
                                             </button>
                                         </div>
                                     }
@@ -421,6 +438,14 @@
                                         <div class="text-center">
                                             <button class="btn mt-2 landing-page-apply-mission-btn" style="color:orange" disabled>
                                                 Pending
+                                            </button>
+                                        </div>
+                                    }
+                                    @if (Model.isrejected == 1)
+                                    {
+                                        <div class="text-center">
+                                            <button class="btn mt-2 landing-page-apply-mission-btn" style="color:red" disabled>
+                                                Rejected<i class="bi bi-x-circle ms-2" style="color:red"></i>
                                             </button>
                                         </div>
                                     }

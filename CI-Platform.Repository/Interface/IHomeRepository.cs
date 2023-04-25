@@ -74,7 +74,7 @@ namespace CI_Platform.Repository.Interface
         public void apply(long missionid,long userid);
         public long addstory(long MissionId,string title,DateTime date,string discription,long id, long storyId);
         public void addtimesheet(long MissionId,long id, int? hour,int? minute, DateTime date,string message,int? action,long? timesheetid);
-        public void addstoryMedia(long MissionId,string mediatype,string mediapath,long id,long storyId, long sId);
+        public void addstoryMedia(long MissionId,string mediatype,string mediapath,long id,long storyId, long sId,string url);
 
         public long addstorydraft(long MissionId, string title, DateTime date, string discription, long id,long storyId);
 
@@ -121,6 +121,8 @@ namespace CI_Platform.Repository.Interface
         public List<Banner> AllBanners();
         public void DeleteUser(long userId);
         public void DeleteMission(long missionId);
+        public void DeleteStory(long storyId);
+        public void DeleteBanner(long bannerId);
 
     }
 }

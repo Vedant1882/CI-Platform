@@ -26,15 +26,15 @@
         <div class="d-flex borderbottom justify-content-between">
             <h3 class="borderbotm mb-0">Mission Themes</h3>
             <button onclick="refreshModal()" type="button" class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminMissionthememodal">
-                <i  class="fa-regular fa-plus" style="color: #F88735"></i>
+                <i class="fa-regular fa-plus" style="color: #F88735"></i>
                 Add
             </button>
             <div class="modal fade" id="AdminMissionthememodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    
-                        <div class="modal-content">
 
-                            <form asp-action="AddTheme" asp-controller="Admin" method="post">
+                    <div class="modal-content">
+
+                        <form asp-action="AddTheme" asp-controller="Admin" method="post">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">ADD New Theme</h1>
                                 <button type="button" class="bg-white border-0" data-bs-dismiss="modal" aria-label="Close">
@@ -47,7 +47,8 @@
                                         <div class="col-12">
                                             <input type="hidden" asp-for="themeId" />
                                             <lable>Theme Name</lable>
-                                            <input class="form-control" id="themeName" value="@Model.themeName" asp-for="themeName"/>
+                                            <input class="form-control" id="themeName" value="@Model.themeName" asp-for="themeName" />
+                                            <span asp-validation-for="themeName" style="color:red;font-size:10px;"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -57,12 +58,12 @@
                                 <button type="submit" class="btn savebtn">Save changes</button>
                             </div>
                         </form>
-                        </div>
-                    
+                    </div>
+
                 </div>
             </div>
         </div>
-     
+
         <table id="example" class="table" style="width:100%;border: 1px solid #e9ecef;">
             <thead class="thead-light" style="background-color:#F8F9FC;">
                 <tr>
@@ -93,11 +94,11 @@
     </div>
 
     <script>
-        function refreshModal(){
+        function refreshModal() {
             document.getElementById("themeName").value = "";
         }
 
-        function editAdminUser(themeId){
+        function editAdminUser(themeId) {
             $.ajax({
                 url: '/Admin/Admin/GetTheme',
                 type: 'POST',
@@ -115,21 +116,62 @@
             });
         }
         function deleteAdminUser(themeId) {
-            $.ajax({
-                url: '/Admin/Admin/deleteTheme',
-                type: 'POST',
-                data: { themeId: themeId },
 
-                success: function (response) {
 
-                    //document.getElementById("themeName").value = response.title;
-                    $('#example').html($(response).find('#example').html());
 
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
                 },
-                error: function () {
-                    alert("could not comment");
+                buttonsStyling: true
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this goalsheet!",
+                icon: 'warning',
+                width: '300',
+                height: '100',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Admin/deleteTheme',
+                        type: 'POST',
+                        data: { themeId: themeId },
+
+                        success: function (response) {
+
+                            //document.getElementById("themeName").value = response.title;
+                            $('#example').html($(response).find('#example').html());
+
+                        },
+                        error: function () {
+                            alert("could not comment");
+                        }
+                    });
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+
+                    )
                 }
-            });
+            })
+
+
+
+
+
+
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -141,6 +183,8 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/Admin.js" asp-append-version="true"></script>
     <link href="~/css/Adminindex.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 
 </body>

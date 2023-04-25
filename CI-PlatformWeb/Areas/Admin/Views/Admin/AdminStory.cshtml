@@ -44,7 +44,7 @@
                             <a class="Viewbtn rounded-5 me-3  text-decoration-none px-2 " href="/Employee/Home/StoryDetail/?storyId=@story.StoryId">View</a>
                             <i class="fa-regular fa-circle-check ms-1" onclick="ApproveStory(@story.StoryId, 'Approved')" style="color:green;"></i>
                             <i class="fa-sharp fa-regular fa-circle-xmark ms-1" onclick="ApproveStory(@story.StoryId, 'Rejected')" style="color:red;"></i>
-                            <i class="fa fa-trash ms-1" style="color:black"></i>
+                            <i class="fa fa-trash ms-1" style="color:black" onclick="deletestory(@story.StoryId)"></i>
                         </td>
                     </tr>
                 }
@@ -74,6 +74,66 @@
                     alert("could not comment");
                 }
             });
+        }
+        function deletestory(storyId){
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: true
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this goalsheet!",
+                icon: 'warning',
+                width: '300',
+                height: '100',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Admin/DeleteStory',
+                        type: 'POST',
+                        data: { storyId: storyId },
+
+                        success: function (response) {
+
+                            swalWithBootstrapButtons.fire(
+                                'Deleted!',
+                                'Your goalsheet has been deleted.',
+                                'success'
+                            )
+                            $('#example').html($(response).find('#example').html());
+                            location.reload();
+
+
+                        },
+                        error: function () {
+                            alert("could not comment");
+                        }
+                    });
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+
+                    )
+                }
+            })
+
+
+
+
+
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>

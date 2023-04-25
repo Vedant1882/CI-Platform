@@ -1,7 +1,7 @@
 ﻿using CI_Entity.Models;
 using CI_Entity.ViewModel;
 using CI_Platform.Repository.Interface;
-using CI_PlatformWeb.Models;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -162,11 +162,11 @@ namespace CI_Platform.Repository.Repository
 
         public List<Story> story()
         {
-            return _CIDbContext.Stories.ToList();
+            return _CIDbContext.Stories.Where(s => s.DeletedAt == null).ToList();
         }
         public List<StoryMedium> storymedia()
         {
-            return _CIDbContext.StoryMedia.ToList();
+            return _CIDbContext.StoryMedia.Where(s=>s.DeletedAt==null).ToList();
         }
         public List<MissionMedium> allmedia()
         {
@@ -265,17 +265,36 @@ namespace CI_Platform.Repository.Repository
 
 
         }
-        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id, long storyId, long sId)
+        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id, long storyId, long sId, string url)
         {
 
 
-
-            StoryMedium st = new StoryMedium();
-            st.StoryId = sId;
-            st.StoryType = mediatype;
-            st.StoryPath = mediapath;
-            _CIDbContext.Add(st);
-            _CIDbContext.SaveChanges();
+            if (url != null)
+            {
+                var videoUrls = url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var videoUrl in videoUrls)
+                {
+                    StoryMedium st1 = new StoryMedium();
+                    st1.StoryId = sId;
+                    st1.StoryType = "Video";
+                    st1.StoryPath = videoUrl;
+                    _CIDbContext.Add(st1);
+                    _CIDbContext.SaveChanges();
+                }
+                    
+            }
+           
+                StoryMedium st = new StoryMedium();
+                st.StoryId = sId;
+                st.StoryType = mediatype;
+                st.StoryPath = mediapath;
+                _CIDbContext.Add(st);
+                _CIDbContext.SaveChanges();
+            
+            
+            
+            
+               
 
 
 
@@ -758,11 +777,12 @@ namespace CI_Platform.Repository.Repository
             mission.ThemeId = model.themeId;
             _CIDbContext.Update(mission);
             _CIDbContext.SaveChanges();
+            var abc = _CIDbContext.MissionMedia.Where(e => e.MissionId == model.missionId && e.MediaType == "Video").ToList();
+            _CIDbContext.RemoveRange(abc);
             if (model.url != null)
             {
                 var videoUrls = model.url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                var abc = _CIDbContext.MissionMedia.Where(e => e.MissionId == model.missionId && e.MediaType == "Video").ToList();
-                _CIDbContext.RemoveRange(abc);
+                
                 _CIDbContext.SaveChanges();
                 foreach (var videoUrl in videoUrls)
                 {
@@ -776,11 +796,12 @@ namespace CI_Platform.Repository.Repository
                     _CIDbContext.SaveChanges();
                 }
             }
+            var abc1 = _CIDbContext.MissionSkills.Where(e => e.MissionId == model.missionId).ToList();
+            _CIDbContext.RemoveRange(abc1);
             if (model.selectedSkills != null)
             {
                 var skills = model.selectedSkills.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                var abc = _CIDbContext.MissionSkills.Where(e => e.MissionId == model.missionId).ToList();
-                _CIDbContext.RemoveRange(abc);
+                
                 _CIDbContext.SaveChanges();
                 foreach (var skill in skills)
                 {
@@ -1047,6 +1068,30 @@ namespace CI_Platform.Repository.Repository
                 _CIDbContext.Update(timesheet);
 
             }
+            _CIDbContext.SaveChanges();
+        }
+        public void DeleteStory(long storyId)
+        {
+            var story = _CIDbContext.Stories.FirstOrDefault(t => t.StoryId == storyId);
+            story.DeletedAt = DateTime.Now;
+            story.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(story);
+            var storymedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId).ToList();
+            foreach (var timesheet in storymedia)
+            {
+                timesheet.DeletedAt = DateTime.Now;
+                timesheet.UpdatedAt = DateTime.Now;
+                _CIDbContext.Update(timesheet);
+
+            }
+            _CIDbContext.SaveChanges();
+        }
+        public void DeleteBanner(long bannerId)
+        {
+            var banner = _CIDbContext.Banners.FirstOrDefault(t => t.BannerId == bannerId);
+            banner.DeletedAt = DateTime.Now;
+            banner.UpdatedAt = DateTime.Now;
+            _CIDbContext.Update(banner);
             _CIDbContext.SaveChanges();
         }
     }

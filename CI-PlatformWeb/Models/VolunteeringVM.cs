@@ -53,6 +53,7 @@
         public int? isapplied { get; set; }
         public int? isclosed { get; set; }
         public int? ispending { get; set; }
+        public int? isrejected { get; set; }
 
         public string? path { get; set; }
         public string? avtarpath { get; set; }
