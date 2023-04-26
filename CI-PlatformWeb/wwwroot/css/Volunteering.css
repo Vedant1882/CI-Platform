@@ -65,7 +65,7 @@
 .next {
     cursor: pointer;
     position: absolute;
-    top: 84%;
+    top: 77%;
     width: auto;
     padding: 16px;
     /* margin-top: -50px; */
@@ -132,8 +132,8 @@
 
 hr {
     flex-grow: 1;
-    / width: 100%;
-    / / or this /
+    //width: 100%;
+    
 }
 
 .volunteering-sec-1 {

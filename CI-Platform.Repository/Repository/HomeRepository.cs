@@ -29,7 +29,7 @@ namespace CI_Platform.Repository.Repository
         }
         public User Logindetails(String Email, String Password)
         {
-            return _CIDbContext.Users.Where(u => u.Email == Email && u.Password == Password && u.DeletedAt == null).FirstOrDefault();
+            return _CIDbContext.Users.Where(u => u.Email == Email && u.Password == Password && u.DeletedAt == null && u.Status=="1").FirstOrDefault();
         }
         public Admin AdminEmail(String Email)
         {
@@ -208,7 +208,7 @@ namespace CI_Platform.Repository.Repository
                 Stories.UserId = id;
                 Stories.Title = title;
                 Stories.Description = discription;
-                Stories.Status = "1";
+                Stories.Status = "Pending";
                 Stories.CreatedAt = date;
                 _CIDbContext.Add(Stories);
                 _CIDbContext.SaveChanges();
@@ -222,7 +222,7 @@ namespace CI_Platform.Repository.Repository
                 story.UserId = id;
                 story.Title = title;
                 story.Description = discription;
-                story.Status = "1";
+                story.Status = "Pending";
                 story.UpdatedAt = DateTime.Now;
                 _CIDbContext.Update(story);
                 _CIDbContext.SaveChanges();
@@ -265,24 +265,11 @@ namespace CI_Platform.Repository.Repository
 
 
         }
-        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id, long storyId, long sId, string url)
+        public void addstoryMedia(long MissionId, string mediatype, string mediapath, long id, long storyId, long sId)
         {
 
 
-            if (url != null)
-            {
-                var videoUrls = url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var videoUrl in videoUrls)
-                {
-                    StoryMedium st1 = new StoryMedium();
-                    st1.StoryId = sId;
-                    st1.StoryType = "Video";
-                    st1.StoryPath = videoUrl;
-                    _CIDbContext.Add(st1);
-                    _CIDbContext.SaveChanges();
-                }
-                    
-            }
+            
            
                 StoryMedium st = new StoryMedium();
                 st.StoryId = sId;
@@ -299,6 +286,16 @@ namespace CI_Platform.Repository.Repository
 
 
         }
+        public void addStoryUrl(long storyId, string url)
+        {
+            StoryMedium st1 = new StoryMedium();
+            st1.StoryId = storyId;
+            st1.StoryType = "Video";
+            st1.StoryPath = url;
+            _CIDbContext.Add(st1);
+            _CIDbContext.SaveChanges();
+        }
+        
         public void removemedia(long storyId)
         {
             var storyMedia = _CIDbContext.StoryMedia.Where(s => s.StoryId == storyId).ToList();
@@ -619,7 +616,7 @@ namespace CI_Platform.Repository.Repository
             var applicationsList = from ma in _CIDbContext.Stories
                                    join m in _CIDbContext.Missions on ma.MissionId equals m.MissionId
                                    join u in _CIDbContext.Users on ma.UserId equals u.UserId
-                                   where ma.Status == "Pending"
+                                   where ma.Status == "Pending" && ma.DeletedAt==null
                                    select new AdminStoryVM
                                    {
                                        StoryId = ma.StoryId,
@@ -916,6 +913,10 @@ namespace CI_Platform.Repository.Repository
         public List<Banner> AllBanners()
         {
             return _CIDbContext.Banners.Where(b => b.DeletedAt == null).ToList();
+        }
+        public List<MissionDocument> alldocument()
+        {
+            return _CIDbContext.MissionDocuments.Where(b => b.DeletedAt == null).ToList();
         }
         public void DeleteUser(long userId)
         {

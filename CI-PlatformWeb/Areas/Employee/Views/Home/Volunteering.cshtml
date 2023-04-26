@@ -35,19 +35,21 @@
             <div class="col-12 col-lg-6 col-md-12 col-sm-12">
                 <div class="container p-0">
 
-                    
-                    @{int num = 0;}
+
+                    @{
+                        int num = 0;
+                    }
                     @foreach (var media in ViewBag.missionmedia)
                     {
 
                         @if (media.MediaType == "Video")
                         {
                             num++;
-                            <div class="mySlides" style="height:407px">
+                            <div class="mySlides" >
                                 <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
-                                <iframe width="560" height="315" class="img-fluid vol-page-crousel" id="vol-page-crousel"
-                                src=@media.MediaPath style="height:100%;object-fit:cover;width:100%" alt=""></iframe>
-                                
+                                <iframe class="img-fluid vol-page-crousel" id="vol-page-crousel"
+                                src=@media.MediaPath style="height:355px;object-fit:cover;width:100%" alt=""></iframe>
+
                             </div>
                         }
                         else
@@ -55,7 +57,7 @@
                             num++;
                             <div class="mySlides">
                                 <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
-                                <img src="@media.MediaPath" style="width:100%">
+                                <img src="@media.MediaPath" style="height:355px;object-fit:cover;width:100%">
                             </div>
                         }
                     }
@@ -67,31 +69,35 @@
 
                     <!-- Image text -->
                     <!-- Thumbnail images -->
-                    <div class="row mt-1">
-                       @* <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-1.png" style="width:100%" onclick="currentSlide(1)" alt="The Woods">
+                    <div class="row mt-1" style="flex-wrap: inherit;overflow-x: scroll;height:100px;">
+                        @* <div class="column" style="width:25%">
+                        <img class="demo cursor" src="/Images/CSR-initiative-stands-for-Coffee--and-Farmer-Equity-1.png" style="width:100%" onclick="currentSlide(1)" alt="The Woods">
                         </div>
                         <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/img1.png" style="width:100%" onclick="currentSlide(2)" alt="Cinque Terre">
+                        <img class="demo cursor" src="/Images/img1.png" style="width:100%" onclick="currentSlide(2)" alt="Cinque Terre">
                         </div>
                         <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" style="width:100%" onclick="currentSlide(3)" alt="Mountains and fjords">
+                        <img class="demo cursor" src="/Images/Grow-Trees-On-the-path-to-environment-sustainability-1.png" style="width:100%" onclick="currentSlide(3)" alt="Mountains and fjords">
                         </div>
                         <div class="column" style="width:25%">
-                            <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
+                        <img class="demo cursor" src="/Images/img11.png" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
                         </div>*@
+                        @{
+                            int num1 = 0;
+                        }
                         @foreach (var media in ViewBag.missionmedia)
                         {
+                            num1++;
                             @if (media.MediaType == "Video")
                             {
-                                <div class="column" style="width:25%">
-                                    <iframe src=@media.MediaPath title="W3Schools Free Online Web Tutorials"></iframe>
+                                <div class="col-6 col-lg-3 col-md-4" >
+                                    <iframe src=@media.MediaPath title="W3Schools Free Online Web Tutorials" onclick="currentSlide(@num1)" style="overflow:hidden;width:100%;height:70px;"></iframe>
                                 </div>
                             }
                             else
                             {
-                                <div class="column" style="width:25%">
-                                    <img class="demo cursor" src="@media.MediaPath" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
+                                <div class="col-6 col-lg-3 col-md-4">
+                                    <img class="demo cursor" src="@media.MediaPath" style="width:100%;height:70px;" onclick="currentSlide(@num1)" alt="Northern Lights">
                                 </div>
                             }
                         }
@@ -505,23 +511,49 @@
                     <h1>Challenge</h1>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                     <h1>Documents</h1>
-                    <div class="row">
-                        <div class="col  col-12  col-xl-3 col-lg-12 col-md-3 col-sm-12  me-xl-3 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " onclick='opendoc("/missiondoc/Hetviresume.docx")'>
-                            <div><img src="~/images/doc.png" /></div>
-                            <label class="ms-2">lorem-ipsum.pdf</label>
+                    @*<div class="row">
+                    <div class="col  col-12  col-xl-3 col-lg-12 col-md-3 col-sm-12  me-xl-3 me-md-4 rounded-5 d-flex mt-3  Addfavourite   justify-content-center " onclick='opendoc("/missiondoc/Hetviresume.docx")'>
+                    <div><img src="~/images/doc.png" /></div>
+                    <label class="ms-2">lorem-ipsum.pdf</label>
 
-                        </div>
-                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 Addfavourite  justify-content-center" onclick='opendoc("/missiondoc/Hetviresume.pdf")'>
-                            <div><img src="~/images/doc.png" /></div>
-
-                            <label class="ms-2"> Recommend </label>
-                        </div>
-                        <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 ms-0 ms-xl-3 ms-lg-0 ms-md-3 Addfavourite  justify-content-center" onclick='opendoc("/missiondoc/CI-Platformdb.xlsx")'>
-                            <div><img src="~/images/doc.png" /></div>
-
-                            <label class="ms-2"> Recommend</label>
-                        </div>
                     </div>
+                    <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 Addfavourite  justify-content-center" onclick='opendoc("/missiondoc/Hetviresume.pdf")'>
+                    <div><img src="~/images/doc.png" /></div>
+
+                    <label class="ms-2"> Recommend </label>
+                    </div>
+                    <div class="col col-12 col-xl-3 col-lg-12  col-md-3 col-sm-12 rounded-5 d-flex  mt-3 ms-0 ms-xl-3 ms-lg-0 ms-md-3 Addfavourite  justify-content-center" onclick='opendoc("/missiondoc/CI-Platformdb.xlsx")'>
+                    <div><img src="~/images/doc.png" /></div>
+
+                    <label class="ms-2"> Recommend</label>
+                    </div>
+                    </div>*@
+                    <div class="row d-flex justify-content-center">
+                        @foreach (var missionDoc in ViewBag.missiondocument)
+                        {
+                            <button class=" rounded-5 d-flex align-items-center p-2 justify-content-center ms-3 mt-2" style="width:fit-content; height:5vh" onclick="downloadDocument('@missionDoc.DocumentName', '@Convert.ToBase64String(missionDoc.DocumentPath)')">
+                                <img src="/images/@(missionDoc.DocumentType).png" />
+                                <span class="ms-2">
+                                    @missionDoc.DocumentName
+                                </span>
+                            </button>
+                        }
+                    </div>
+
+                    <script>
+                        function downloadDocument(documentName, documentData) {
+                            const byteArray = Uint8Array.from(atob(documentData), c => c.charCodeAt(0));
+                            const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = documentName;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            
+                        }
+                    </script>
                 </div>
                 <div class="tab-pane fade ms-3" id="org" role="tabpanel" aria-labelledby="org-tab">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.

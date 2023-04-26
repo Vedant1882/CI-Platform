@@ -16,6 +16,7 @@ using Microsoft.Data.SqlClient;
 using CI_Platform.Repository.Interface;
 using CI_PlatformWeb.Areas.Admin.Controllers;
 using System.Reflection;
+using System.Security.Policy;
 
 namespace CI_PlatformWeb.Areas.Employee.Controllers
 {
@@ -809,6 +810,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 var ratinglist = _IHome.missionRatings().Where(m => m.MissionId == mission.MissionId).ToList();
                 ViewBag.missionmedia = _IHome.allmedia().Where(m => m.MissionId == mission.MissionId && m.DeletedAt == null).ToList();
                 ViewBag.missionmediacount = _IHome.allmedia().Where(m => m.MissionId == mission.MissionId && m.DeletedAt == null).ToList().Count();
+                ViewBag.missiondocument=_IHome.alldocument().Where(m=>m.MissionId==mission.MissionId && m.DeletedAt == null).ToList();
                 var close = "0";
                 if (DateTime.Now > mission.Deadline)
                 {
@@ -1225,9 +1227,17 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             FileName = "data:image/png;base64," + base64String;
                         }
 
-                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId,model.url);
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                     }
 
+                }
+                if (model.url != null)
+                {
+                    var videoUrls = model.url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var videoUrl in videoUrls)
+                    {
+                        _IHome.addStoryUrl(sId, videoUrl);
+                    }
                 }
                 TempData["saved"] = "Your Story has been saved";
                 return RedirectToAction("storyShare", "Home");
@@ -1271,9 +1281,17 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             FileName = "data:image/png;base64," + base64String;
                         }
 
-                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId,model.url);
+                        _IHome.addstoryMedia(model.MissionId, i.ContentType.Split("/")[0], FileName, id, model.storyId, sId);
                     }
 
+                }
+                if (model.url != null)
+                {
+                    var videoUrls = model.url.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var videoUrl in videoUrls)
+                    {
+                        _IHome.addStoryUrl(sId, videoUrl);
+                    }
                 }
                 TempData["draft"] = "Your Story has been saved as a draft";
                 return RedirectToAction("storyShare", "Home");
@@ -1309,7 +1327,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     storyVm.date = story.CreatedAt;
                     storyVm.MissionId = story.MissionId;
                     storyVm.storyId = story.StoryId;
-                    storyVm.storyMedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId).ToList();
+                    storyVm.storyMedia = _CIDbContext.StoryMedia.Where(t => t.StoryId == storyId && t.StoryType=="image").ToList();
+                    storyVm.url = _CIDbContext.StoryMedia.FirstOrDefault(t => t.StoryId == storyId && t.StoryType == "Video")!=null? _CIDbContext.StoryMedia.FirstOrDefault(t => t.StoryId == storyId && t.StoryType == "Video").StoryPath:null;
                 }
 
 

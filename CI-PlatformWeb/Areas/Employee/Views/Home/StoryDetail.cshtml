@@ -44,10 +44,10 @@
                         @if (media.StoryType == "Video")
                         {
                             num++;
-                            <div class="mySlides" style="height:407px">
+                            <div class="mySlides">
                                 <div class="numbertext">@num/ @ViewBag.storymediacount</div>
-                                <iframe width="560" height="315" class="img-fluid vol-page-crousel" id="vol-page-crousel"
-                                src=@media.StoryPath style="height:100%;object-fit:cover;width:100%" alt=""></iframe>
+                                <iframe class="img-fluid vol-page-crousel" id="vol-page-crousel"
+                                src=@media.StoryPath style="height:355px;object-fit:cover;width:100%" alt=""></iframe>
 
                             </div>
                         }
@@ -56,7 +56,7 @@
                             num++;
                             <div class="mySlides">
                                 <div class="numbertext">@num/ @ViewBag.storymediacount</div>
-                                <img src="@media.StoryPath" style="width:100%">
+                                <img src="@media.StoryPath" style="height:355px;object-fit:cover;width:100%">
                             </div>
                         }
                     }
@@ -68,20 +68,23 @@
 
                     <!-- Image text -->
                     <!-- Thumbnail images -->
-                    <div class="row mt-1">
-                       
+                    <div class="row mt-1" style="flex-wrap: inherit;overflow-x: scroll;height:100px;">
+                        @{
+                            int num1 = 0;
+                        }
                         @foreach (var media in ViewBag.storymedia)
                         {
+                            num1++;
                             @if (media.StoryType == "Video")
                             {
-                                <div class="column" style="width:25%">
-                                    <iframe src=@media.StoryPath title="W3Schools Free Online Web Tutorials"></iframe>
+                                <div class="col-6 col-lg-3 col-md-4" >
+                                    <iframe src=@media.StoryPath title="W3Schools Free Online Web Tutorials" onclick="currentSlide(@num1)" style="overflow:hidden;width:100%;height:70px"></iframe>
                                 </div>
                             }
                             else
                             {
-                                <div class="column" style="width:25%">
-                                    <img class="demo cursor" src="@media.StoryPath" style="width:100%" onclick="currentSlide(4)" alt="Northern Lights">
+                                <div class="col-6 col-lg-3 col-md-4">
+                                    <img class="demo cursor" src="@media.StoryPath" style="width:100%;height:70px" onclick="currentSlide(@num1)" alt="Northern Lights">
                                 </div>
                             }
                         }
@@ -199,11 +202,11 @@
             </div>
 
         </div>
-        <div>
+        <div class="text-break">
             @foreach (var story in Model)
             {
                 <h1>@story.StoryTitle</h1>
-                <p>@Html.Raw(story.Description)</p>
+                <p class="text-break">@Html.Raw(story.Description)</p>
             }
         </div>
 
