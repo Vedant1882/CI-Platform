@@ -31,41 +31,51 @@ function showSlides(n) {
 
 function sendmail(id) {
     const mail = Array.from(document.querySelectorAll('input[name="mail"]:checked')).map(el => el.id);
-    var send = document.getElementById("sendmail");
-    Swal.fire({
-        icon: 'info',
-        title: 'Sending',
-        text: 'Sending Mail....',
-        showConfirmButton: false,
-        
-    })
-    $.ajax({
-        url: '/Employee/Home/Sendmail',
-        type: 'POST',
-        data: { userid: mail ,id:id},
-        success: function (result) {
-            
-            const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = false;
-            });
-            Swal.fire({
-                icon: 'success',
-                title: 'Sent',
-                text: 'Recommandation sent succesfully',
-                showConfirmButton: false,
-                timer: 2000
-            })
-        },
-        error: function () {
-            // Handle error response from the server, e.g. show an error message to the user
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-                
-            })
-        }
-    });
+    if (mail.length == 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Alert',
+            text: 'Please select user...!',
+            showConfirmButton: false,
 
+        })
+    }
+    else {
+        var send = document.getElementById("sendmail");
+        Swal.fire({
+            icon: 'info',
+            title: 'Sending',
+            text: 'Sending Mail....',
+            showConfirmButton: false,
+
+        })
+        $.ajax({
+            url: '/Employee/Home/Sendmail',
+            type: 'POST',
+            data: { userid: mail, id: id },
+            success: function (result) {
+
+                const checkboxes = document.querySelectorAll('input[name="mail"]:checked');
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = false;
+                });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sent',
+                    text: 'Recommandation sent succesfully',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            },
+            error: function () {
+                // Handle error response from the server, e.g. show an error message to the user
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+
+                })
+            }
+        });
+    }
 }

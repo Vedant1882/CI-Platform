@@ -45,9 +45,13 @@ function changepass() {
     var pass2 = document.getElementById('inputPassword2').value;
 	var pass3 = document.getElementById('inputPassword3').value;
 	if (pass2 != pass3) {
-
-		alert("Password and Confirmpassword must be same");
-
+		Swal.fire({
+			position: 'top-center',
+			icon: 'warning',
+			title: 'Password and Confirmpassword must be same',
+			showConfirmButton: false,
+			timer: 2500
+		})
 	}
 	else {
 		$.ajax({
@@ -56,15 +60,27 @@ function changepass() {
 			data: { pass1: pass1, pass2: pass2, pass3: pass3 },
 
 			success: function (response) {
-
-				Swal.fire({
-					position: 'top-center',
-					icon: 'success',
-					title: 'Password changed successfully',
-					showConfirmButton: false,
-					timer: 2500
-				})
-				$('#close1').click();
+				if (response.success == false) {
+					Swal.fire({
+						position: 'top-center',
+						icon: 'warning',
+						title: 'Old password doesnot match',
+						showConfirmButton: false,
+						timer: 2500
+					})
+				}
+				else {
+					Swal.fire({
+						position: 'top-center',
+						icon: 'success',
+						title: 'Password changed successfully',
+						showConfirmButton: false,
+						timer: 2500
+					})
+					$('#close1').click();
+				}
+				
+				
 
 			},
 			error: function () {

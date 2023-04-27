@@ -784,6 +784,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         {
             try
             {
+
                 int? useridforrating = HttpContext.Session.GetInt32("userIDforfavmission");
                 ViewBag.userid = useridforrating;
 
@@ -1434,10 +1435,12 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     {
                         _IHome.changepass(id, pass2);
                     }
-                    else
-                    {
-                        ViewBag.samePass = "Password and Confirm password must be same!!";
-                    }
+                   
+                    return RedirectToAction("UserProfile", "Home");
+                }
+                else
+                {
+                    return Json(new { success = false, userDetail });
                 }
                 return RedirectToAction("UserProfile", "Home");
             }
