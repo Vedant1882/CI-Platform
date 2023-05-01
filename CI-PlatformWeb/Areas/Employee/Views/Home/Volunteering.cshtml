@@ -39,28 +39,39 @@
                     @{
                         int num = 0;
                     }
-                    @foreach (var media in ViewBag.missionmedia)
+                    @if (ViewBag.missionmediacount != 0)
                     {
-
-                        @if (media.MediaType == "Video")
+                        @foreach (var media in ViewBag.missionmedia)
                         {
-                            num++;
-                            <div class="mySlides" >
-                                <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
-                                <iframe class="img-fluid vol-page-crousel" id="vol-page-crousel"
+
+                            @if (media.MediaType == "Video")
+                            {
+                                num++;
+                                <div class="mySlides">
+                                    <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
+                                    <iframe class="img-fluid vol-page-crousel" id="vol-page-crousel"
                                 src=@media.MediaPath style="height:355px;object-fit:cover;width:100%" alt=""></iframe>
 
-                            </div>
-                        }
-                        else
-                        {
-                            num++;
-                            <div class="mySlides">
-                                <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
-                                <img src="@media.MediaPath" style="height:355px;object-fit:cover;width:100%">
-                            </div>
+                                </div>
+                            }
+                            else
+                            {
+                                num++;
+                                <div class="mySlides">
+                                    <div class="numbertext">@num/ @ViewBag.missionmediacount</div>
+                                    <img src="@media.MediaPath" style="height:355px;object-fit:cover;width:100%">
+                                </div>
+                            }
                         }
                     }
+                    else
+                    {
+                        <div class="mySlides">
+                            
+                            <img src="~/Images/noimage.png" style="height:355px;object-fit:cover;width:100%">
+                        </div>
+                    }
+
 
 
                     <!-- Next and previous buttons -->
@@ -172,13 +183,13 @@
                                     <div style="width: 100%;">
                                         <div>
 
-                                            <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="50"
-                                             aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
-                                                <div class="progress-bar bg-success" style="width:@Model.goalval%"></div>
+                                            <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="@Model.progress"
+                                             aria-valuemin="0" aria-valuemax="@Model.goal" style="height: 10px;">
+                                                <div class="progress-bar bg-warning" style="width:@Model.progressInPerc%"></div>
                                             </div>
 
                                         </div>
-                                        <div class="landing-page-card-vol-small">8000 achived</div>
+                                        <div class="landing-page-card-vol-small">@Model.progress achived</div>
                                     </div>
                                 </p>
                             }

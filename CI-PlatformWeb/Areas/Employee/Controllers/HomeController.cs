@@ -155,10 +155,11 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgetPass(ForgetPass model)
         {
+            ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
             if (ModelState.IsValid)
             {
-                ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
-                ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
+                
                 var user = _IHome.UserByEmail(model.Email);
                 if (user == null)
                 {
@@ -183,7 +184,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
 
                 //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
+                var fromAddress = new MailAddress("cimain1882@gmail.com", "Sender Name");
                 var toAddress = new MailAddress(model.Email);
                 var subject = "Password reset request";
                 var body = $"Hi,<br /><br />Please click on the following link to reset your password:<br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -196,7 +197,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
+                    Credentials = new NetworkCredential("cimain1882@gmail.com", "hbutjbfrbarstsyx"),
                     //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                     EnableSsl = true
                 };
@@ -242,11 +243,12 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         {
             try
             {
+                ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
+                ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
                 if (ModelState.IsValid)
                 {
                     // Find the user by email
-                    ViewBag.firstBanner = _IHome.AllBanners().Where(e => e.SortOrder == 1).ToList();
-                    ViewBag.Banners = _IHome.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
+                    
                     var user = _IHome.UserByEmail(resetPasswordView.Email);
                     if (user == null)
                     {
@@ -484,7 +486,16 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                         var rejectedmission = _IHome.missionapplication().Where(m => m.UserId == useridforrating && m.MissionId == missions.MissionId && m.ApprovalStatus == "rejected").FirstOrDefault();
                         var missionmedia = _IHome.allmedia().Where(m => m.MissionId == missions.MissionId && m.MediaType != "Video" && m.DeletedAt == null).FirstOrDefault();
                         int appliedseat = _IHome.missionapplication().Where(m => m.MissionId == missions.MissionId && m.ApprovalStatus == "1").Count();
-
+                        var actionList = _CIDbContext.Timesheets.Where(e => e.MissionId == missions.MissionId && e.DeletedAt == null).ToList();
+                        int? progress = 0;
+                        var goal = _CIDbContext.GoalMissions.Where(e => e.MissionId == missions.MissionId && e.DeletedAt == null).SingleOrDefault();
+                        if (actionList != null)
+                        {
+                            foreach (var action in actionList)
+                            {
+                                progress = progress + action.Action;
+                            }
+                        }
                         var close = "0";
                         if (DateTime.Now > missions.Deadline)
                         {
@@ -538,8 +549,10 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                             isclosed = close == "1" ? 0 : 1,
                             path = missionmedia != null ? missionmedia.MediaPath : "",
                             defaultimg = missionmedia != null ? missionmedia.Default : "",
-                            goalval = goalMission.GoalValue != null ? Convert.ToInt32(goalMission.GoalValue) : 0,
-
+                            //goalval = goalMission.GoalValue != null ? Convert.ToInt32(goalMission.GoalValue) : 0,
+                            goal = int.Parse(goal.GoalValue),
+                            progress = progress,
+                            progressInPerc = missions.MissionType == "time" ? 0 : (progress * 100 / int.Parse(goal.GoalValue)),
                         });
 
 
@@ -648,7 +661,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
 
                     //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                    var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
+                    var fromAddress = new MailAddress("cimain1882@gmail.com", "Sender Name");
                     var toAddress = new MailAddress(user.Email);
                     var subject = "Mission Recommandation";
                     var body = $"Hi,<br /><br />This is to <br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -661,7 +674,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                     {
                         UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
+                        Credentials = new NetworkCredential("cimain1882@gmail.com", "hbutjbfrbarstsyx"),
 
                         EnableSsl = true
                     };
@@ -812,6 +825,16 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                 ViewBag.missionmedia = _IHome.allmedia().Where(m => m.MissionId == mission.MissionId && m.DeletedAt == null).ToList();
                 ViewBag.missionmediacount = _IHome.allmedia().Where(m => m.MissionId == mission.MissionId && m.DeletedAt == null).ToList().Count();
                 ViewBag.missiondocument=_IHome.alldocument().Where(m=>m.MissionId==mission.MissionId && m.DeletedAt == null).ToList();
+                var actionList = _CIDbContext.Timesheets.Where(e => e.MissionId == mission.MissionId && e.DeletedAt == null).ToList();
+                int? progress = 0;
+                var goal = _CIDbContext.GoalMissions.Where(e => e.MissionId == mission.MissionId && e.DeletedAt == null).SingleOrDefault();
+                if (actionList != null)
+                {
+                    foreach (var action in actionList)
+                    {
+                        progress = progress + action.Action;
+                    }
+                }
                 var close = "0";
                 if (DateTime.Now > mission.Deadline)
                 {
@@ -851,7 +874,9 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     isrejected = rejectedmission != null ? 1 : 0,
                     ispending = pendingmission != null ? 1 : 0,
                     isclosed = close == "1" ? 0 : 1,
-                    goalval = Convert.ToInt32(goalMission.GoalValue),
+                    goal = int.Parse(goal.GoalValue),
+                    progress = progress,
+                    progressInPerc = mission.MissionType == "time" ? 0 : (progress * 100 / int.Parse(goal.GoalValue)),
                 };
                 ViewBag.fav = volunteeringMission.isFavrouite;
 
@@ -880,8 +905,16 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
 
 
-                var relatedmission = _IHome.Allmissions().Where(m => m.ThemeId == mission.ThemeId && m.MissionId != mission.MissionId).ToList();
-                foreach (var item in relatedmission.Take(3))
+              
+
+                var relatedMission = _IHome.Allmissions()
+                    .Where(m => m.CityId == mission.CityId || m.CountryId == mission.CountryId || m.ThemeId == mission.ThemeId)
+                    .OrderBy(m => m.CityId == mission.CityId)
+                    .ThenBy(m => m.CountryId == mission.CountryId)
+                    .ThenBy(m => m.ThemeId == mission.ThemeId)
+                    .Take(3)
+                    .ToList();
+                foreach (var item in relatedMission.Take(3))
                 {
                     var relcity = _IHome.AllCity().FirstOrDefault(m => m.CityId == item.CityId);
                     var reltheme = _IHome.MissionThemeByThemeid(item.ThemeId);
@@ -1162,7 +1195,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
 
 
                     //var fromAddress = new MailAddress("tatvahl@gmail.com", "Sender Name");
-                    var fromAddress = new MailAddress("ciproject18@gmail.com", "Sender Name");
+                    var fromAddress = new MailAddress("cimain1882@gmail.com", "Sender Name");
                     var toAddress = new MailAddress(user.Email);
                     var subject = "Story Recommandation";
                     var body = $"Hi,<br /><br /> <br /><br /><a href='{resetLink}'>{resetLink}</a>";
@@ -1175,7 +1208,7 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
                     var smtpClient = new SmtpClient("smtp.gmail.com", 587)
                     {
                         UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential("ciproject18@gmail.com", "ypijkcuixxklhrks"),
+                        Credentials = new NetworkCredential("cimain1882@gmail.com", "hbutjbfrbarstsyx"),
                         //Credentials = new NetworkCredential("tatvahl@gmail.com", "dvbexvljnrhcflfw"),
                         EnableSsl = true
                     };

@@ -35,7 +35,9 @@ namespace CI_PlatformWeb.Models
         public IFormFile files { get; set; }
         public string avatar { get; set; }
         public string username { get; set; }
+        [Required(ErrorMessage = "Subject is a Required field.")]
         public string subject { get; set; }
+        [Required(ErrorMessage = "Message is a Required field.")]
         public string message { get; set; }
         
         public long? cityid { get; set; }

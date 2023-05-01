@@ -40,7 +40,8 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         {
             //var obj = _IUser.UserExist(user.Email);
 
-
+            ViewBag.firstBanner = _IUser.AllBanners().Where(e => e.SortOrder == 1).ToList();
+            ViewBag.Banners = _IUser.AllBanners().OrderBy(e => e.SortOrder).ToList().Skip(1);
 
             if (ModelState.IsValid)
             {

@@ -199,7 +199,7 @@
             reader.readAsDataURL(event.target.files[0]);         // Read the selected file as a data URL
         }
         function savebanner() {
-            if (document.getElementById("discrption").value != "" || sortorder: document.getElementById("sortorder").value) {
+            if (document.getElementById("discrption").value != "" || document.getElementById("sortorder").value) {
                 $.ajax({
                     url: '/Admin/Admin/AddBanner',
                     type: 'POST',

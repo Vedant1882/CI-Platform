@@ -52,5 +52,9 @@
 
         public string? defaultimg { get; set; } 
         public int? goalval { get; set; }
+        public int goal { get; set; }
+        public int? progressInPerc { get; set; }
+
+        public int? progress { get; set; }
     }
 }

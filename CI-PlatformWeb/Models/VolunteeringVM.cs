@@ -62,6 +62,9 @@
 
         public long? userIdForComment { get; set; }
         public long? commentId { get; set; }
+        public int goal { get; set; }
+        public int? progressInPerc { get; set; }
 
+        public int? progress { get; set; }
     }
 }

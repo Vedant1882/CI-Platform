@@ -42,53 +42,157 @@ function ved4() {
 }
 function changepass() {
     var pass1 = document.getElementById('inputPassword1').value;
+    var errpass1 = document.getElementById('oldpass');
+
+
     var pass2 = document.getElementById('inputPassword2').value;
-	var pass3 = document.getElementById('inputPassword3').value;
-	if (pass2 != pass3) {
-		Swal.fire({
-			position: 'top-center',
-			icon: 'warning',
-			title: 'Password and Confirmpassword must be same',
-			showConfirmButton: false,
-			timer: 2500
-		})
-	}
-	else {
-		$.ajax({
-			url: '/Employee/Home/changepass',
-			type: 'POST',
-			data: { pass1: pass1, pass2: pass2, pass3: pass3 },
+    var pass21 = document.getElementById('newpass2');
+    var errpass2 = document.getElementById('newpass');
 
-			success: function (response) {
-				if (response.success == false) {
-					Swal.fire({
-						position: 'top-center',
-						icon: 'warning',
-						title: 'Old password doesnot match',
-						showConfirmButton: false,
-						timer: 2500
-					})
-				}
-				else {
-					Swal.fire({
-						position: 'top-center',
-						icon: 'success',
-						title: 'Password changed successfully',
-						showConfirmButton: false,
-						timer: 2500
-					})
-					$('#close1').click();
-				}
-				
-				
+    var pass3 = document.getElementById('inputPassword3').value;
+    var errpass3 = document.getElementById('confirmpass');
 
-			},
-			error: function () {
-				alert("could not comment");
-			}
-		});
-	}
-    
+
+    if (pass1.length == 0 || pass2.length == 0 || pass3.length == 0) {
+        if (pass1.length == 0) {
+            errpass1.style.display = "block";
+
+
+        } if (pass2.length == 0) {
+            errpass2.style.display = "block";
+
+        } if (pass3.length == 0) {
+            errpass3.style.display = "block";
+
+        }
+
+    }
+    else {
+        if (pass2.length < 8 || !/[A-Z]/.test(pass2) || !/[a-z]/.test(pass2) || !/[\W_]/.test(pass2)) {
+            pass21.style.display = "block";
+
+        } else {
+            pass21.style.display = "none";
+
+
+
+            if (pass2 != pass3) {
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'warning',
+                    title: 'Password and Confirmpassword must be same',
+                    showConfirmButton: false,
+                    timer: 2500
+                })
+            }
+            else {
+                $.ajax({
+                    url: '/Employee/Home/changepass',
+                    type: 'POST',
+                    data: { pass1: pass1, pass2: pass2, pass3: pass3 },
+
+                    success: function (response) {
+                        if (response.success == false) {
+                            Swal.fire({
+                                position: 'top-center',
+                                icon: 'warning',
+                                title: 'Old password doesnot match',
+                                showConfirmButton: false,
+                                timer: 2500
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                position: 'top-center',
+                                icon: 'success',
+                                title: 'Password changed successfully',
+                                showConfirmButton: false,
+                                timer: 2500
+                            })
+                            $('#close1').click();
+                        }
+
+
+
+                    },
+                    error: function () {
+                        alert("could not comment");
+                    }
+                });
+            }
+        }
+    }
+
+}
+
+function errorfunction() {
+    var pass1 = document.getElementById('inputPassword1').value;
+    var errpass1 = document.getElementById('oldpass');
+
+
+
+
+
+
+    if (pass1.length == 0) {
+        errpass1.style.display = "block";
+
+
+    }
+    else {
+
+
+
+        document.getElementById('oldpass').style.display = "none";
+    }
+
+
+
+}
+function errorfunction2() {
+    var pass2 = document.getElementById('inputPassword2').value;
+    var pass21 = document.getElementById('newpass2');
+    var errpass2 = document.getElementById('newpass');
+
+    if (pass2.length == 0) {
+        errpass2.style.display = "block";
+
+    }
+    else {
+
+        document.getElementById('newpass').style.display = "none";
+        if (pass2.length < 8 || !/[A-Z]/.test(pass2) || !/[a-z]/.test(pass2) || !/[\W_]/.test(pass2)) {
+            pass21.style.display = "block";
+
+        } else {
+            pass21.style.display = "none";
+        }
+
+
+
+
+
+
+    }
+
+}
+function errorfunction3() {
+    var pass3 = document.getElementById('inputPassword3').value;
+    var errpass3 = document.getElementById('confirmpass');
+
+    if (pass3.length == 0) {
+        errpass3.style.display = "block";
+
+    }
+
+
+    else {
+
+
+        document.getElementById('confirmpass').style.display = "none";
+
+    }
+
 }
 document.getElementById('imgInput').addEventListener("change", e => {
 	const reader = new FileReader(); // Create a new FileReader object
