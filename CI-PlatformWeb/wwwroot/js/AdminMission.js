@@ -13,7 +13,7 @@ function deletemission(missionId) {
 
     swalWithBootstrapButtons.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this goalsheet!",
+        text: "You won't be able to revert this mission!",
         icon: 'warning',
         width: '300',
         height: '100',

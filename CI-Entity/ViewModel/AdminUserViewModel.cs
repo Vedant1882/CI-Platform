@@ -24,7 +24,7 @@ namespace CI_Entity.ViewModel
         [Display(Order = 1, Name = "LastName")]
         [RegularExpression("^((?!^First Name$)[a-zA-Z '])+$", ErrorMessage = "Last name  must be properly formatted.")]
         public string lastname { get; set; }
-        [RegularExpression("[789][0-9]{9}", ErrorMessage = "Please Enter Valid Mobile Number")]
+        
         public string email { get; set; }
         public string employeeid { get; set; }
         [Required(ErrorMessage = "First Name is a Required field.")]

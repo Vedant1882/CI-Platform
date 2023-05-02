@@ -66,7 +66,7 @@
                                                 </div>
                                                 <div class="row mt-2">
                                                     <lable class="col-6 fs-6">Date Volunteered</lable>
-                                                    <input class="col-12  datediv py-1 rounded-1" type="datetime-local" asp-for="date" />
+                                                    <input class="col-12  datediv py-1 rounded-1" type="datetime-local" min="2000-01-01" asp-for="date" />
                                                     <span asp-validation-for="date" style="color:red;font-size:10px;"></span>
                                                 </div>
                                                 <div class="row mt-1 ">
@@ -128,7 +128,7 @@
                                                 </div>
                                                 <div class="row mt-2">
                                                     <lable class="col-6 fs-6">Date Volunteered</lable>
-                                                    <input class="col-12  datediv py-1 rounded-1" id="date1" type="datetime-local" asp-for="date" />
+                                                    <input class="col-12  datediv py-1 rounded-1" id="date1" type="datetime-local" min="2000-01-01" asp-for="date" />
                                                     <span asp-validation-for="date" style="color:red;font-size:10px;"></span>
                                                 </div>
                                                 <div class="row mt-1 ">
@@ -247,7 +247,7 @@
                                                 <div class="row mt-1 ">
 
                                                     <label class=" col-8 fs-6"> Date of Volunteered</label>
-                                                    <input type="datetime-local" asp-for="date" placeholder="Enter Date " class=" py-1 datediv rounded-1 col-12 " />
+                                                    <input type="datetime-local" min="2000-01-01" asp-for="date" placeholder="Enter Date " class=" py-1 datediv rounded-1 col-12 " />
                                                     <span asp-validation-for="date" style="color:red;font-size:10px;"></span>
 
                                                 </div>
@@ -301,7 +301,7 @@
                                                 <div class="row mt-1 ">
 
                                                     <label class=" col-8 fs-6"> Date of Volunteered</label>
-                                                    <input type="datetime-local" id="date2" asp-for="date" value="" placeholder="Enter Date " class="py-1 datediv rounded-1 col-12 " />
+                                                    <input type="datetime-local" min="2000-01-01" id="date2" asp-for="date" value="" placeholder="Enter Date " class="py-1 datediv rounded-1 col-12 " />
                                                     <span asp-validation-for="date" style="color:red;font-size:10px;"></span>
 
                                                 </div>

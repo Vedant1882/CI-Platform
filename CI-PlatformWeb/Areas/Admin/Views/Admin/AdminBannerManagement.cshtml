@@ -23,7 +23,7 @@
     <div class=" container">
         <div class="d-flex borderbottom justify-content-between mb-2">
             <h3 class="borderbotm mb-0">Banner Management</h3>
-            <button type="button" @*onclick="refreshModal()"*@ class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal">
+            <button type="button" class="btn mb-2 landing-page-apply-mission-btn" data-bs-toggle="modal" data-bs-target="#AdminBannerModalmodal">
                 <i class="fa-regular fa-plus" style="color: #F88735"></i>
                 Add
             </button>
@@ -34,7 +34,7 @@
                         <form method="post">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">ADD NEW/Edit BANNER</h1>
-                                <button type="button" class="bg-white border-0" data-bs-dismiss="modal" aria-label="Close">
+                                <button type="button" class="bg-white border-0" data-bs-dismiss="modal" aria-label="Close" onclick="refreshModal()">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </div>
@@ -83,7 +83,7 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn closebtn " data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn closebtn " data-bs-dismiss="modal" onclick="refreshModal()">Close</button>
                                 <button type="submit" class="btn savebtn" onclick="savebanner()">Save Banner</button>
                             </div>
                         </form>
@@ -140,7 +140,7 @@
 
             swalWithBootstrapButtons.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this goalsheet!",
+                text: "You won't be able to revert this banner!",
                 icon: 'warning',
                 width: '300',
                 height: '100',
@@ -227,6 +227,9 @@
                     }
                 });
             }
+        }
+        function refreshModal() {
+            location.reload();
         }
         function getBanner(id) {
             $.ajax({

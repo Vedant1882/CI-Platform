@@ -21,13 +21,13 @@
     <div class="container-fluid row">
         <div class="row">
             <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 mt-2">
-                <div id="carouselExampleCaptions" style="height:98vh" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+                <div id="carouselExampleCaptions"  class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
 
-                    <div class="carousel-inner" style="height:98vh">
+                    <div class="carousel-inner" >
                         @foreach (var banner in ViewBag.firstBanner)
                         {
                             <div class="carousel-item active" data-bs-interval="5000">
-                                <img src="@banner.Image" class="d-block w-100 carousel-img object-fit-none" alt="..." style="height:98vh">
+                                <img src="@banner.Image" class="d-block w-100 carousel-img object-fit-none" alt="..." >
                                 <div class="carousel-caption d-none d-md-block ">
                                     <h2>Sed ut perspiciatis unde omnis iste natus voluptatem.</h2>
                                     <p>
@@ -39,7 +39,7 @@
                         @foreach (var banner in ViewBag.Banners)
                         {
                             <div class="carousel-item" data-bs-interval="5000">
-                                <img src="@banner.Image" class="d-block w-100 carousel-img object-fit-none " alt="..." style="height:98vh">
+                                <img src="@banner.Image" class="d-block w-100 carousel-img object-fit-none " alt="..." >
                                 <div class="carousel-caption d-none d-md-block ">
                                     <h2>Sed ut perspiciatis unde omnis iste natus voluptatem.</h2>
                                     <p>

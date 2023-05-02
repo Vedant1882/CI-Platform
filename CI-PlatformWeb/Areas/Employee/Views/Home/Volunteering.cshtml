@@ -872,7 +872,14 @@
             });
         }
         else {
-            alert("Please write something in comment box!");
+            Swal.fire({
+                icon: 'warning',
+                title: "Can't post the comment!",
+                text: 'Comment text can not be empty!',
+                showConfirmButton: false,
+                timer: 1500,
+
+            })
         }
 
     }

@@ -73,6 +73,14 @@ namespace CI_PlatformWeb.Areas.Employee.Controllers
         }
         public IActionResult PrivacyPolicy()
         {
+            var pages = _CIDbContext.CmsPages.Where(e => e.DeletedAt == null).ToList();
+            ViewBag.Policy = pages;
+            var DescList = new List<string>();
+            foreach (var page in pages)
+            {
+                DescList.Add(HttpUtility.HtmlDecode(page.Description));
+            }
+            ViewBag.Desc = DescList;
             return View();
         }
 

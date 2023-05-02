@@ -12,11 +12,11 @@
 .create-account-link-1 {
     /* display: flex; */
 }
-.img1{
-    height:98vh;
+.carousel-inner, .carouselExampleCaptions, .carousel-img {
+    height: 98vh;
 }
-.row{
-    margin:0% !important;
+.row {
+    margin: 0% !important;
 }
 .create-account-link-2{
     display: flex;
@@ -67,8 +67,8 @@ h5{
     font-size: xx-large;
 }
 @media screen and (max-width:991px){
-    .img1{
-        height:20vh;
+    .carousel-inner, .carouselExampleCaptions, .carousel-img {
+        height: 50vh;
     }
 }
 @media screen and (min-width:768px) and (max-width:1309px) {

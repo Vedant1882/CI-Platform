@@ -6,8 +6,8 @@
     background-color: white;
     color: #F88634;
 }
-.img1{
-    height:100vh;
+.carousel-inner, .carouselExampleCaptions, .carousel-img {
+    height: 98vh;
 }
 .carousel-control-prev{
     opacity: 0%;
@@ -53,8 +53,8 @@ h5{
     font-size: 14px;
 }
 @media screen and (max-width:991px){
-    .img1{
-        height:75vh;
+    .carousel-inner, .carouselExampleCaptions, .carousel-img {
+        height: 50vh;
     }
 }
 @media screen and (min-width:992px) and (max-width:1400px) {
